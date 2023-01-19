@@ -6,9 +6,9 @@ let server = http.createServer((req, res)=>{
     if (req.url=="/"){
         res.writeHead(200, {"Content-Type": "text/html"});
         res.end(fs.readFileSync("top/top.html"));
-    } else if (req.url=="/top/top.css"){
+    } else if (req.url=="/top/stylesheet/top.css"){
         res.writeHead(200, {"Content-Type": "text/css"});
-        res.end(fs.readFileSync("top/top.css"));
+        res.end(fs.readFileSync("top/stylesheet/top.css"));
     } else if (req.url=="/top/top.js"){
         res.writeHead(200, {"Content-Type": "application/javascript"});
         res.end(fs.readFileSync("top/top.js"));
@@ -17,9 +17,9 @@ let server = http.createServer((req, res)=>{
     else if (req.url=="/standby"){
         res.writeHead(200, {"Content-Type": "text/html"});
         res.end(fs.readFileSync("standby/standby.html"));
-    } else if (req.url=="/standby/standby.css"){
+    } else if (req.url=="/standby/stylesheet/standby.css"){
         res.writeHead(200, {"Content-Type": "text/css"});
-        res.end(fs.readFileSync("standby/standby.css"));
+        res.end(fs.readFileSync("standby/stylesheet/standby.css"));
     } else if (req.url=="/standby/standby.js"){
         res.writeHead(200, {"Content-Type": "application/javascript"});
         res.end(fs.readFileSync("standby/standby.js"));
@@ -28,9 +28,9 @@ let server = http.createServer((req, res)=>{
     else if (req.url=="/battle"){
         res.writeHead(200, {"Content-Type": "text/html"});
         res.end(fs.readFileSync("battle/battle.html"));
-    } else if (req.url=="/battle/battle.css"){
+    } else if (req.url=="/battle/stylesheet/battle.css"){
         res.writeHead(200, {"Content-Type": "text/css"});
-        res.end(fs.readFileSync("battle/battle.css"));
+        res.end(fs.readFileSync("battle/stylesheet/battle.css"));
     } else if (req.url=="/battle/battle.js"){
         res.writeHead(200, {"Content-Type": "application/javascript"});
         res.end(fs.readFileSync("battle/battle.js"));
