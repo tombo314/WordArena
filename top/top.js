@@ -11,17 +11,35 @@ const ANAVAILABLE_CHAR = new Set([
 // 関数宣言
 /** ユーザー名とパスワードのバリデーション -> bool */
 let validate=(text)=>{
+    for (let v of text){
+        if (!ANAVAILABLE_CHAR.has(v)){
+            return false;
+        }
+    }
+    if (text.length<6){
+        return false;
+    }
+    return true;
 };
 /** アカウント登録 */
 let registerAccount=()=>{
-    let valiUser = validateUsername(elemUsername.value);
-    let valiPass = validateUsername(elemPassword.value);
+    let valiUser = validate(elemUsername.value);
+    let valiPass = validate(elemPassword.value);
     if (valiUser && valiPass){
-        // mysqlに登録
-    } else if (!valiUser){
-        alert("ユーザー名は半角英数字6文字以上20文字以内で入力してください。");
-    } else if (!valiPass){
-        alert("パスワードは半角英数字6文字以上20文字以内で入力してください。");
+        elemUsernameError.style.display = "none";
+        elemPasswordError.style.display = "none";
+        // mysqlに登録 -> /mysql/mysql.js
+    } else {
+        if (!valiUser){
+            elemUsernameError.style.display = "block";
+        } else {
+            elemUsernameError.style.display = "none";
+        }
+        if (!valiPass){
+            elemPasswordError.style.display = "block";
+        } else {
+            elemPasswordError.style.display = "none";
+        }
     }
 };
 
@@ -29,8 +47,23 @@ let registerAccount=()=>{
 let socket = io();
 
 // エレメント取得
+let elemUsernameError = document.getElementById("js-username-error");
+let elemPasswordError = document.getElementById("js-password-error");
 let elemUsername = document.getElementById("js-username");
 let elemPassword = document.getElementById("js-password");
 let elemSubmit = document.getElementById("js-submit");
 
-elemUsername.onclick =()=> registerAccount();
+elemUsername.onkeydown = (e)=> {
+    if (e.key=="Enter"){
+        registerAccount();
+    }
+}
+elemPassword.onkeydown = (e)=> {
+    if (e.key=="Enter"){
+        registerAccount();
+    }
+}
+
+elemSubmit.onclick = ()=>{
+    registerAccount();
+}
