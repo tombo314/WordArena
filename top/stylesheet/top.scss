@@ -3,39 +3,40 @@
     padding: 0;
     box-sizing: border-box;
     list-style: none;
-}
-
-:root{
-    --font-color: #333;
-    --background-color: #eee;
+    color: #333;
 }
 
 html{
     width: 100%;
-    height: 100%;
-    background-color: var(--background-color);
-    background-color: #ff4;
+    min-height: 400px;
+    background-color: #fe6;
 }
 
 body{
     width: 100%;
-    background-color: #4f4;
 }
 
 h1{
-    color: var(--font-color);
+    margin-top: 10px;
     text-align: center;
 }
 
-form{
+.form{
     width: 100%;
-    height: 100%;
-    background-color: #f44;
+    background-color: #8e8;
+    text-align: center;
+    margin-top: 10vh;
+    padding: 15px 0;
     .text-field{
-        // width: 
+        max-width: 300px;
+        min-width: 200px;
+        width: 30%;
+        height: 30px;
+        font-size: 18px;
     }
     .submit-button{
+        max-width: 130px;
         width: 16%;
-        height: 10%;
+        height: 30px;
     }
 }
