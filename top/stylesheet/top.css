@@ -21,6 +21,12 @@ h1 {
   text-align: center;
 }
 
+.error-text {
+  display: none;
+  font-size: 18px;
+  color: #f33;
+}
+
 .form {
   width: 100%;
   background-color: #8e8;
