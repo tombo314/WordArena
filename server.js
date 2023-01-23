@@ -1,3 +1,5 @@
+"use strict";
+
 let http = require("http");
 let fs = require("fs");
 let socket = require("socket.io");
@@ -35,10 +37,25 @@ let server = http.createServer((req, res)=>{
         res.writeHead(200, {"Content-Type": "application/javascript"});
         res.end(fs.readFileSync("battle/battle.js"));
     }
+    // mysql
+    else if (req.url=="/mysql/mysql.js"){
+        res.writeHead(200, {"Content-Type": "application/javascript"});
+        res.end(fs.readFileSync("mysql/mysql.js"));
+    }
     // data
     else if (req.url=="/battle/data/data.json"){
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end(fs.readFileSync("battle/data/data.json"));
+    }
+    // images
+    else if (req.url=="/images/"){
+        res.writeHead(200, {"Content-Type": "image/"});
+        // res.end();
+    }
+    // music
+    else if (req.url=="/music/"){
+        res.writeHead(200, {"Content-Type": "music/"});
+        // res.end();
     }
 }).listen(process.env.PORT || 8000);
 let io = socket(server);
