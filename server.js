@@ -1,6 +1,6 @@
 "use strict";
 
-require("./mysql/mysql");
+require("./mysql/mysql.js");
 let http = require("http");
 let fs = require("fs");
 let socket = require("socket.io");
