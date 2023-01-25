@@ -38,10 +38,10 @@ let server = http.createServer((req, res)=>{
         res.writeHead(200, {"Content-Type": "application/javascript"});
         res.end(fs.readFileSync("battle/battle.js"));
     }
-    // mysql
-    else if (req.url=="/mysql/mysql.js"){
+    // sqlite
+    else if (req.url=="/sqlite/sqlite.js"){
         res.writeHead(200, {"Content-Type": "application/javascript"});
-        res.end(fs.readFileSync("mysql/mysql.js"));
+        res.end(fs.readFileSync("sqlite/sqlite.js"));
     }
     // data
     else if (req.url=="/battle/data/data.json"){
