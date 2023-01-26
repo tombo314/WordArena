@@ -69,8 +69,7 @@ elemPassword.onkeydown = (e)=> {
     }
 }
 elemSubmit.onclick = ()=>{
-    // submit("login");
-    submit("signin");
+    submit("login");
 }
 
 // ソケット通信を受信 //////
