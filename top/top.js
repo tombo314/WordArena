@@ -10,6 +10,7 @@ const ANAVAILABLE_CHAR = new Set([
 
 // 変数を宣言 //////
 let socket = io();
+let signinLoginMode;
 
 // エレメント取得 //////
 let elemUsernameError = document.getElementById("js-username-error");
@@ -17,6 +18,13 @@ let elemPasswordError = document.getElementById("js-password-error");
 let elemUsername = document.getElementById("js-username");
 let elemPassword = document.getElementById("js-password");
 let elemSubmit = document.getElementById("js-submit");
+let elemBack = document.getElementById("js-back");
+let elemSigninPage = document.getElementById("js-signin-page");
+let elemLoginPage = document.getElementById("js-login-page");
+let elemForm = document.getElementById("js-form");
+let elemSigninLogin = document.getElementById("js-signin-login");
+let elemSigninText = document.getElementById("js-signin-text");
+let elemLoginText = document.getElementById("js-login-text");
 
 // 関数を宣言 //////
 /** ユーザー名とパスワードのバリデーション -> bool */
@@ -31,6 +39,7 @@ let validate=(text)=>{
     }
     return true;
 };
+
 /** アカウント登録またはログイン -> undefined*/
 let submit=(mode)=>{
     let valiUser = validate(elemUsername.value);
@@ -57,19 +66,49 @@ let submit=(mode)=>{
 };
 
 // イベントを宣言 //////
-// ユーザー情報を送信
+// ユーザー情報を送信 Enter
 elemUsername.onkeydown = (e)=> {
-    if (e.key=="Enter"){
-        submit("login");
+    if (e.key==="Enter"){
+        submit(signinLoginMode);
     }
 }
+
+// ユーザー情報を送信 Enter
 elemPassword.onkeydown = (e)=> {
-    if (e.key=="Enter"){
-        submit("login");
+    if (e.key==="Enter"){
+        submit(signinLoginMode);
     }
 }
+
+// 送信ボタン Enter クリック
 elemSubmit.onclick = ()=>{
-    submit("login");
+    submit(signinLoginMode);
+}
+
+// 戻るボタン
+elemBack.onclick = ()=>{
+    elemForm.style.display = "none";
+    elemSigninLogin.style.display = "block";
+    elemSigninText.style.display = "none";
+    elemLoginText.style.display = "none";
+    elemUsername.value = "";
+    elemPassword.value = "";
+}
+
+// アカウント登録画面に遷移
+elemSigninPage.onclick = ()=>{
+    elemForm.style.display = "block";
+    elemSigninLogin.style.display = "none";
+    elemSigninText.style.display = "block";
+    signinLoginMode = "signin";
+}
+
+// ログイン画面に遷移
+elemLoginPage.onclick = ()=>{
+    elemForm.style.display = "block";
+    elemSigninLogin.style.display = "none";
+    elemLoginText.style.display = "block";
+    signinLoginMode = "login";
 }
 
 // ソケット通信を受信 //////
@@ -79,7 +118,7 @@ socket.on("login", (data)=>{
         alert("ログインに成功しました。");
         // 画面を遷移
     } else {
-        alert("ログインに失敗しました。");
+        alert("ユーザー名またはパスワードが違います。");
     }
 });
 
