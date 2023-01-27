@@ -8,7 +8,7 @@ let db = new sqlite.Database("sqlite/users.db");
 /** データベースにユーザー名が登録されているか -> bool */
 let isNameExist = (users, username)=>{
     for (let user of users){
-        if (user["username"]==username){
+        if (user["username"]===username){
             return true;
         }
     }
@@ -18,7 +18,7 @@ let isNameExist = (users, username)=>{
 /** データベースにユーザー名とパスワードが登録されてるか -> bool */
 let isNamePassExist = (users, username, password)=>{
     for (let user of users){
-        if (user["username"]==username && user["password"]==password){
+        if (user["username"]===username && user["password"]===password){
             return true;
         }
     }
