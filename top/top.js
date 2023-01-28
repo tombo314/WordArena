@@ -1,7 +1,7 @@
 "use strict";
 
 // 定数を宣言 //////
-const ANAVAILABLE_CHAR = new Set([
+const AVAILABLE_CHAR = new Set([
     "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -9,10 +9,10 @@ const ANAVAILABLE_CHAR = new Set([
 ]);
 
 // 変数を宣言 //////
-let socket = io();
 let signinLoginMode;
+let socket = io();
 
-// エレメント取得 //////
+// エレメントを宣言 //////
 let elemUsernameError = document.getElementById("js-username-error");
 let elemPasswordError = document.getElementById("js-password-error");
 let elemUsername = document.getElementById("js-username");
@@ -30,7 +30,7 @@ let elemLoginText = document.getElementById("js-login-text");
 /** ユーザー名とパスワードのバリデーション -> bool */
 let validate=(text)=>{
     for (let v of text){
-        if (!ANAVAILABLE_CHAR.has(v)){
+        if (!AVAILABLE_CHAR.has(v)){
             return false;
         }
     }
@@ -93,6 +93,7 @@ elemBack.onclick = ()=>{
     elemLoginText.style.display = "none";
     elemUsername.value = "";
     elemPassword.value = "";
+    document.title = "トップ";
 }
 
 // アカウント登録画面に遷移
@@ -101,6 +102,7 @@ elemSigninPage.onclick = ()=>{
     elemSigninLogin.style.display = "none";
     elemSigninText.style.display = "block";
     signinLoginMode = "signin";
+    document.title = "アカウント登録";
 }
 
 // ログイン画面に遷移
@@ -109,6 +111,7 @@ elemLoginPage.onclick = ()=>{
     elemSigninLogin.style.display = "none";
     elemLoginText.style.display = "block";
     signinLoginMode = "login";
+    document.title = "ログイン";
 }
 
 // ソケット通信を受信 //////
@@ -116,6 +119,8 @@ socket.on("login", (data)=>{
     // ログイン成功でtrue、失敗でfalseを受け取る
     if (data.value){
         alert("ログインに成功しました。");
+        sessionStorage.setItem("username", elemUsername.value);
+        location.href = "/standby";
         // 画面を遷移
     } else {
         alert("ユーザー名またはパスワードが違います。");
@@ -126,6 +131,10 @@ socket.on("signin", (data)=>{
     // アカウント登録成功でtrue、失敗でfalseを受け取る
     if (data.value){
         alert("アカウント登録に成功しました。");
+        signinLoginMode = "login";
+        document.title = "ログイン";
+        elemLoginText.style.display = "none";
+        elemSigninText.style.display = "block";
         // 画面を遷移
     } else {
         alert("ユーザー名が重複しています。");
