@@ -23,13 +23,17 @@ h1{
     text-shadow: 2px 2px #eee;
 }
 
+h2{
+    margin-top: 100px;
+    text-align: center;
+}
+
 // 待機アニメーション
 .wrapper-loader{
-    visibility: hidden;
     width: 87px;
     height: 87px;
     margin: 0 auto;
-    margin-top: 50vh;
+    margin-top: 30vh;
 }
 .ball-grid-pulse {
     width: 87px;
