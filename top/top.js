@@ -40,7 +40,7 @@ let validate=(text)=>{
     return true;
 };
 
-/** アカウント登録またはログイン -> undefined*/
+/** アカウント登録またはログイン */
 let submit=(mode)=>{
     let valiUser = validate(elemUsername.value);
     let valiPass = validate(elemPassword.value);
@@ -65,25 +65,25 @@ let submit=(mode)=>{
     }
 };
 
-// イベントを宣言 //////
+// イベントを宣言 ////
 // ユーザー情報を送信 Enter
 elemUsername.onkeydown = (e)=> {
     if (e.key==="Enter"){
         submit(signinLoginMode);
     }
-}
+};
 
 // ユーザー情報を送信 Enter
 elemPassword.onkeydown = (e)=> {
     if (e.key==="Enter"){
         submit(signinLoginMode);
     }
-}
+};
 
 // 送信ボタン Enter クリック
 elemSubmit.onclick = ()=>{
     submit(signinLoginMode);
-}
+};
 
 // 戻るボタン
 elemBack.onclick = ()=>{
@@ -94,7 +94,7 @@ elemBack.onclick = ()=>{
     elemUsername.value = "";
     elemPassword.value = "";
     document.title = "トップ";
-}
+};
 
 // アカウント登録画面に遷移
 elemSigninPage.onclick = ()=>{
@@ -103,7 +103,7 @@ elemSigninPage.onclick = ()=>{
     elemSigninText.style.display = "block";
     signinLoginMode = "signin";
     document.title = "アカウント登録";
-}
+};
 
 // ログイン画面に遷移
 elemLoginPage.onclick = ()=>{
@@ -112,7 +112,7 @@ elemLoginPage.onclick = ()=>{
     elemLoginText.style.display = "block";
     signinLoginMode = "login";
     document.title = "ログイン";
-}
+};
 
 // ソケット通信を受信 //////
 socket.on("login", (data)=>{
@@ -120,7 +120,7 @@ socket.on("login", (data)=>{
     if (data.value){
         alert("ログインに成功しました。");
         sessionStorage.setItem("username", elemUsername.value);
-        location.href = "/standby";
+        location.href = "/rooms";
         // 画面を遷移
     } else {
         alert("ユーザー名またはパスワードが違います。");
@@ -133,8 +133,11 @@ socket.on("signin", (data)=>{
         alert("アカウント登録に成功しました。");
         signinLoginMode = "login";
         document.title = "ログイン";
-        elemLoginText.style.display = "none";
-        elemSigninText.style.display = "block";
+        elemLoginText.style.display = "block";
+        elemSigninText.style.display = "none";
+        elemUsername.value = "";
+        elemPassword.value = "";
+        elemPassword.blur();
         // 画面を遷移
     } else {
         alert("ユーザー名が重複しています。");
