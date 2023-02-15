@@ -62,7 +62,7 @@ section .back-button {
 }
 
 .signin-login button {
-  max-width: 240px;
+  max-width: 220px;
   min-width: 180px;
   width: 18%;
   min-height: 80px;
@@ -75,7 +75,7 @@ section .back-button {
   margin: 20px 0;
 }
 .signin-login button:hover {
-  box-shadow: 0px 0px 10px 3px white;
+  box-shadow: 0px 0px 10px 6px white;
 }
 .signin-login button:last-child {
   margin-left: 10%;
