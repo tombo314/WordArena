@@ -18,14 +18,14 @@ let isNameExist = (users, username)=>{
 /** データベースにユーザー名とパスワードが登録されてるか -> bool */
 let isNamePassExist = (users, username, password)=>{
     for (let user of users){
-        if (user["username"]===username && user["password"]===password){
+        if (user["username"].toString()===username && user["password"].toString()===password){
             return true;
         }
     }
     return false;
 }
 
-// アカウント登録
+/** アカウント登録 */
 exports.signin = (username, password, socket)=>{
     new Promise((resolve, reject)=>{
         db.serialize(()=>{
@@ -47,7 +47,7 @@ exports.signin = (username, password, socket)=>{
     });
 };
 
-// ログイン
+/** ログイン */
 exports.login = (username, password, socket)=>{
     new Promise((resolve, reject)=>{
         db.serialize(()=>{
