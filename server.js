@@ -17,6 +17,17 @@ let server = http.createServer((req, res)=>{
         res.writeHead(200, {"Content-Type": "application/javascript"});
         res.end(fs.readFileSync("top/top.js"));
     }
+    // rooms
+    else if (req.url==="/rooms"){
+        res.writeHead(200, {"Content-Type": "text/html"});
+        res.end(fs.readFileSync("rooms/rooms.html"));
+    } else if (req.url==="/rooms/stylesheet/rooms.css"){
+        res.writeHead(200, {"Content-Type": "text/css"});
+        res.end(fs.readFileSync("rooms/stylesheet/rooms.css"));
+    } else if (req.url==="/rooms/rooms.js"){
+        res.writeHead(200, {"Content-Type": "application/javascript"});
+        res.end(fs.readFileSync("rooms/rooms.js"));
+    }
     // standby
     else if (req.url==="/standby"){
         res.writeHead(200, {"Content-Type": "text/html"});
