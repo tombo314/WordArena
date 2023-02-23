@@ -12,6 +12,8 @@ const AVAILABLE_CHAR = new Set([
 let elemButtonMake = document.getElementById("js-button-make");
 let elemButtonEnter = document.getElementById("js-button-enter");
 let elemButtonBack = document.getElementById("js-button-back");
+let elemBlackSheet = document.getElementById("js-black-sheet");
+let elemButonRooms = document.getElementById("js-button-rooms");
 
 // 関数を宣言 //////
 /** ユーザー名とパスワードのバリデーション -> bool */
@@ -32,7 +34,7 @@ let makeButton = (roomName)=>{
     let elem = document.createElement("button");
     elem.textContent = roomName;
     elem.setAttribute("style", `
-        width:
+        width: 100%;
     `);
 };
 
@@ -45,9 +47,23 @@ elemButtonMake.onclick = ()=>{
 };
 
 elemButtonEnter.onclick = ()=>{
+    elemButonRooms.style.visibility = "visible";
+    elemBlackSheet.style.visibility = "visible";
 };
 
 elemButtonBack.onclick = ()=>{
     alert("トップへ戻ります。");
     location.href = "/";
+};
+
+elemBlackSheet.onclick = ()=>{
+    elemButonRooms.style.visibility = "hidden";
+    elemBlackSheet.style.visibility = "hidden";
+};
+
+onkeydown = (e)=>{
+    if (e.key=="Escape"){
+        elemButonRooms.style.visibility = "hidden";
+        elemBlackSheet.style.visibility = "hidden";    
+    }
 };
