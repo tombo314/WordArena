@@ -55,7 +55,7 @@ elemButtonEnter.onclick = ()=>{
 };
 
 elemButtonAIBattle.onclick = ()=>{
-    alert("バトル画面に移行します。");
+    alert("AIバトルに移行します。");
     location.href = "/battle";
 };
 
