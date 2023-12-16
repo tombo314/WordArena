@@ -65,7 +65,8 @@ h1 {
   margin-top: 24px;
 }
 .wrapper-input .time {
-  font-size: 34px;
+  margin-top: 10px;
+  font-size: 30px;
 }
 .wrapper-input .sub-wrapper-input {
   width: 50%;
