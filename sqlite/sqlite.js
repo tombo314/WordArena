@@ -26,7 +26,7 @@ let isNamePassExist = (users, username, password)=>{
 }
 
 /** アカウント登録 */
-exports.signin = (username, password, socket)=>{
+exports.signup = (username, password, socket)=>{
     new Promise((resolve, reject)=>{
         db.serialize(()=>{
             db.all(`select * from users where username="${username}"`, (err, rows)=>{
@@ -41,9 +41,9 @@ exports.signin = (username, password, socket)=>{
         });
     }).then(()=>{
         db.run(`insert into users(username, password) values("${username}", "${password}")`);
-        socket.emit("signin", {value: true});
+        socket.emit("signup", {value: true});
     }).catch(()=>{
-        socket.emit("signin", {value: false});
+        socket.emit("signup", {value: false});
     });
 };
 

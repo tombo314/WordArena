@@ -86,6 +86,6 @@ io.on("connection", (socket)=>{
     socket.on("signup", (data)=>{
         let username = data.value["username"];
         let password = data.value["password"];
-        sqlite.signin(username, password, socket);
+        sqlite.signup(username, password, socket);
     });
 });
