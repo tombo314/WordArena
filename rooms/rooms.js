@@ -5,15 +5,17 @@ const AVAILABLE_CHAR = new Set([
     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
      0 ,  1 ,  2 ,  3 ,  4 ,  5 ,  6 ,  7 ,  8 ,  9
 ]);
+const TEXT_LEN_LIMIT = 6;
 
 // 変数を宣言 //////
 
 // エレメントを宣言 //////
 let elemButtonMake = document.getElementById("js-button-make");
 let elemButtonEnter = document.getElementById("js-button-enter");
+let elemButtonAIBattle = document.getElementById("js-button-ai-battle");
 let elemButtonBack = document.getElementById("js-button-back");
+let elemButtonRooms = document.getElementById("js-button-rooms");
 let elemBlackSheet = document.getElementById("js-black-sheet");
-let elemButonRooms = document.getElementById("js-button-rooms");
 
 // 関数を宣言 //////
 /** ユーザー名とパスワードのバリデーション -> bool */
@@ -23,7 +25,8 @@ let validate=(text)=>{
             return false;
         }
     }
-    if (text.length<6){
+
+    if (text.length<TEXT_LEN_LIMIT){
         return false;
     }
     return true;
@@ -47,8 +50,13 @@ elemButtonMake.onclick = ()=>{
 };
 
 elemButtonEnter.onclick = ()=>{
-    elemButonRooms.style.visibility = "visible";
+    elemButtonRooms.style.visibility = "visible";
     elemBlackSheet.style.visibility = "visible";
+};
+
+elemButtonAIBattle.onclick = ()=>{
+    alert("バトル画面に移行します。");
+    location.href = "/battle";
 };
 
 elemButtonBack.onclick = ()=>{
@@ -57,13 +65,13 @@ elemButtonBack.onclick = ()=>{
 };
 
 elemBlackSheet.onclick = ()=>{
-    elemButonRooms.style.visibility = "hidden";
+    elemButtonRooms.style.visibility = "hidden";
     elemBlackSheet.style.visibility = "hidden";
 };
 
 onkeydown = (e)=>{
     if (e.key=="Escape"){
-        elemButonRooms.style.visibility = "hidden";
+        elemButtonRooms.style.visibility = "hidden";
         elemBlackSheet.style.visibility = "hidden";    
     }
 };
