@@ -83,7 +83,7 @@ io.on("connection", (socket)=>{
     });
 
     // アカウント登録
-    socket.on("signin", (data)=>{
+    socket.on("signup", (data)=>{
         let username = data.value["username"];
         let password = data.value["password"];
         sqlite.signin(username, password, socket);

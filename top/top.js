@@ -9,7 +9,7 @@ const AVAILABLE_CHAR = new Set([
 ]);
 
 // 変数を宣言 //////
-let signinLoginMode;
+let signupLoginMode;
 let socket = io();
 
 // エレメントを宣言 //////
@@ -19,11 +19,11 @@ let elemUsername = document.getElementById("js-username");
 let elemPassword = document.getElementById("js-password");
 let elemSubmit = document.getElementById("js-submit");
 let elemBack = document.getElementById("js-back");
-let elemSigninPage = document.getElementById("js-signin-page");
+let elemSignupPage = document.getElementById("js-signup-page");
 let elemLoginPage = document.getElementById("js-login-page");
 let elemForm = document.getElementById("js-form");
-let elemSigninLogin = document.getElementById("js-signin-login");
-let elemSigninText = document.getElementById("js-signin-text");
+let elemSignupLogin = document.getElementById("js-signup-login");
+let elemSignupText = document.getElementById("js-signup-text");
 let elemLoginText = document.getElementById("js-login-text");
 
 // 関数を宣言 //////
@@ -69,27 +69,27 @@ let submit=(mode)=>{
 // ユーザー情報を送信 Enter
 elemUsername.onkeydown = (e)=> {
     if (e.key==="Enter"){
-        submit(signinLoginMode);
+        submit(signupLoginMode);
     }
 };
 
 // ユーザー情報を送信 Enter
 elemPassword.onkeydown = (e)=> {
     if (e.key==="Enter"){
-        submit(signinLoginMode);
+        submit(signupLoginMode);
     }
 };
 
 // 送信ボタン Enter クリック
 elemSubmit.onclick = ()=>{
-    submit(signinLoginMode);
+    submit(signupLoginMode);
 };
 
 // 戻るボタン
 elemBack.onclick = ()=>{
     elemForm.style.display = "none";
-    elemSigninLogin.style.display = "block";
-    elemSigninText.style.display = "none";
+    elemSignupLogin.style.display = "block";
+    elemSignupText.style.display = "none";
     elemLoginText.style.display = "none";
     elemUsername.value = "";
     elemPassword.value = "";
@@ -97,20 +97,20 @@ elemBack.onclick = ()=>{
 };
 
 // アカウント登録画面に遷移
-elemSigninPage.onclick = ()=>{
+elemSignupPage.onclick = ()=>{
     elemForm.style.display = "block";
-    elemSigninLogin.style.display = "none";
-    elemSigninText.style.display = "block";
-    signinLoginMode = "signin";
+    elemSignupLogin.style.display = "none";
+    elemSignupText.style.display = "block";
+    signupLoginMode = "signup";
     document.title = "アカウント登録";
 };
 
 // ログイン画面に遷移
 elemLoginPage.onclick = ()=>{
     elemForm.style.display = "block";
-    elemSigninLogin.style.display = "none";
+    elemSignupLogin.style.display = "none";
     elemLoginText.style.display = "block";
-    signinLoginMode = "login";
+    signupLoginMode = "login";
     document.title = "ログイン";
 };
 
@@ -127,14 +127,14 @@ socket.on("login", (data)=>{
     }
 });
 
-socket.on("signin", (data)=>{
+socket.on("signup", (data)=>{
     // アカウント登録成功でtrue、失敗でfalseを受け取る
     if (data.value){
         alert("アカウント登録に成功しました。");
-        signinLoginMode = "login";
+        signupLoginMode = "login";
         document.title = "ログイン";
         elemLoginText.style.display = "block";
-        elemSigninText.style.display = "none";
+        elemSignupText.style.display = "none";
         elemUsername.value = "";
         elemPassword.value = "";
         elemPassword.blur();
