@@ -60,7 +60,6 @@ h1 {
 
 .wrapper-input {
   display: flex;
-  justify-content: center;
   width: 100%;
   margin-top: 24px;
 }
@@ -73,7 +72,7 @@ h1 {
   text-align: center;
 }
 .wrapper-input .sub-wrapper-input input {
-  width: 300px;
+  width: 50%;
   height: 30px;
   outline: none;
   font-size: 20px;
@@ -84,4 +83,21 @@ h1 {
 .wrapper-input .sub-wrapper-input #js-input-enemy {
   border: #777 1px solid;
   background-color: #fff;
+}
+
+.wrapper-message {
+  width: 100%;
+  display: flex;
+  margin-top: 12px;
+}
+.wrapper-message .sub-wrapper-message {
+  width: 50%;
+  text-align: center;
+}
+.wrapper-message .sub-wrapper-message .message-text {
+  width: 100%;
+  font-size: 20px;
+}
+.wrapper-message .space {
+  width: 5%;
 }/*# sourceMappingURL=battle.css.map */
