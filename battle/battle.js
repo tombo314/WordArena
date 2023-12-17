@@ -1,9 +1,12 @@
 // エレメントを取得する
 let elemUsernameFriend = document.getElementById("js-username-friend");
 let elemInputFriend = document.getElementById("js-input-friend");
+let elemInputEnemy = document.getElementById("js-input-enemy");
 let elemTime = document.getElementById("js-time");
 let elemHpFrined = document.getElementById("js-hp-friend");
 let elemHpEnemy = document.getElementById("js-hp-enemy");
+let elemMessageFriend = document.getElementById("js-message-friend");
+let elemMessageEnemy = document.getElementById("js-message-enemy");
 
 // 変数を宣言・初期化する
 let username = sessionStorage.getItem("username");
@@ -25,18 +28,76 @@ let startCountDown = (time_sec)=>{
 elemInputFriend.onkeydown = (e)=>{
     if (e.key=="Enter"){
         let command = elemInputFriend.value;
-        activateCommand(command);
-        elemInputFriend.value = "";
+        activateCommand(command, "friend");
     }
 };
 
-let activateCommand = (command)=>{
+let activateCommand = (command, friend_or_enemy)=>{
+
+    let valid = false;
+
     if (command=="attack"){
         let damage = 20;
-        giveDamage(damage, "enemy");
-    } else if (command=="heal"){
+        let target;
+        if (friend_or_enemy=="friend"){
+            target = "enemy";
+        } else if (friend_or_enemy=="enemy"){
+            target = "friend";
+        }
+        giveDamage(damage, target);
+        valid = true;
+    }
+    else if (command=="heal"){
         let heal = 20;
-        giveDamage(-heal, "friend");
+        let target;
+        if (friend_or_enemy=="friend"){
+            target = "friend";
+        } else if (friend_or_enemy=="enemy"){
+            target = "enemy";
+        }
+        giveDamage(-heal, target);
+        valid = true;
+    }
+    else if (command=="flame field"){
+        let damage = 3;
+        let target;
+        if (friend_or_enemy=="friend"){
+            target = "enemy";
+        } else if (friend_or_enemy=="enemy"){
+            target = "friend";
+        }
+        flame_field(damage, target);
+        valid = true;
+    }
+
+    if (valid){
+        if (friend_or_enemy=="friend"){
+            elemInputFriend.value = "";
+            elemMessageFriend.textContent = "";
+        }
+        else if (friend_or_enemy=="enemy"){
+            elemInputEnemy.valid = "";
+            elemMessageEnemy.textContent = "";
+        }
+    }
+    else {
+        let invalid_command_message = "無効なコマンドです";
+        let show_duration = 100;
+
+        if (friend_or_enemy=="friend"){
+            elemMessageFriend.textContent = "";
+
+            setTimeout(()=>{
+                elemMessageFriend.textContent = invalid_command_message;
+            }, show_duration);
+        }
+        else if (friend_or_enemy=="enemy"){
+            elemMessageEnemy.textContent = "";
+
+            setTimeout(()=>{
+                elemMessageEnemy.textContent = invalid_command_message;
+            }, show_duration);
+        }
     }
 };
 
@@ -47,3 +108,22 @@ let giveDamage = (damage, friend_or_enemy)=>{
         elemHpEnemy.value = elemHpEnemy.value-damage;
     }
 };
+
+//////////////////////////////////////////////
+
+// スキル関数
+
+let flame_field = (damage, friend_or_enemy)=>{
+    let elem;
+    if (friend_or_enemy=="friend"){
+        elem = elemHpFrined;
+    } else if (friend_or_enemy=="enemy"){
+        elem = elemHpEnemy;
+    }
+    let set = setInterval(() => {
+        elem.value -= damage;
+        if (elem.value<=0){
+            clearInterval(set);
+        }
+    }, 1000);
+}
