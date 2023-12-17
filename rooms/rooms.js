@@ -43,6 +43,7 @@ let makeButton = (roomName)=>{
 
 // イベントを宣言 //////
 elemButtonMake.onclick = ()=>{
+    alert("開発中です。");
     // 部屋名のボタンを動的に生成
     // if (validate()){
     //     makeButton();
@@ -50,8 +51,9 @@ elemButtonMake.onclick = ()=>{
 };
 
 elemButtonEnter.onclick = ()=>{
-    elemButtonRooms.style.visibility = "visible";
-    elemBlackSheet.style.visibility = "visible";
+    alert("開発中です。");
+    // elemButtonRooms.style.visibility = "visible";
+    // elemBlackSheet.style.visibility = "visible";
 };
 
 elemButtonAIBattle.onclick = ()=>{
@@ -60,8 +62,10 @@ elemButtonAIBattle.onclick = ()=>{
 };
 
 elemButtonBack.onclick = ()=>{
-    alert("トップへ戻ります。");
-    location.href = "/";
+    let back = confirm("トップへ戻りますか？");
+    if (back){
+        location.href = "/";
+    }
 };
 
 elemBlackSheet.onclick = ()=>{
