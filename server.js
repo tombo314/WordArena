@@ -5,7 +5,7 @@ let http = require("http");
 let fs = require("fs");
 let socket = require("socket.io");
 let server = http.createServer((req, res)=>{
-    // ルーティング //////
+    // ルーティング
     // top
     if (req.url==="/"){
         res.writeHead(200, {"Content-Type": "text/html"});
@@ -73,8 +73,9 @@ let server = http.createServer((req, res)=>{
 }).listen(process.env.PORT || 8000);
 let io = socket(server);
 
-// ソケット通信 //////
+// ソケット通信
 io.on("connection", (socket)=>{
+
     // ログイン
     socket.on("login", (data)=>{
         let username = data.value["username"];
@@ -87,5 +88,11 @@ io.on("connection", (socket)=>{
         let username = data.value["username"];
         let password = data.value["password"];
         sqlite.signup(username, password, socket);
+    });
+
+    // コマンドデータ送信
+    socket.on("commandData", (data)=>{
+        let commandData = JSON.parse(fs.readFileSync("battle/data/data.json"));
+        socket.emit("commandData", commandData);
     });
 });
