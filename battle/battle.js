@@ -1,3 +1,5 @@
+"use strict";
+
 // エレメントを取得する
 let elemUsernameFriend = document.getElementById("js-username-friend");
 let elemInputFriend = document.getElementById("js-input-friend");
@@ -10,6 +12,14 @@ let elemMessageEnemy = document.getElementById("js-message-enemy");
 
 // 変数を宣言・初期化する
 let username = sessionStorage.getItem("username");
+let socket = io();
+let commandData;
+
+// socket通信
+socket.emit("commandData", null);
+socket.on("commandData", (data)=>{
+    console.log(data["commandData"]);
+})
 
 elemUsernameFriend.textContent = username;
 
@@ -32,16 +42,19 @@ elemInputFriend.onkeydown = (e)=>{
     }
 };
 
-let activateCommand = (command, friend_or_enemy)=>{
+let getTarget = (friendOrEnemy)=>{
+};
+
+let activateCommand = (command, friendOrEnemy)=>{
 
     let valid = false;
 
     if (command=="attack"){
         let damage = 20;
         let target;
-        if (friend_or_enemy=="friend"){
+        if (friendOrEnemy=="friend"){
             target = "enemy";
-        } else if (friend_or_enemy=="enemy"){
+        } else if (friendOrEnemy=="enemy"){
             target = "friend";
         }
         giveDamage(damage, target);
@@ -50,9 +63,9 @@ let activateCommand = (command, friend_or_enemy)=>{
     else if (command=="heal"){
         let heal = 20;
         let target;
-        if (friend_or_enemy=="friend"){
+        if (friendOrEnemy=="friend"){
             target = "friend";
-        } else if (friend_or_enemy=="enemy"){
+        } else if (friendOrEnemy=="enemy"){
             target = "enemy";
         }
         giveDamage(-heal, target);
@@ -61,9 +74,9 @@ let activateCommand = (command, friend_or_enemy)=>{
     else if (command=="flame field"){
         let damage = 3;
         let target;
-        if (friend_or_enemy=="friend"){
+        if (friendOrEnemy=="friend"){
             target = "enemy";
-        } else if (friend_or_enemy=="enemy"){
+        } else if (friendOrEnemy=="enemy"){
             target = "friend";
         }
         flame_field(damage, target);
@@ -71,11 +84,11 @@ let activateCommand = (command, friend_or_enemy)=>{
     }
 
     if (valid){
-        if (friend_or_enemy=="friend"){
+        if (friendOrEnemy=="friend"){
             elemInputFriend.value = "";
             elemMessageFriend.textContent = "";
         }
-        else if (friend_or_enemy=="enemy"){
+        else if (friendOrEnemy=="enemy"){
             elemInputEnemy.valid = "";
             elemMessageEnemy.textContent = "";
         }
@@ -84,14 +97,14 @@ let activateCommand = (command, friend_or_enemy)=>{
         let invalid_command_message = "無効なコマンドです";
         let show_duration = 100;
 
-        if (friend_or_enemy=="friend"){
+        if (friendOrEnemy=="friend"){
             elemMessageFriend.textContent = "";
 
             setTimeout(()=>{
                 elemMessageFriend.textContent = invalid_command_message;
             }, show_duration);
         }
-        else if (friend_or_enemy=="enemy"){
+        else if (friendOrEnemy=="enemy"){
             elemMessageEnemy.textContent = "";
 
             setTimeout(()=>{
@@ -101,10 +114,10 @@ let activateCommand = (command, friend_or_enemy)=>{
     }
 };
 
-let giveDamage = (damage, friend_or_enemy)=>{
-    if (friend_or_enemy=="friend"){
+let giveDamage = (damage, friendOrEnemy)=>{
+    if (friendOrEnemy=="friend"){
         elemHpFrined.value = elemHpFrined.value-damage;
-    } else if (friend_or_enemy=="enemy"){
+    } else if (friendOrEnemy=="enemy"){
         elemHpEnemy.value = elemHpEnemy.value-damage;
     }
 };
@@ -113,11 +126,11 @@ let giveDamage = (damage, friend_or_enemy)=>{
 
 // スキル関数
 
-let flame_field = (damage, friend_or_enemy)=>{
+let flame_field = (damage, friendOrEnemy)=>{
     let elem;
-    if (friend_or_enemy=="friend"){
+    if (friendOrEnemy=="friend"){
         elem = elemHpFrined;
-    } else if (friend_or_enemy=="enemy"){
+    } else if (friendOrEnemy=="enemy"){
         elem = elemHpEnemy;
     }
     let set = setInterval(() => {
