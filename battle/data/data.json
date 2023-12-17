@@ -11,7 +11,7 @@
             "target": "ally"
         },
 
-        "flameField": {
+        "flame field": {
             "value": 3,
             "target": "opponent"
         },
