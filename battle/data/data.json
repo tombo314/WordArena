@@ -1,0 +1,24 @@
+{
+    "commandData": {
+
+        "attack": {
+            "value": 5,
+            "target": "opponent"
+        },
+
+        "heal": {
+            "value": 10,
+            "target": "ally"
+        },
+
+        "flameField": {
+            "value": 3,
+            "target": "opponent"
+        },
+
+        "regenerate": {
+            "value": 6,
+            "target": "ally"
+        }
+    }
+}
