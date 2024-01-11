@@ -33,14 +33,16 @@ let startCountDown = (time_sec)=>{
     let set = setInterval(() => {
         let min = Math.floor(time_sec/60);
         let sec = time_sec%60;
-        elemTime.textContent = "残り時間: " + `00${min}`.slice(-2)+":"+`00${sec}`.slice(-2);
-        if (time_sec==0){
+        elemTime.textContent = "残り時間 " + `00${min}`.slice(-2)+":"+`00${sec}`.slice(-2);
+        if (time_sec<=0){
+            gameEnd();
             clearInterval(set);
         }
         time_sec--;
     }, 1000);
 };
-startCountDown(120);
+let gameDuration = 180;
+startCountDown(gameDuration);
 
 elemInputFriend.onkeydown = (e)=>{
     if (e.key=="Enter"){
@@ -51,14 +53,15 @@ elemInputFriend.onkeydown = (e)=>{
 
 // コマンドの対象を得る
 let getTarget = (commandName, friendOrEnemy)=>{
-    let allyOrOpponent = commandData[commandName]["target"];
+    let commandTarget = commandData[commandName]["target"];
     let target;
-    if (allyOrOpponent=="ally"){
-        target = friendOrEnemy;
-    } else if (allyOrOpponent=="opponent"){
-        if (friendOrEnemy=="friend"){
+    if (friendOrEnemy=="friend"){
+        target = commandTarget;
+    }
+    else if (friendOrEnemy=="enemy"){
+        if (commandTarget=="friend"){
             target = "enemy";
-        } else if (friendOrEnemy=="enemy"){
+        } else if (commandTarget=="enemy"){
             target = "friend";
         }
     }
@@ -133,15 +136,18 @@ let activateCommand = (command, friendOrEnemy)=>{
             inCoolTime = false;
         }
     }
-
-    // コマンドの情報を取得する
+    
+    // コマンドが有効のとき
     if (command in commandData && !inCoolTime){
+        // コマンドの情報を取得する
         damage = commandData[command]["damage"];
         target = getTarget(command, friendOrEnemy);
         coolTime = commandData[command]["coolTime"];
         generateCoolTime(coolTime, friendOrEnemy);
         showMessage(`activated: ${command}`, friendOrEnemy);
-    } else {
+    }
+    // コマンドが無効のとき
+    else {
         let message;
         if (!(command in commandData)){
             message = "無効なコマンドです";
@@ -179,13 +185,24 @@ let giveDamage = (damage, friendOrEnemy)=>{
     if (friendOrEnemy=="friend"){
         elemHpFrined.value -= damage;
         if (elemHpFrined.value<=0){
-            alert("相手の勝利です。");
+            alert("相手の勝利です");
         }
     } else if (friendOrEnemy=="enemy"){
         elemHpEnemy.value -= damage;
         if (elemHpEnemy.value<=0){
-            alert("あなたの勝利です。");
+            alert("あなたの勝利です");
         }
+    }
+};
+
+// ゲーム終了
+let gameEnd = ()=>{
+    if (elemHpFrined.value<elemHpEnemy.value){
+        alert("相手の勝利です");
+    } else if (elemHpFrined.value>elemHpEnemy.value){
+        alert("あなたの勝利です");
+    } else {
+        alert("引き分けです");
     }
 };
 
