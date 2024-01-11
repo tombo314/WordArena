@@ -10,6 +10,7 @@
 <body>
     <h1>Word Arena</h1>
 
+    <!-- HPバー -->
     <div class="wrapper-status-bar">
         <div class="status-bar">
             <label class="status-text" for="js-hp-friend">HP</label>
@@ -21,25 +22,56 @@
         </div>
     </div>
 
+    <!-- コマンド入力欄 -->
     <div class="wrapper-input">
         <div class="sub-wrapper-input">
             <p id="js-username-friend" class="username-text"></p>
             <input id="js-input-friend" type="text">
         </div>
-        <div id="js-time" class="time">00:00</div>
+        <!-- 残り時間 -->
+        <div id="js-time" class="time"></div>
         <div class="sub-wrapper-input">
             <p id="js-username-enemy" class="username-text">WordArena-nza</p>
             <input id="js-input-enemy" type="text" disabled>
         </div>
     </div>
 
+    <!-- メッセージ -->
     <div class="wrapper-message">
         <div class="sub-wrapper-message">
-            <p id="js-message-friend" class="message-text"></p>
+            <label for="js-message-friend">メッセージ</label>
+            <input type="button" id="js-message-friend"
+                class="message-text" value="" disabled>
         </div>
-        <div class="space"></div>
+        <div class="margin"></div>
         <div class="sub-wrapper-message">
-            <p id="js-message-enemy" class="message-text"></p>
+            <label for="js-message-enemy">メッセージ</label>
+            <input type="button" id="js-message-enemy"
+                class="message-text" value="" disabled>
+        </div>
+    </div>
+
+    <!-- クールタイム -->
+    <div class="wrapper-cool-time">
+        <div class="sub-wrapper-cool-time">
+            <p class="cool-time">
+                <span id="js-cool-time-friend"></span>
+            </p>
+        </div>
+        <div class="margin"></div>
+        <div class="sub-wrapper-cool-time">
+            <p class="cool-time">
+                <span id="js-cool-time-enemy"></span>
+            </p>
+        </div>
+    </div>
+
+    <!-- ステータス表示 -->
+    <div class="wrapper-status">
+        <div class="sub-wrapper-status">
+        </div>
+        <div class="margin"></div>
+        <div class="sub-wrapper-status">
         </div>
     </div>
     

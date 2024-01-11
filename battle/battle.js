@@ -9,11 +9,15 @@ let elemHpFrined = document.getElementById("js-hp-friend");
 let elemHpEnemy = document.getElementById("js-hp-enemy");
 let elemMessageFriend = document.getElementById("js-message-friend");
 let elemMessageEnemy = document.getElementById("js-message-enemy");
+let elemCoolTimeFriend = document.getElementById("js-cool-time-friend");
+let elemCoolTimeEnemy = document.getElementById("js-cool-time-enemy");
 
 // 変数を宣言・初期化する
 let username = sessionStorage.getItem("username");
 let socket = io();
 let commandData;
+let inCoolTimeFriend = false;
+let inCoolTimeEnemy = false;
 
 // socket通信
 socket.emit("commandData", null);
@@ -21,6 +25,7 @@ socket.on("commandData", (data)=>{
     commandData = data["commandData"];
 });
 
+// ユーザー名を取得する
 elemUsernameFriend.textContent = username;
 
 // カウントダウンを開始する
@@ -28,13 +33,14 @@ let startCountDown = (time_sec)=>{
     let set = setInterval(() => {
         let min = Math.floor(time_sec/60);
         let sec = time_sec%60;
-        elemTime.textContent = `00${min}`.slice(-2)+":"+`00${sec}`.slice(-2);
+        elemTime.textContent = "残り時間: " + `00${min}`.slice(-2)+":"+`00${sec}`.slice(-2);
         if (time_sec==0){
             clearInterval(set);
         }
         time_sec--;
     }, 1000);
 };
+startCountDown(120);
 
 elemInputFriend.onkeydown = (e)=>{
     if (e.key=="Enter"){
@@ -68,50 +74,103 @@ let showMessage = (message, friendOrEnemy)=>{
     } else if (friendOrEnemy=="enemy"){
         elem = elemMessageEnemy;
     }
-    elem.textContent = "";
+    elem.value = "";
     setTimeout(()=>{
-        elem.textContent = message;
+        elem.value = message;
     }, showDuration);   
+};
+
+// クールタイムを発生させる
+let generateCoolTime = (coolTimeSec, friendOrEnemy)=>{
+
+    if (friendOrEnemy=="friend"){
+        inCoolTimeFriend = true;
+    } else if (friendOrEnemy=="enemy"){
+        inCoolTimeEnemy = true;
+    }
+
+    let set = setInterval(()=>{
+        let min = Math.floor(coolTimeSec/60);
+        let sec = coolTimeSec%60;
+        if (friendOrEnemy=="friend"){
+            elemCoolTimeFriend.textContent = "クールタイム " + `00${min}`.slice(-2)+":"+`00${sec}`.slice(-2);
+        } else if (friendOrEnemy=="enemy"){
+            elemCoolTimeEnemy.textContent = "クールタイム " + `00${min}`.slice(-2)+":"+`00${sec}`.slice(-2);
+        }
+        if (coolTimeSec<=0){
+            clearInterval(set);
+            if (friendOrEnemy=="friend"){
+                inCoolTimeFriend = false;
+                elemCoolTimeFriend = "";
+            } else if (friendOrEnemy=="enemy"){
+                inCoolTimeEnemy = false;
+                elemCoolTimeEnemy = "";
+            }
+        }
+        coolTimeSec--;
+    }, 1000);
 };
 
 // コマンドを実行する
 let activateCommand = (command, friendOrEnemy)=>{
-    let valid = false;
 
+    let damage;
+    let target;
+    let coolTime;
+    let inCoolTime;
+    
+    // クールタイム中かどうか判定する
+    if (friendOrEnemy=="friend"){
+        if (inCoolTimeFriend){
+            inCoolTime = true;
+        } else {
+            inCoolTime = false;
+        }
+    } else if (friendOrEnemy=="enemy"){
+        if (inCoolTimeEnemy){
+            inCoolTime = true;
+        } else {
+            inCoolTime = false;
+        }
+    }
+
+    // コマンドの情報を取得する
+    if (command in commandData && !inCoolTime){
+        damage = commandData[command]["damage"];
+        target = getTarget(command, friendOrEnemy);
+        coolTime = commandData[command]["coolTime"];
+        generateCoolTime(coolTime, friendOrEnemy);
+        showMessage(`activated: ${command}`, friendOrEnemy);
+    } else {
+        let message;
+        if (!(command in commandData)){
+            message = "無効なコマンドです";
+        } else if (inCoolTime){
+            message = "スキルのクールタイム中です";
+        }
+        showMessage(message, friendOrEnemy);
+        return;
+    }
+
+    // テキストを初期化する
+    if (friendOrEnemy=="friend"){
+        elemInputFriend.value = "";
+        elemMessageFriend.textContent = "";
+    }
+    else if (friendOrEnemy=="enemy"){
+        elemInputEnemy.valid = "";
+        elemMessageEnemy.textContent = "";
+    }
+
+    // コマンドの処理を行う
     if (command=="attack"){
-        let damage = commandData[command]["value"];
-        let target = getTarget(command, friendOrEnemy);
         giveDamage(damage, target);
-        valid = true;
     }
     else if (command=="heal"){
-        let heal = commandData[command]["value"];
-        let target = getTarget(command, friendOrEnemy);
-        giveDamage(-heal, target);
-        valid = true;
+        giveDamage(damage, target);
     }
     else if (command=="flame field"){
-        let damage = commandData[command]["value"];
-        let target = getTarget(command, friendOrEnemy);
         flameField(damage, target);
-        valid = true;
-    }
-
-    // コマンドが有効のとき
-    if (valid){
-        if (friendOrEnemy=="friend"){
-            elemInputFriend.value = "";
-            elemMessageFriend.textContent = "";
-        }
-        else if (friendOrEnemy=="enemy"){
-            elemInputEnemy.valid = "";
-            elemMessageEnemy.textContent = "";
-        }
-    }
-    // コマンドが無効のとき
-    else {
-        let invalidCommandMessage = "無効なコマンドです。";
-        showMessage(invalidCommandMessage, friendOrEnemy);
     }
 };
 
@@ -142,9 +201,9 @@ let flameField = (damage, friendOrEnemy)=>{
         elem = elemHpEnemy;
     }
     let set = setInterval(() => {
-        elem.value -= damage;
+        giveDamage(damage, friendOrEnemy);
         if (elem.value<=0){
             clearInterval(set);
         }
     }, 1000);
-}
+};

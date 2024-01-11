@@ -62,13 +62,16 @@ h1 {
   display: flex;
   width: 100%;
   margin-top: 24px;
+  justify-content: center;
 }
 .wrapper-input .time {
+  width: 20%;
+  font-size: 26px;
   margin-top: 10px;
-  font-size: 30px;
+  transform: translateX(18%);
 }
 .wrapper-input .sub-wrapper-input {
-  width: 50%;
+  width: 30%;
   text-align: center;
 }
 .wrapper-input .sub-wrapper-input input {
@@ -86,18 +89,59 @@ h1 {
 }
 
 .wrapper-message {
+  position: absolute;
   width: 100%;
   display: flex;
-  margin-top: 12px;
+  margin-top: 20px;
 }
 .wrapper-message .sub-wrapper-message {
-  width: 50%;
+  width: 44%;
+  min-width: 400px;
   text-align: center;
 }
-.wrapper-message .sub-wrapper-message .message-text {
-  width: 100%;
-  font-size: 20px;
+.wrapper-message .sub-wrapper-message label {
+  left: 12%;
 }
-.wrapper-message .space {
-  width: 5%;
+.wrapper-message .sub-wrapper-message .message-text {
+  width: 35%;
+  height: 27px;
+  font-size: 18px;
+  border: #777 1px solid;
+  background-color: #fff;
+  text-align: left;
+}
+.wrapper-message .margin {
+  width: 6%;
+}
+
+.wrapper-cool-time {
+  width: 100%;
+  display: flex;
+  margin-top: 60px;
+}
+.wrapper-cool-time .sub-wrapper-cool-time {
+  width: 47%;
+  text-align: center;
+}
+.wrapper-cool-time .sub-wrapper-cool-time .cool-time {
+  width: 100%;
+  font-size: 18px;
+}
+.wrapper-cool-time .margin {
+  width: 6%;
+}
+
+.wrapper-status {
+  width: 100%;
+  display: flex;
+  margin-top: 10px;
+}
+.wrapper-status .sub-wrapper-status {
+  width: 60%;
+  height: 300px;
+  margin-left: 10%;
+  margin-right: 10%;
+  background-color: #eee;
+  border: 5px solid #444;
+  border-radius: 10%;
 }/*# sourceMappingURL=battle.css.map */

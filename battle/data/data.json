@@ -2,23 +2,27 @@
     "commandData": {
 
         "attack": {
-            "value": 5,
-            "target": "opponent"
+            "damage": 5,
+            "target": "opponent",
+            "coolTime": 5
         },
 
         "heal": {
-            "value": 10,
-            "target": "ally"
+            "damage": -10,
+            "target": "ally",
+            "coolTime": 5
         },
 
         "flame field": {
-            "value": 3,
-            "target": "opponent"
+            "damage": 3,
+            "target": "opponent",
+            "coolTime": 60
         },
 
         "regenerate": {
-            "value": 6,
-            "target": "ally"
+            "damage": 6,
+            "target": "ally",
+            "coolTime": 30
         }
     }
 }
