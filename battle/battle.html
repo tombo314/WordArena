@@ -8,13 +8,23 @@
     <title>AIバトル</title>
 </head>
 <body>
+
+    <div id="js-black-sheet" class="black-sheet">
+        <div class="window">
+            <p>バトルを開始します</p>
+            <div class="wrapper-button">
+                <button id="js-game-start">OK</button>
+            </div>
+        </div>
+    </div>
+
     <h1>Word Arena</h1>
 
     <!-- HPバー -->
     <div class="wrapper-status-bar">
         <div class="status-bar">
             <label class="status-text" for="js-hp-friend">HP</label>
-            <progress class="progress-bar" id="js-hp-friend" value="60" max="100"></progress>
+            <progress class="progress-bar" id="js-hp-friend" value="80" max="100"></progress>
         </div>
         <div class="status-bar">
             <label class="status-text" for="js-hp-enemy">HP</label>
@@ -55,6 +65,8 @@
     <div class="wrapper-cool-time">
         <div class="sub-wrapper-cool-time">
             <p class="cool-time">
+                <span id="js-cool-time-red-friend" class="cool-time-red">a</span>
+                <span id="js-cool-time-blue-friend" class="cool-time-blue"></span>
                 <span id="js-cool-time-friend">クールタイム 00:00</span>
             </p>
         </div>
@@ -68,6 +80,12 @@
     <!-- ステータス表示 -->
     <div class="wrapper-status">
         <div class="sub-wrapper-status">
+            <ul>
+                <br>
+                <li>　フィールド：</li>
+                <li>　バフ　　　：</li>
+                <li>　デバフ　　：</li>
+            </ul>
         </div>
         <div class="margin"></div>
         <div class="sub-wrapper-status">

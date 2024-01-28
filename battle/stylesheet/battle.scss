@@ -8,12 +8,59 @@
 
 html{
     width: 100%;
-    min-height: 400px;
     background-color: #fe6;
 }
 
 body{
     width: 100%;
+}
+
+.black-sheet{
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #666a;
+    z-index: 999;
+
+    .window{
+        position: relative;
+        top: 25%;
+        left: 25%;
+        width: 50vw;
+        height: 50vh;
+        text-align: center;
+        background-color: #fa4c;
+        border-radius: 5%;
+
+        p{
+            position: relative;
+            top: 30%;
+            font-size: 24px;
+        }
+
+        .wrapper-button{
+            position: relative;
+            display: flex;
+            top: 40%;
+            justify-content: center;
+
+            button{
+                width: 15%;
+                height: 60px;
+                font-size: 24px;
+                border-radius: 10px;
+
+                &:nth-child(2){
+                    margin-left: 50px;
+                }
+
+                &:hover{
+                    opacity: 0.6;
+                }
+            }
+        }
+    }
 }
 
 h1{
@@ -142,6 +189,17 @@ h1{
         .cool-time{
             width: 100%;
             font-size: 18px;
+
+            .cool-time-red{
+                width: 20px;
+                height: 20px;
+                background-color: red;
+                visibility: hidden;
+            }
+
+            .cool-time-blue{
+                visibility: visible;
+            }
         }
     }
 }
@@ -154,7 +212,7 @@ h1{
     
     .sub-wrapper-status{
         width: 60%;
-        height: 300px;
+        height: 250px;
         margin-left: 10%;
         margin-right: 10%;
         background-color: #eee;

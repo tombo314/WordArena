@@ -8,12 +8,53 @@
 
 html {
   width: 100%;
-  min-height: 400px;
   background-color: #fe6;
 }
 
 body {
   width: 100%;
+}
+
+.black-sheet {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(102, 102, 102, 0.6666666667);
+  z-index: 999;
+}
+.black-sheet .window {
+  position: relative;
+  top: 25%;
+  left: 25%;
+  width: 50vw;
+  height: 50vh;
+  text-align: center;
+  background-color: rgba(255, 170, 68, 0.8);
+  border-radius: 5%;
+}
+.black-sheet .window p {
+  position: relative;
+  top: 30%;
+  font-size: 24px;
+}
+.black-sheet .window .wrapper-button {
+  position: relative;
+  display: flex;
+  top: 40%;
+  justify-content: center;
+}
+.black-sheet .window .wrapper-button button {
+  width: 15%;
+  height: 60px;
+  font-size: 24px;
+  border-radius: 10px;
+}
+.black-sheet .window .wrapper-button button:nth-child(2) {
+  margin-left: 50px;
+}
+.black-sheet .window .wrapper-button button:hover {
+  opacity: 0.6;
 }
 
 h1 {
@@ -127,6 +168,15 @@ h1 {
   width: 100%;
   font-size: 18px;
 }
+.wrapper-cool-time .sub-wrapper-cool-time .cool-time .cool-time-red {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  visibility: hidden;
+}
+.wrapper-cool-time .sub-wrapper-cool-time .cool-time .cool-time-blue {
+  visibility: visible;
+}
 
 .wrapper-status {
   width: 100%;
@@ -135,7 +185,7 @@ h1 {
 }
 .wrapper-status .sub-wrapper-status {
   width: 60%;
-  height: 300px;
+  height: 250px;
   margin-left: 10%;
   margin-right: 10%;
   background-color: #eee;
