@@ -3,7 +3,6 @@
 
         "attack": {
             "damage": 5,
-            "damage": 20,
             "damageTarget": "enemy",
             "defense": 0,
             "defenseTarget": null,
@@ -52,48 +51,73 @@
 
         "ocean field": {
             "damage": 0,
+            "damageTarget": null,
             "defense": 2,
-            "target": "friend",
+            "defenseTarget": "friend",
             "coolTime": 0,
 
             "splash shield": {
                 "damage": 0,
+                "damageTarget": null,
                 "defense": 5,
-                "target": "friend",
+                "defenseTarget": "friend",
                 "coolTime": 20
             }
         },
 
         "holy field": {
             "damage": 3,
+            "damageTarget": "enemy",
             "defense": 0,
-            "target": "enemy",
+            "defenseTarget": null,
             "coolTime": 0,
 
             "holy arrow": {
                 "damage": 12,
+                "damageTarget": "enemy",
                 "defense": 0,
-                "target": "enemy",
+                "defenseTarget": null,
                 "coolTime": 5
             },
 
             "regenerate": {
                 "damage": -2,
+                "damageTarget": "friend",
                 "defense": 0,
-                "target": "friend",
+                "defenseTarget": null,
                 "coolTime": 20
             }
         },
         
         "earth field": {
             "damage": 0,
+            "damageTarget": null,
             "defense": 3,
-            "target": "friend",
+            "defenseTarget": "friend",
             "coolTime": 0,
 
+            "crack": {
+                "damage": 10,
+                "damageTarget": "enemy",
+                "defense": 0,
+                "defenseTarget": null,
+                "coolTime": 5
+            },
+
+            "protect": {
+                "damage": 0,
+                "damageTarget": null,
+                "defense": 5,
+                "defenseTarget": "friend",
+                "coolTime": 7
+            },
+
             "earth quake": {
-                "damage": 20,
-                "defense": 0
+                "damage": 30,
+                "damageTarget": "enemy",
+                "defense": 0,
+                "defenseTarget": null,
+                "coolTime": 999
             }
         }
     }
