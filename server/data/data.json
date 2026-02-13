@@ -41,7 +41,7 @@
             },
 
             "burn out": {
-                "damage": 20,
+                "damage": 60,
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
@@ -113,7 +113,7 @@
             },
 
             "earth quake": {
-                "damage": 30,
+                "damage": 60,
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
