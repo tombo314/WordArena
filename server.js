@@ -36,20 +36,20 @@ io.on("connection", (socket) => {
 
     // ログイン
     socket.on("login", (data) => {
-        const username = data.value["username"];
-        const password = data.value["password"];
+        const username = data.value.username;
+        const password = data.value.password;
         sqlite.login(username, password, socket);
     });
 
     // アカウント登録
     socket.on("signup", (data) => {
-        const username = data.value["username"];
-        const password = data.value["password"];
+        const username = data.value.username;
+        const password = data.value.password;
         sqlite.signup(username, password, socket);
     });
 
     // コマンドデータ送信
-    socket.on("commandData", (data) => {
+    socket.on("commandData", (_) => {
         const commandData = JSON.parse(fs.readFileSync("battle/data/data.json"));
         socket.emit("commandData", commandData);
     });
