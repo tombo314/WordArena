@@ -1,5 +1,5 @@
 import path from "node:path";
-import { Socket } from "socket.io";
+import type { Socket } from "socket.io";
 import sqlite3 from "sqlite3";
 
 const dbPath = path.join(__dirname, "../../data/users.db");
