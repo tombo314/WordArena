@@ -1,5 +1,3 @@
-"use strict";
-
 const sqlite = require("./sqlite/sqlite");
 const express = require("express");
 const http = require("node:http");
