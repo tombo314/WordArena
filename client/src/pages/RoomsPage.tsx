@@ -1,4 +1,4 @@
-import { useState, useEffect, KeyboardEvent } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/rooms.scss";
 
@@ -30,7 +30,7 @@ export default function RoomsPage() {
 
       {roomsVisible && (
         <>
-          <div className="black-sheet" onClick={() => setRoomsVisible(false)} />
+          <button type="button" className="black-sheet" onClick={() => setRoomsVisible(false)} />
           <div className="button-rooms">
             <div className="wrapper-button-room" />
           </div>
