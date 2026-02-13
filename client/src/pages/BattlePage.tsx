@@ -497,7 +497,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
             disabled={!gameStarted || gameEnded}
           />
         </div>
-        <div className="time">{formatTime(timeLeft)}</div>
+        <div className="time">{gameEnded ? "残り時間 --:--" : formatTime(timeLeft)}</div>
         <div className="sub-wrapper-input">
           <input
             className="input-enemy"
