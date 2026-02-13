@@ -1,76 +1,81 @@
 import type { Socket } from "socket.io-client";
 import "../styles/battle.scss";
-import { useBattle } from "../hooks/useBattle";
-import StartScreen from "../components/battle/StartScreen";
-import HpBars from "../components/battle/HpBars";
 import BattleInput from "../components/battle/BattleInput";
-import MessageDisplay from "../components/battle/MessageDisplay";
-import CoolTimeDisplay from "../components/battle/CoolTimeDisplay";
 import CommandStatus from "../components/battle/CommandStatus";
+import CoolTimeDisplay from "../components/battle/CoolTimeDisplay";
+import HpBars from "../components/battle/HpBars";
+import MessageDisplay from "../components/battle/MessageDisplay";
+import StartScreen from "../components/battle/StartScreen";
+import { useBattle } from "../hooks/useBattle";
 
 interface BattlePageProps {
-  socket: Socket;
+	socket: Socket;
 }
 
 export default function BattlePage({ socket }: BattlePageProps) {
-  const username = sessionStorage.getItem("username") ?? "";
-  const { state, actions } = useBattle(socket);
+	const username = sessionStorage.getItem("username") ?? "";
+	const { state, actions } = useBattle(socket);
 
-  return (
-    <>
-      <h1>Word Arena</h1>
+	return (
+		<>
+			<h1>Word Arena</h1>
 
-      {!state.gameStarted && (
-        <StartScreen onStart={actions.handleGameStart} />
-      )}
+			{!state.gameStarted && <StartScreen onStart={actions.handleGameStart} />}
 
-      <HpBars username={username} hpFriend={state.hpFriend} hpEnemy={state.hpEnemy} />
+			<HpBars
+				username={username}
+				hpFriend={state.hpFriend}
+				hpEnemy={state.hpEnemy}
+			/>
 
-      <BattleInput
-        inputFriend={state.inputFriend}
-        setInputFriend={actions.setInputFriend}
-        gameStarted={state.gameStarted}
-        gameEnded={state.gameEnded}
-        timeLeft={state.timeLeft}
-        onSubmit={actions.activateFriendCommand}
-      />
+			<BattleInput
+				inputFriend={state.inputFriend}
+				setInputFriend={actions.setInputFriend}
+				gameStarted={state.gameStarted}
+				gameEnded={state.gameEnded}
+				timeLeft={state.timeLeft}
+				onSubmit={actions.activateFriendCommand}
+			/>
 
-      <MessageDisplay messageFriend={state.messageFriend} messageEnemy={state.messageEnemy} />
+			<MessageDisplay
+				messageFriend={state.messageFriend}
+				messageEnemy={state.messageEnemy}
+			/>
 
-      <CoolTimeDisplay
-        friend={{
-          coolTime: state.coolTimeFriendText,
-          regenCoolTime: state.regenCoolTimeFriendText,
-          shieldCoolTime: state.shieldCoolTimeFriendText,
-        }}
-        enemy={{
-          coolTime: state.coolTimeEnemyText,
-          regenCoolTime: state.regenCoolTimeEnemyText,
-          shieldCoolTime: state.shieldCoolTimeEnemyText,
-        }}
-      />
+			<CoolTimeDisplay
+				friend={{
+					coolTime: state.coolTimeFriendText,
+					regenCoolTime: state.regenCoolTimeFriendText,
+					shieldCoolTime: state.shieldCoolTimeFriendText,
+				}}
+				enemy={{
+					coolTime: state.coolTimeEnemyText,
+					regenCoolTime: state.regenCoolTimeEnemyText,
+					shieldCoolTime: state.shieldCoolTimeEnemyText,
+				}}
+			/>
 
-      <CommandStatus
-        commandList={state.commandList}
-        subCommandMap={state.subCommandMap}
-        gameEnded={state.gameEnded}
-        friend={{
-          activeField: state.activeFriendField,
-          coolTimeText: state.coolTimeFriendText,
-          regenCoolTimeText: state.regenCoolTimeFriendText,
-          shieldCoolTimeText: state.shieldCoolTimeFriendText,
-          disabledFields: state.disabledFriendFields,
-          activeRegen: state.activeFriendRegen,
-        }}
-        enemy={{
-          activeField: state.activeEnemyField,
-          coolTimeText: state.coolTimeEnemyText,
-          regenCoolTimeText: state.regenCoolTimeEnemyText,
-          shieldCoolTimeText: state.shieldCoolTimeEnemyText,
-          disabledFields: state.disabledEnemyFields,
-          activeRegen: state.activeEnemyRegen,
-        }}
-      />
-    </>
-  );
+			<CommandStatus
+				commandList={state.commandList}
+				subCommandMap={state.subCommandMap}
+				gameEnded={state.gameEnded}
+				friend={{
+					activeField: state.activeFriendField,
+					coolTimeText: state.coolTimeFriendText,
+					regenCoolTimeText: state.regenCoolTimeFriendText,
+					shieldCoolTimeText: state.shieldCoolTimeFriendText,
+					disabledFields: state.disabledFriendFields,
+					activeRegen: state.activeFriendRegen,
+				}}
+				enemy={{
+					activeField: state.activeEnemyField,
+					coolTimeText: state.coolTimeEnemyText,
+					regenCoolTimeText: state.regenCoolTimeEnemyText,
+					shieldCoolTimeText: state.shieldCoolTimeEnemyText,
+					disabledFields: state.disabledEnemyFields,
+					activeRegen: state.activeEnemyRegen,
+				}}
+			/>
+		</>
+	);
 }

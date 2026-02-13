@@ -2,189 +2,215 @@ import { useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
 import { IS_DEBUG } from "../const";
 import type { FriendOrEnemy } from "../types";
-import { useCommandData } from "./useCommandData";
-import { useGameTimer } from "./useGameTimer";
-import { useCoolTime } from "./useCoolTime";
-import { useHP } from "./useHP";
 import { useActivateCommand } from "./useActivateCommand";
+import { useCommandData } from "./useCommandData";
+import { useCoolTime } from "./useCoolTime";
+import { useGameTimer } from "./useGameTimer";
+import { useHP } from "./useHP";
 
 export function useBattle(socket: Socket) {
-  const [gameStarted, setGameStarted] = useState(IS_DEBUG);
-  const [gameEnded, setGameEnded] = useState(false);
-  const [inputFriend, setInputFriend] = useState("");
-  const [messageFriend, setMessageFriend] = useState("");
-  const [messageEnemy, setMessageEnemy] = useState("");
-  const [activeFriendField, setActiveFriendField] = useState<string | null>(null);
-  const [activeEnemyField, setActiveEnemyField] = useState<string | null>(null);
-  const [disabledFriendFields, setDisabledFriendFields] = useState<string[]>([]);
-  const [disabledEnemyFields, setDisabledEnemyFields] = useState<string[]>([]);
-  const [activeFriendRegen, setActiveFriendRegen] = useState(false);
-  const [activeEnemyRegen, setActiveEnemyRegen] = useState(false);
+	const [gameStarted, setGameStarted] = useState(IS_DEBUG);
+	const [gameEnded, setGameEnded] = useState(false);
+	const [inputFriend, setInputFriend] = useState("");
+	const [messageFriend, setMessageFriend] = useState("");
+	const [messageEnemy, setMessageEnemy] = useState("");
+	const [activeFriendField, setActiveFriendField] = useState<string | null>(
+		null,
+	);
+	const [activeEnemyField, setActiveEnemyField] = useState<string | null>(null);
+	const [disabledFriendFields, setDisabledFriendFields] = useState<string[]>(
+		[],
+	);
+	const [disabledEnemyFields, setDisabledEnemyFields] = useState<string[]>([]);
+	const [activeFriendRegen, setActiveFriendRegen] = useState(false);
+	const [activeEnemyRegen, setActiveEnemyRegen] = useState(false);
 
-  const gameEndedRef = useRef(false);
-  const defenseFriendRef = useRef(0);
-  const defenseEnemyRef = useRef(0);
-  const friendFieldIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const enemyFieldIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const friendRegenIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const enemyRegenIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const friendShieldDefenseRef = useRef(0);
-  const enemyShieldDefenseRef = useRef(0);
-  const disabledFriendFieldsRef = useRef(new Set<string>());
-  const disabledEnemyFieldsRef = useRef(new Set<string>());
-  const activeFriendFieldRef = useRef<string | null>(null);
-  const activeEnemyFieldRef = useRef<string | null>(null);
+	const gameEndedRef = useRef(false);
+	const defenseFriendRef = useRef(0);
+	const defenseEnemyRef = useRef(0);
+	const friendFieldIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+		null,
+	);
+	const enemyFieldIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+		null,
+	);
+	const friendRegenIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+		null,
+	);
+	const enemyRegenIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+		null,
+	);
+	const friendShieldDefenseRef = useRef(0);
+	const enemyShieldDefenseRef = useRef(0);
+	const disabledFriendFieldsRef = useRef(new Set<string>());
+	const disabledEnemyFieldsRef = useRef(new Set<string>());
+	const activeFriendFieldRef = useRef<string | null>(null);
+	const activeEnemyFieldRef = useRef<string | null>(null);
 
-  // handleGameEnd の前方参照用 ref（useHP / useGameTimer に渡すため）
-  const handleGameEndRef = useRef<() => void>(() => {});
+	// handleGameEnd の前方参照用 ref（useHP / useGameTimer に渡すため）
+	const handleGameEndRef = useRef<() => void>(() => {});
 
-  const { commandList, subCommandMap, commandDataRef } = useCommandData(socket);
-  const { timeLeft } = useGameTimer(gameStarted, gameEnded, () => handleGameEndRef.current());
-  const coolTime = useCoolTime();
-  const { hpFriend, hpEnemy, hpFriendRef, hpEnemyRef, giveDamage, giveSlipDamage } = useHP(
-    gameEndedRef,
-    defenseFriendRef,
-    defenseEnemyRef,
-    () => handleGameEndRef.current(),
-  );
+	const { commandList, subCommandMap, commandDataRef } = useCommandData(socket);
+	const { timeLeft } = useGameTimer(gameStarted, gameEnded, () =>
+		handleGameEndRef.current(),
+	);
+	const coolTime = useCoolTime();
+	const {
+		hpFriend,
+		hpEnemy,
+		hpFriendRef,
+		hpEnemyRef,
+		giveDamage,
+		giveSlipDamage,
+	} = useHP(gameEndedRef, defenseFriendRef, defenseEnemyRef, () =>
+		handleGameEndRef.current(),
+	);
 
-  const showMessage = (message: string, side: FriendOrEnemy) => {
-    const setter = side === "friend" ? setMessageFriend : setMessageEnemy;
-    setter("");
-    setTimeout(() => setter(message), 100);
-  };
+	const showMessage = (message: string, side: FriendOrEnemy) => {
+		const setter = side === "friend" ? setMessageFriend : setMessageEnemy;
+		setter("");
+		setTimeout(() => setter(message), 100);
+	};
 
-  // cancelField 専用（トップレベルコマンドのdefenseTarget解決）
-  const getTarget = (commandName: string, side: FriendOrEnemy, damageOrDefense: "damage" | "defense"): FriendOrEnemy => {
-    const key = damageOrDefense === "damage" ? "damageTarget" : "defenseTarget";
-    const commandTarget = commandDataRef.current[commandName][key] as FriendOrEnemy;
-    if (side === "friend") return commandTarget;
-    return commandTarget === "friend" ? "enemy" : "friend";
-  };
+	// cancelField 専用（トップレベルコマンドのdefenseTarget解決）
+	const getTarget = (
+		commandName: string,
+		side: FriendOrEnemy,
+		damageOrDefense: "damage" | "defense",
+	): FriendOrEnemy => {
+		const key = damageOrDefense === "damage" ? "damageTarget" : "defenseTarget";
+		const commandTarget = commandDataRef.current[commandName][
+			key
+		] as FriendOrEnemy;
+		if (side === "friend") return commandTarget;
+		return commandTarget === "friend" ? "enemy" : "friend";
+	};
 
-  const cancelField = (fieldName: string, side: FriendOrEnemy) => {
-    const intervalRef = side === "friend" ? friendFieldIntervalRef : enemyFieldIntervalRef;
-    if (intervalRef.current !== null) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
+	const cancelField = (fieldName: string, side: FriendOrEnemy) => {
+		const intervalRef =
+			side === "friend" ? friendFieldIntervalRef : enemyFieldIntervalRef;
+		if (intervalRef.current !== null) {
+			clearInterval(intervalRef.current);
+			intervalRef.current = null;
+		}
 
-    if (fieldName === "holy field") {
-      const regenRef = side === "friend" ? friendRegenIntervalRef : enemyRegenIntervalRef;
-      if (regenRef.current !== null) {
-        clearInterval(regenRef.current);
-        regenRef.current = null;
-      }
-      if (side === "friend") setActiveFriendRegen(false);
-      else setActiveEnemyRegen(false);
-    }
+		if (fieldName === "holy field") {
+			const regenRef =
+				side === "friend" ? friendRegenIntervalRef : enemyRegenIntervalRef;
+			if (regenRef.current !== null) {
+				clearInterval(regenRef.current);
+				regenRef.current = null;
+			}
+			if (side === "friend") setActiveFriendRegen(false);
+			else setActiveEnemyRegen(false);
+		}
 
-    coolTime.clearShieldCoolTime(side);
+		coolTime.clearShieldCoolTime(side);
 
-    if (side === "friend") {
-      defenseFriendRef.current -= friendShieldDefenseRef.current;
-      friendShieldDefenseRef.current = 0;
-    } else {
-      defenseEnemyRef.current -= enemyShieldDefenseRef.current;
-      enemyShieldDefenseRef.current = 0;
-    }
+		if (side === "friend") {
+			defenseFriendRef.current -= friendShieldDefenseRef.current;
+			friendShieldDefenseRef.current = 0;
+		} else {
+			defenseEnemyRef.current -= enemyShieldDefenseRef.current;
+			enemyShieldDefenseRef.current = 0;
+		}
 
-    const fieldCmd = commandDataRef.current[fieldName];
-    if (fieldCmd) {
-      const defense = fieldCmd.defense as number;
-      if (defense > 0) {
-        const defenseTarget = getTarget(fieldName, side, "defense");
-        if (defenseTarget === "friend") defenseFriendRef.current -= defense;
-        else defenseEnemyRef.current -= defense;
-      }
-    }
-  };
+		const fieldCmd = commandDataRef.current[fieldName];
+		if (fieldCmd) {
+			const defense = fieldCmd.defense as number;
+			if (defense > 0) {
+				const defenseTarget = getTarget(fieldName, side, "defense");
+				if (defenseTarget === "friend") defenseFriendRef.current -= defense;
+				else defenseEnemyRef.current -= defense;
+			}
+		}
+	};
 
-  const { activateCommand } = useActivateCommand({
-    coolTime,
-    commandDataRef,
-    activeFriendFieldRef,
-    activeEnemyFieldRef,
-    disabledFriendFieldsRef,
-    disabledEnemyFieldsRef,
-    defenseFriendRef,
-    defenseEnemyRef,
-    friendFieldIntervalRef,
-    enemyFieldIntervalRef,
-    friendRegenIntervalRef,
-    enemyRegenIntervalRef,
-    friendShieldDefenseRef,
-    enemyShieldDefenseRef,
-    showMessage,
-    cancelField,
-    giveDamage,
-    giveSlipDamage,
-    setInputFriend,
-    setActiveFriendField,
-    setActiveEnemyField,
-    setActiveFriendRegen,
-    setActiveEnemyRegen,
-    setDisabledFriendFields,
-    setDisabledEnemyFields,
-  });
+	const { activateCommand } = useActivateCommand({
+		coolTime,
+		commandDataRef,
+		activeFriendFieldRef,
+		activeEnemyFieldRef,
+		disabledFriendFieldsRef,
+		disabledEnemyFieldsRef,
+		defenseFriendRef,
+		defenseEnemyRef,
+		friendFieldIntervalRef,
+		enemyFieldIntervalRef,
+		friendRegenIntervalRef,
+		enemyRegenIntervalRef,
+		friendShieldDefenseRef,
+		enemyShieldDefenseRef,
+		showMessage,
+		cancelField,
+		giveDamage,
+		giveSlipDamage,
+		setInputFriend,
+		setActiveFriendField,
+		setActiveEnemyField,
+		setActiveFriendRegen,
+		setActiveEnemyRegen,
+		setDisabledFriendFields,
+		setDisabledEnemyFields,
+	});
 
-  const handleGameEnd = () => {
-    if (gameEndedRef.current) return;
-    gameEndedRef.current = true;
-    setGameEnded(true);
+	const handleGameEnd = () => {
+		if (gameEndedRef.current) return;
+		gameEndedRef.current = true;
+		setGameEnded(true);
 
-    if (activeFriendFieldRef.current) {
-      cancelField(activeFriendFieldRef.current, "friend");
-      setActiveFriendField(null);
-      activeFriendFieldRef.current = null;
-    }
-    if (activeEnemyFieldRef.current) {
-      cancelField(activeEnemyFieldRef.current, "enemy");
-      setActiveEnemyField(null);
-      activeEnemyFieldRef.current = null;
-    }
+		if (activeFriendFieldRef.current) {
+			cancelField(activeFriendFieldRef.current, "friend");
+			setActiveFriendField(null);
+			activeFriendFieldRef.current = null;
+		}
+		if (activeEnemyFieldRef.current) {
+			cancelField(activeEnemyFieldRef.current, "enemy");
+			setActiveEnemyField(null);
+			activeEnemyFieldRef.current = null;
+		}
 
-    const hpF = hpFriendRef.current;
-    const hpE = hpEnemyRef.current;
-    if (hpF < hpE) alert("相手の勝利です");
-    else if (hpF > hpE) alert("あなたの勝利です");
-    else alert("引き分けです");
-  };
+		const hpF = hpFriendRef.current;
+		const hpE = hpEnemyRef.current;
+		if (hpF < hpE) alert("相手の勝利です");
+		else if (hpF > hpE) alert("あなたの勝利です");
+		else alert("引き分けです");
+	};
 
-  // 毎レンダーで最新の handleGameEnd を ref に保持
-  handleGameEndRef.current = handleGameEnd;
+	// 毎レンダーで最新の handleGameEnd を ref に保持
+	handleGameEndRef.current = handleGameEnd;
 
-  const { state: ctState } = coolTime;
+	const { state: ctState } = coolTime;
 
-  return {
-    state: {
-      gameStarted,
-      gameEnded,
-      hpFriend,
-      hpEnemy,
-      timeLeft,
-      inputFriend,
-      messageFriend,
-      messageEnemy,
-      coolTimeFriendText: ctState.coolTimeFriendText,
-      coolTimeEnemyText: ctState.coolTimeEnemyText,
-      regenCoolTimeFriendText: ctState.regenCoolTimeFriendText,
-      regenCoolTimeEnemyText: ctState.regenCoolTimeEnemyText,
-      shieldCoolTimeFriendText: ctState.shieldCoolTimeFriendText,
-      shieldCoolTimeEnemyText: ctState.shieldCoolTimeEnemyText,
-      commandList,
-      subCommandMap,
-      activeFriendField,
-      activeEnemyField,
-      disabledFriendFields,
-      disabledEnemyFields,
-      activeFriendRegen,
-      activeEnemyRegen,
-    },
-    actions: {
-      handleGameStart: () => setGameStarted(true),
-      setInputFriend,
-      activateFriendCommand: (cmd: string) => activateCommand(cmd, "friend"),
-    },
-  };
+	return {
+		state: {
+			gameStarted,
+			gameEnded,
+			hpFriend,
+			hpEnemy,
+			timeLeft,
+			inputFriend,
+			messageFriend,
+			messageEnemy,
+			coolTimeFriendText: ctState.coolTimeFriendText,
+			coolTimeEnemyText: ctState.coolTimeEnemyText,
+			regenCoolTimeFriendText: ctState.regenCoolTimeFriendText,
+			regenCoolTimeEnemyText: ctState.regenCoolTimeEnemyText,
+			shieldCoolTimeFriendText: ctState.shieldCoolTimeFriendText,
+			shieldCoolTimeEnemyText: ctState.shieldCoolTimeEnemyText,
+			commandList,
+			subCommandMap,
+			activeFriendField,
+			activeEnemyField,
+			disabledFriendFields,
+			disabledEnemyFields,
+			activeFriendRegen,
+			activeEnemyRegen,
+		},
+		actions: {
+			handleGameStart: () => setGameStarted(true),
+			setInputFriend,
+			activateFriendCommand: (cmd: string) => activateCommand(cmd, "friend"),
+		},
+	};
 }
