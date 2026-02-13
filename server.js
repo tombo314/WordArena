@@ -2,8 +2,8 @@
 
 const sqlite = require("./sqlite/sqlite");
 const express = require("express");
-const http = require("http");
-const fs = require("fs");
+const http = require("node:http");
+const fs = require("node:fs");
 const socket = require("socket.io");
 
 const app = express();
