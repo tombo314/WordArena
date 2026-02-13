@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, KeyboardEvent } from "react";
-import { Socket } from "socket.io-client";
-import { CommandData, FriendOrEnemy } from "../types";
+import { useEffect, useRef, useState } from "react";
+import type { Socket } from "socket.io-client";
+import type { CommandData, FriendOrEnemy } from "../types";
 import "../styles/battle.scss";
 
 const HP_MAX = 100;
@@ -186,12 +186,12 @@ export default function BattlePage({ socket }: BattlePageProps) {
       {/* HPバー */}
       <div className="wrapper-status-bar">
         <div className="status-bar">
-          <label className="status-text">{username}</label>
+          <span className="status-text">{username}</span>
           <br />
           <progress className="progress-bar" value={hpFriend} max={HP_MAX} />
         </div>
         <div className="status-bar">
-          <label className="status-text">Enemy</label>
+          <span className="status-text">Enemy</span>
           <br />
           <progress className="progress-bar" value={hpEnemy} max={HP_MAX} />
         </div>
@@ -205,7 +205,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
             type="text"
             value={inputFriend}
             onChange={(e) => setInputFriend(e.target.value)}
-            onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+            onKeyDown={(e) => {
               if (e.key === "Enter" && gameStarted && !gameEnded) {
                 activateCommand(inputFriend, "friend");
               }
@@ -227,12 +227,12 @@ export default function BattlePage({ socket }: BattlePageProps) {
       {/* メッセージ */}
       <div className="wrapper-message">
         <div className="sub-wrapper-message">
-          <label>コマンド</label>
-          <input className="message-text" type="text" value={messageFriend} readOnly />
+          <span>コマンド</span>
+          <span className="message-text">{messageFriend}</span>
         </div>
         <div className="margin" />
         <div className="sub-wrapper-message">
-          <label>コマンド</label>
+          <span>コマンド</span>
           <input className="message-text" type="text" value={messageEnemy} readOnly />
         </div>
       </div>
