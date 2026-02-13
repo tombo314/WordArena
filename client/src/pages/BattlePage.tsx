@@ -433,6 +433,8 @@ export default function BattlePage({ socket }: BattlePageProps) {
         }
       }
     }
+
+    showMessage(command, side);
   };
 
   const handleGameEnd = () => {
