@@ -177,7 +177,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
           <div className="window">
             <p>ゲームを開始しますか？</p>
             <div className="wrapper-button">
-              <button onClick={handleGameStart}>OK</button>
+              <button type="button" onClick={handleGameStart}>OK</button>
             </div>
           </div>
         </div>

@@ -84,6 +84,7 @@ export default function TopPage({ socket }: TopPageProps) {
         <section>
           <div className="signup-login">
             <button
+              type="button"
               onClick={() => {
                 setMode("signup");
                 document.title = "アカウント登録";
@@ -92,6 +93,7 @@ export default function TopPage({ socket }: TopPageProps) {
               アカウント登録
             </button>
             <button
+              type="button"
               onClick={() => {
                 setMode("login");
                 document.title = "ログイン";
@@ -136,10 +138,10 @@ export default function TopPage({ socket }: TopPageProps) {
               英数字6文字以上で入力してください
             </p>
           )}
-          <button className="submit-button" onClick={handleSubmit}>
+          <button type="button" className="submit-button" onClick={handleSubmit}>
             送信
           </button>
-          <button className="back-button" onClick={handleBack}>
+          <button type="button" className="back-button" onClick={handleBack}>
             戻る
           </button>
         </section>

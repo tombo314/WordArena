@@ -38,17 +38,17 @@ export default function RoomsPage() {
       )}
 
       <div className="form">
-        <button className="button-big" onClick={handleMake}>
+        <button type="button" className="button-big" onClick={handleMake}>
           部屋を作る
         </button>
-        <button className="button-big" onClick={handleEnter}>
+        <button type="button" className="button-big" onClick={handleEnter}>
           部屋に入る
         </button>
         <br />
-        <button className="button-big" onClick={handleAIBattle}>
+        <button type="button" className="button-big" onClick={handleAIBattle}>
           AI対戦
         </button>
-        <button className="button-big" onClick={handleBack}>
+        <button type="button" className="button-big" onClick={handleBack}>
           戻る
         </button>
       </div>
