@@ -1,13 +1,13 @@
 "use strict";
 
-let sqlite = require("./sqlite/sqlite");
-let express = require("express");
-let http = require("http");
-let fs = require("fs");
-let socket = require("socket.io");
+const sqlite = require("./sqlite/sqlite");
+const express = require("express");
+const http = require("http");
+const fs = require("fs");
+const socket = require("socket.io");
 
-let app = express();
-let server = http.createServer(app);
+const app = express();
+const server = http.createServer(app);
 
 // 静的ファイルの配信
 app.use(express.static("."));
@@ -31,28 +31,28 @@ app.get("/battle", (req, res) => {
 
 server.listen(process.env.PORT || 8000);
 
-let io = socket(server);
+const io = socket(server);
 
 // ソケット通信
 io.on("connection", (socket) => {
 
     // ログイン
     socket.on("login", (data) => {
-        let username = data.value["username"];
-        let password = data.value["password"];
+        const username = data.value["username"];
+        const password = data.value["password"];
         sqlite.login(username, password, socket);
     });
 
     // アカウント登録
     socket.on("signup", (data) => {
-        let username = data.value["username"];
-        let password = data.value["password"];
+        const username = data.value["username"];
+        const password = data.value["password"];
         sqlite.signup(username, password, socket);
     });
 
     // コマンドデータ送信
     socket.on("commandData", (data) => {
-        let commandData = JSON.parse(fs.readFileSync("battle/data/data.json"));
+        const commandData = JSON.parse(fs.readFileSync("battle/data/data.json"));
         socket.emit("commandData", commandData);
     });
 });
