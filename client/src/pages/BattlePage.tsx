@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
+import { GAME_DURATION, HP_MAX, IS_DEBUG } from "../const";
 import type { CommandData, FriendOrEnemy } from "../types";
 import "../styles/battle.scss";
-
-const HP_MAX = 100;
-const GAME_DURATION = 180;
-const IS_DEBUG = true;
 
 interface BattlePageProps {
   socket: Socket;
