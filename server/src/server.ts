@@ -1,6 +1,6 @@
 import express from "express";
-import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
+import { createServer } from "node:http";
 import path from "node:path";
 import { Server } from "socket.io";
 import * as db from "./db/sqlite";

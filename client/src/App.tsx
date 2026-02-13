@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { io } from "socket.io-client";
-import TopPage from "./pages/TopPage";
+import BattlePage from "./pages/BattlePage";
 import RoomsPage from "./pages/RoomsPage";
 import StandbyPage from "./pages/StandbyPage";
-import BattlePage from "./pages/BattlePage";
+import TopPage from "./pages/TopPage";
 
 const socket = io();
 
