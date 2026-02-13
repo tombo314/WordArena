@@ -13,27 +13,31 @@ export default function BattlePage({ socket }: BattlePageProps) {
 
   const [gameStarted, setGameStarted] = useState(IS_DEBUG);
   const [gameEnded, setGameEnded] = useState(false);
-  const [hpFriend, setHpFriend] = useState(80);
-  const [hpEnemy, setHpEnemy] = useState(80);
+  const [hpFriend, setHpFriend] = useState(HP_MAX);
+  const [hpEnemy, setHpEnemy] = useState(HP_MAX);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [inputFriend, setInputFriend] = useState("");
   const [messageFriend, setMessageFriend] = useState("");
   const [messageEnemy, setMessageEnemy] = useState("");
   const [coolTimeFriendText, setCoolTimeFriendText] = useState("");
   const [coolTimeEnemyText, setCoolTimeEnemyText] = useState("");
+  const [commandList, setCommandList] = useState<string[]>([]);
 
   const commandDataRef = useRef<CommandData>({});
   const inCoolTimeFriendRef = useRef(false);
   const inCoolTimeEnemyRef = useRef(false);
   const gameEndedRef = useRef(false);
-  const hpFriendRef = useRef(80);
-  const hpEnemyRef = useRef(80);
+  const hpFriendRef = useRef(HP_MAX);
+  const hpEnemyRef = useRef(HP_MAX);
+  const defenseFriendRef = useRef(0);
+  const defenseEnemyRef = useRef(0);
 
   // commandDataを取得
   useEffect(() => {
     socket.emit("commandData", null);
     socket.on("commandData", (data: { commandData: CommandData }) => {
       commandDataRef.current = data.commandData;
+      setCommandList(Object.keys(data.commandData));
     });
     return () => { socket.off("commandData"); };
   }, [socket]);
@@ -99,13 +103,15 @@ export default function BattlePage({ socket }: BattlePageProps) {
   };
 
   const giveDamage = (damage: number, side: FriendOrEnemy) => {
+    const defense = side === "friend" ? defenseFriendRef.current : defenseEnemyRef.current;
+    const actualDamage = damage > 0 ? Math.max(0, damage - defense) : damage;
     if (side === "friend") {
-      const next = hpFriendRef.current - damage;
+      const next = hpFriendRef.current - actualDamage;
       hpFriendRef.current = next;
       setHpFriend(next);
       if (next <= 0) handleGameEnd();
     } else {
-      const next = hpEnemyRef.current - damage;
+      const next = hpEnemyRef.current - actualDamage;
       hpEnemyRef.current = next;
       setHpEnemy(next);
       if (next <= 0) handleGameEnd();
@@ -147,6 +153,11 @@ export default function BattlePage({ socket }: BattlePageProps) {
       giveDamage(damage, damageTarget);
     } else if (command === "flame field") {
       giveSlipDamage(damage, damageTarget);
+    } else if (command === "ocean field" || command === "earth field") {
+      const defense = cmd.defense as number;
+      const defenseTarget = getTarget(command, side, "defense");
+      if (defenseTarget === "friend") defenseFriendRef.current += defense;
+      else defenseEnemyRef.current += defense;
     }
   };
 
@@ -246,8 +257,16 @@ export default function BattlePage({ socket }: BattlePageProps) {
 
       {/* ステータス */}
       <div className="wrapper-status">
-        <div className="sub-wrapper-status" />
-        <div className="sub-wrapper-status" />
+        <div className="sub-wrapper-status">
+          {commandList.map((cmd) => (
+            <span key={cmd} className="command-item">{cmd}</span>
+          ))}
+        </div>
+        <div className="sub-wrapper-status">
+          {commandList.map((cmd) => (
+            <span key={cmd} className="command-item">{cmd}</span>
+          ))}
+        </div>
       </div>
     </>
   );
