@@ -45,7 +45,7 @@
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
-                "coolTime": 999
+                "coolTime": -1
             }
         },
 
@@ -117,7 +117,7 @@
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
-                "coolTime": 999
+                "coolTime": -1
             }
         }
     }
