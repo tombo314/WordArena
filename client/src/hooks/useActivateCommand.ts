@@ -47,7 +47,7 @@ const getTargetFromData = (
 };
 
 export function useActivateCommand(p: Params) {
-  const activateCommand = (command: string, side: FriendOrEnemy) => {
+  const activateCommand = (command: string, side: FriendOrEnemy): boolean => {
     const { refs } = p.coolTime;
     const inCoolTime = side === "friend" ? refs.inCoolTimeFriendRef.current : refs.inCoolTimeEnemyRef.current;
     const inRegenCoolTime = side === "friend" ? refs.inRegenCoolTimeFriendRef.current : refs.inRegenCoolTimeEnemyRef.current;
@@ -69,12 +69,12 @@ export function useActivateCommand(p: Params) {
         ? (p.commandDataRef.current[activeField!] as Record<string, CommandEntry>)[command]
         : null;
 
-    if (!cmdData) { p.showMessage("無効なコマンドです", side); return; }
-    if (disabledRef.current.has(command)) { p.showMessage("使用不可のフィールドです", side); return; }
-    if (command === "regenerate" && inRegenCoolTime) { p.showMessage("リジェネのクールタイム中です", side); return; }
-    if (SHIELD_COMMANDS.includes(command) && inShieldCoolTime) { p.showMessage("シールドのクールタイム中です", side); return; }
-    if (command !== "regenerate" && !SHIELD_COMMANDS.includes(command) && inCoolTime) { p.showMessage("スキルのクールタイム中です", side); return; }
-    if (command === activeField) { p.showMessage("スキルのクールタイム中です", side); return; }
+    if (!cmdData) { p.showMessage("無効なコマンドです", side); return false; }
+    if (disabledRef.current.has(command)) { p.showMessage("使用不可のフィールドです", side); return false; }
+    if (command === "regenerate" && inRegenCoolTime) { p.showMessage("リジェネのクールタイム中です", side); return false; }
+    if (SHIELD_COMMANDS.includes(command) && inShieldCoolTime) { p.showMessage("シールドのクールタイム中です", side); return false; }
+    if (command !== "regenerate" && !SHIELD_COMMANDS.includes(command) && inCoolTime) { p.showMessage("スキルのクールタイム中です", side); return false; }
+    if (command === activeField) { p.showMessage("スキルのクールタイム中です", side); return false; }
 
     const damage = cmdData.damage as number;
     const coolTimeSec = cmdData.coolTime as number;
@@ -162,6 +162,7 @@ export function useActivateCommand(p: Params) {
     }
 
     p.showMessage(command, side);
+    return true;
   };
 
   return { activateCommand };
