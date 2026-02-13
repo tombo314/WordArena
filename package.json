@@ -3,10 +3,14 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
+    "dev": "concurrently \"npm --prefix client run dev\" \"npm --prefix server run dev\"",
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
     "build:client": "npm --prefix client run build",
     "start": "npm --prefix server run start",
     "install:all": "npm --prefix client install && npm --prefix server install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
