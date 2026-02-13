@@ -240,7 +240,6 @@ export default function BattlePage({ socket }: BattlePageProps) {
       {/* コマンド入力欄 */}
       <div className="wrapper-input">
         <div className="sub-wrapper-input">
-          <p className="username-text">{username}</p>
           <input
             type="text"
             value={inputFriend}
@@ -255,7 +254,6 @@ export default function BattlePage({ socket }: BattlePageProps) {
         </div>
         <div className="time">{formatTime(timeLeft)}</div>
         <div className="sub-wrapper-input">
-          <p className="username-text">Enemy</p>
           <input
             className="input-enemy"
             type="text"
