@@ -180,28 +180,39 @@
   width: 100%;
   display: flex;
   margin-top: 10px;
+  margin-bottom: 20px;
 
   .sub-wrapper-status {
-    width: 60%;
-    height: 380px;
-    margin-left: 10%;
-    margin-right: 10%;
+    width: 68%;
+    height: 240px;
+    &:first-child {
+      margin-left: 5%;
+      margin-right: 4%;
+    }
+
+    &:last-child {
+      margin-left: 4%;
+      margin-right: 5%;
+    }
     background-color: #eee;
     border: 5px solid #444;
     border-radius: 10%;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
     align-content: start;
-    padding: 10px;
-    gap: 6px;
+    padding: 14px 14px 6px;
+    row-gap: 6px;
+    column-gap: 2px;
 
     .command-item {
       position: relative;
+      width: 88%;
       background-color: #fff;
       border: 1px solid #aaa;
       border-radius: 4px;
-      padding: 4px 6px;
-      font-size: 13px;
+      padding: 2px 4px;
+      font-size: 12px;
       text-align: center;
 
       &.sub-command {
