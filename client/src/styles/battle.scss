@@ -107,6 +107,11 @@
       height: 30px;
       outline: none;
       font-size: 20px;
+
+      &::placeholder {
+        color: #bbb;
+        font-size: 14px;
+      }
     }
 
     .username-text {
@@ -133,6 +138,10 @@
 
     label {
       margin-right: 10px;
+    }
+
+    span:first-child {
+      margin-right: 6px;
     }
 
     .message-text {
@@ -173,7 +182,7 @@
 
   .sub-wrapper-status {
     width: 60%;
-    height: 250px;
+    height: 380px;
     margin-left: 10%;
     margin-right: 10%;
     background-color: #eee;
@@ -194,9 +203,24 @@
       font-size: 13px;
       text-align: center;
 
+      &.sub-command {
+        font-size: 11px;
+      }
+
       &.grayed-out {
         background-color: #bbb;
         color: #888;
+      }
+
+      &.field-inactive {
+        background-color: #ddd;
+        color: #aaa;
+      }
+
+      &.permanently-disabled {
+        background-color: #999;
+        color: #555;
+        text-decoration: line-through;
       }
 
       &.flame-active {
@@ -220,6 +244,19 @@
         .orbit-dot { background-color: #6b4a00; }
       }
 
+      &.holy-active {
+        background-color: #ccffcc;
+        color: #005500;
+
+        .orbit-dot { background-color: #005500; }
+      }
+
+      &.regen-active {
+        background-color: #ccffcc;
+        color: #005500;
+        animation: regen-border-flash 0.8s step-end infinite;
+      }
+
       .orbit-dot {
         position: absolute;
         width: 8px;
@@ -237,4 +274,9 @@
 @keyframes orbit-border {
   from { offset-distance: 0%; }
   to   { offset-distance: 100%; }
+}
+
+@keyframes regen-border-flash {
+  0%, 100% { border-color: #00cc00; border-width: 2px; }
+  50%       { border-color: transparent; border-width: 1px; }
 }
