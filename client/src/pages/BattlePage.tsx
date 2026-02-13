@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
-import { GAME_DURATION, HP_MAX, IS_DEBUG } from "../const";
+import { GAME_DURATION, HP_INIT, HP_MAX, IS_DEBUG } from "../const";
 import type { CommandData, CommandEntry, FriendOrEnemy } from "../types";
 import "../styles/battle.scss";
 
 const FIELD_COMMANDS = ["flame field", "ocean field", "earth field", "holy field"];
 const SLIP_DAMAGE_FIELDS = ["flame field", "holy field"];
+const SHIELD_COMMANDS = ["flame shield", "splash shield", "protect"];
 const RESERVED_KEYS = new Set(["damage", "damageTarget", "defense", "defenseTarget", "coolTime"]);
 
 interface BattlePageProps {
@@ -17,14 +18,18 @@ export default function BattlePage({ socket }: BattlePageProps) {
 
   const [gameStarted, setGameStarted] = useState(IS_DEBUG);
   const [gameEnded, setGameEnded] = useState(false);
-  const [hpFriend, setHpFriend] = useState(HP_MAX);
-  const [hpEnemy, setHpEnemy] = useState(HP_MAX);
+  const [hpFriend, setHpFriend] = useState(HP_INIT);
+  const [hpEnemy, setHpEnemy] = useState(HP_INIT);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [inputFriend, setInputFriend] = useState("");
   const [messageFriend, setMessageFriend] = useState("");
   const [messageEnemy, setMessageEnemy] = useState("");
   const [coolTimeFriendText, setCoolTimeFriendText] = useState("");
   const [coolTimeEnemyText, setCoolTimeEnemyText] = useState("");
+  const [regenCoolTimeFriendText, setRegenCoolTimeFriendText] = useState("");
+  const [regenCoolTimeEnemyText, setRegenCoolTimeEnemyText] = useState("");
+  const [shieldCoolTimeFriendText, setShieldCoolTimeFriendText] = useState("");
+  const [shieldCoolTimeEnemyText, setShieldCoolTimeEnemyText] = useState("");
   const [commandList, setCommandList] = useState<string[]>([]);
   const [subCommandMap, setSubCommandMap] = useState<Record<string, string[]>>({});
   const [activeFriendField, setActiveFriendField] = useState<string | null>(null);
@@ -37,15 +42,23 @@ export default function BattlePage({ socket }: BattlePageProps) {
   const commandDataRef = useRef<CommandData>({});
   const inCoolTimeFriendRef = useRef(false);
   const inCoolTimeEnemyRef = useRef(false);
+  const inRegenCoolTimeFriendRef = useRef(false);
+  const inRegenCoolTimeEnemyRef = useRef(false);
+  const inShieldCoolTimeFriendRef = useRef(false);
+  const inShieldCoolTimeEnemyRef = useRef(false);
   const gameEndedRef = useRef(false);
-  const hpFriendRef = useRef(HP_MAX);
-  const hpEnemyRef = useRef(HP_MAX);
+  const hpFriendRef = useRef(HP_INIT);
+  const hpEnemyRef = useRef(HP_INIT);
   const defenseFriendRef = useRef(0);
   const defenseEnemyRef = useRef(0);
   const friendFieldIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const enemyFieldIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const friendRegenIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const enemyRegenIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const friendShieldCoolTimeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const enemyShieldCoolTimeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const friendShieldDefenseRef = useRef(0);
+  const enemyShieldDefenseRef = useRef(0);
   const disabledFriendFieldsRef = useRef(new Set<string>());
   const disabledEnemyFieldsRef = useRef(new Set<string>());
 
@@ -94,6 +107,60 @@ export default function BattlePage({ socket }: BattlePageProps) {
     const setter = side === "friend" ? setMessageFriend : setMessageEnemy;
     setter("");
     setTimeout(() => setter(message), 100);
+  };
+
+  const generateRegenCoolTime = (coolTimeSec: number, side: FriendOrEnemy) => {
+    if (side === "friend") inRegenCoolTimeFriendRef.current = true;
+    else inRegenCoolTimeEnemyRef.current = true;
+
+    const setText = side === "friend" ? setRegenCoolTimeFriendText : setRegenCoolTimeEnemyText;
+    let remaining = coolTimeSec;
+
+    const interval = setInterval(() => {
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      setText(`リジェネCT ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`);
+      if (remaining <= 0) {
+        clearInterval(interval);
+        if (side === "friend") {
+          inRegenCoolTimeFriendRef.current = false;
+          setRegenCoolTimeFriendText("");
+        } else {
+          inRegenCoolTimeEnemyRef.current = false;
+          setRegenCoolTimeEnemyText("");
+        }
+      }
+      remaining--;
+    }, 1000);
+  };
+
+  const generateShieldCoolTime = (coolTimeSec: number, side: FriendOrEnemy) => {
+    if (side === "friend") inShieldCoolTimeFriendRef.current = true;
+    else inShieldCoolTimeEnemyRef.current = true;
+
+    const setText = side === "friend" ? setShieldCoolTimeFriendText : setShieldCoolTimeEnemyText;
+    const intervalRef = side === "friend" ? friendShieldCoolTimeIntervalRef : enemyShieldCoolTimeIntervalRef;
+
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    let remaining = coolTimeSec;
+
+    intervalRef.current = setInterval(() => {
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      setText(`シールドCT ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`);
+      if (remaining <= 0) {
+        clearInterval(intervalRef.current!);
+        intervalRef.current = null;
+        if (side === "friend") {
+          inShieldCoolTimeFriendRef.current = false;
+          setShieldCoolTimeFriendText("");
+        } else {
+          inShieldCoolTimeEnemyRef.current = false;
+          setShieldCoolTimeEnemyText("");
+        }
+      }
+      remaining--;
+    }, 1000);
   };
 
   const generateCoolTime = (coolTimeSec: number, side: FriendOrEnemy) => {
@@ -179,6 +246,27 @@ export default function BattlePage({ socket }: BattlePageProps) {
       else setActiveEnemyRegen(false);
     }
 
+    // shieldのcooltime停止 + shield防御バフ取り消し
+    const shieldIntervalRef = side === "friend" ? friendShieldCoolTimeIntervalRef : enemyShieldCoolTimeIntervalRef;
+    if (shieldIntervalRef.current !== null) {
+      clearInterval(shieldIntervalRef.current);
+      shieldIntervalRef.current = null;
+      if (side === "friend") {
+        inShieldCoolTimeFriendRef.current = false;
+        setShieldCoolTimeFriendText("");
+      } else {
+        inShieldCoolTimeEnemyRef.current = false;
+        setShieldCoolTimeEnemyText("");
+      }
+    }
+    if (side === "friend") {
+      defenseFriendRef.current -= friendShieldDefenseRef.current;
+      friendShieldDefenseRef.current = 0;
+    } else {
+      defenseEnemyRef.current -= enemyShieldDefenseRef.current;
+      enemyShieldDefenseRef.current = 0;
+    }
+
     const fieldCmd = commandDataRef.current[fieldName];
     if (fieldCmd) {
       const defense = fieldCmd.defense as number;
@@ -194,6 +282,9 @@ export default function BattlePage({ socket }: BattlePageProps) {
     const inCoolTime = side === "friend"
       ? inCoolTimeFriendRef.current
       : inCoolTimeEnemyRef.current;
+    const inRegenCoolTime = side === "friend"
+      ? inRegenCoolTimeFriendRef.current
+      : inRegenCoolTimeEnemyRef.current;
     const activeField = side === "friend" ? activeFriendField : activeEnemyField;
     const disabledRef = side === "friend" ? disabledFriendFieldsRef : disabledEnemyFieldsRef;
 
@@ -224,7 +315,19 @@ export default function BattlePage({ socket }: BattlePageProps) {
       return;
     }
 
-    if (inCoolTime) {
+    const inShieldCoolTime = side === "friend"
+      ? inShieldCoolTimeFriendRef.current
+      : inShieldCoolTimeEnemyRef.current;
+
+    if (command === "regenerate" && inRegenCoolTime) {
+      showMessage("リジェネのクールタイム中です", side);
+      return;
+    }
+    if (SHIELD_COMMANDS.includes(command) && inShieldCoolTime) {
+      showMessage("シールドのクールタイム中です", side);
+      return;
+    }
+    if (command !== "regenerate" && !SHIELD_COMMANDS.includes(command) && inCoolTime) {
       showMessage("スキルのクールタイム中です", side);
       return;
     }
@@ -238,7 +341,13 @@ export default function BattlePage({ socket }: BattlePageProps) {
     const coolTime = cmdData.coolTime as number;
     const damageTarget = getTargetFromData(cmdData, side, "damageTarget");
 
-    if (coolTime >= 0) generateCoolTime(coolTime, side);
+    if (command === "regenerate") {
+      if (coolTime >= 0) generateRegenCoolTime(coolTime, side);
+    } else if (SHIELD_COMMANDS.includes(command)) {
+      if (coolTime >= 0) generateShieldCoolTime(coolTime, side);
+    } else {
+      if (coolTime >= 0) generateCoolTime(coolTime, side);
+    }
     if (side === "friend") setInputFriend("");
 
     if (command === "attack" || command === "heal") {
@@ -299,8 +408,20 @@ export default function BattlePage({ socket }: BattlePageProps) {
           }
         }, 1000);
 
+      } else if (SHIELD_COMMANDS.includes(command)) {
+        // flame shield / splash shield / protect
+        const defense = cmdData.defense as number;
+        if (defense > 0) {
+          if (side === "friend") {
+            defenseFriendRef.current += defense;
+            friendShieldDefenseRef.current += defense;
+          } else {
+            defenseEnemyRef.current += defense;
+            enemyShieldDefenseRef.current += defense;
+          }
+        }
       } else {
-        // fire / holy arrow / crack / flame shield / splash shield / protect
+        // fire / holy arrow / crack
         if (damage !== 0 && damageTarget) {
           giveDamage(damage, damageTarget);
         }
@@ -401,9 +522,13 @@ export default function BattlePage({ socket }: BattlePageProps) {
       <div className="wrapper-cool-time">
         <div className="sub-wrapper-cool-time">
           <div className="cool-time">{coolTimeFriendText}</div>
+          <div className="cool-time">{regenCoolTimeFriendText}</div>
+          <div className="cool-time">{shieldCoolTimeFriendText}</div>
         </div>
         <div className="sub-wrapper-cool-time">
           <div className="cool-time">{coolTimeEnemyText}</div>
+          <div className="cool-time">{regenCoolTimeEnemyText}</div>
+          <div className="cool-time">{shieldCoolTimeEnemyText}</div>
         </div>
       </div>
 
@@ -414,6 +539,12 @@ export default function BattlePage({ socket }: BattlePageProps) {
           const inCoolTime = side === "friend"
             ? coolTimeFriendText !== ""
             : coolTimeEnemyText !== "";
+          const inRegenCoolTime = side === "friend"
+            ? regenCoolTimeFriendText !== ""
+            : regenCoolTimeEnemyText !== "";
+          const inShieldCoolTime = side === "friend"
+            ? shieldCoolTimeFriendText !== ""
+            : shieldCoolTimeEnemyText !== "";
           const disabledFields = side === "friend" ? disabledFriendFields : disabledEnemyFields;
           const activeRegen = side === "friend" ? activeFriendRegen : activeEnemyRegen;
 
@@ -445,10 +576,25 @@ export default function BattlePage({ socket }: BattlePageProps) {
                   let subClass = "sub-command";
                   if (cmd !== activeField) {
                     subClass += " field-inactive";
-                  } else if (sub === "regenerate" && activeRegen) {
-                    subClass += " regen-active";
+                  } else if (sub === "regenerate") {
+                    if (activeRegen) subClass += " regen-active";
+                    else if (inRegenCoolTime) subClass += " grayed-out";
+                    else subClass += " holy-sub";
+                  } else if (SHIELD_COMMANDS.includes(sub)) {
+                    if (inShieldCoolTime) subClass += " grayed-out";
+                    else {
+                      if (cmd === "flame field") subClass += " flame-sub";
+                      else if (cmd === "ocean field") subClass += " ocean-sub";
+                      else if (cmd === "earth field") subClass += " earth-sub";
+                      else if (cmd === "holy field") subClass += " holy-sub";
+                    }
                   } else if (inCoolTime) {
                     subClass += " grayed-out";
+                  } else {
+                    if (cmd === "flame field") subClass += " flame-sub";
+                    else if (cmd === "ocean field") subClass += " ocean-sub";
+                    else if (cmd === "earth field") subClass += " earth-sub";
+                    else if (cmd === "holy field") subClass += " holy-sub";
                   }
                   return (
                     <span key={sub} className={`command-item ${subClass}`}>

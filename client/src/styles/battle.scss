@@ -147,7 +147,7 @@
     .message-text {
       width: 35%;
       height: 27px;
-      font-size: 18px;
+      font-size: 14px;
       border: #777 1px solid;
       background-color: #fafafa;
       text-align: left;
@@ -249,6 +249,26 @@
         color: #005500;
 
         .orbit-dot { background-color: #005500; }
+      }
+
+      &.flame-sub {
+        background-color: #ffeeee;
+        color: #800000;
+      }
+
+      &.ocean-sub {
+        background-color: #e8f2ff;
+        color: #003080;
+      }
+
+      &.earth-sub {
+        background-color: #f5edcc;
+        color: #4a3000;
+      }
+
+      &.holy-sub {
+        background-color: #eeffee;
+        color: #005500;
       }
 
       &.regen-active {
