@@ -12,19 +12,19 @@ app.use(express.static("."));
 
 // ルーティング（HTMLページ）
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/top/top.html");
+    res.sendFile(`${__dirname}/top/top.html`);
 });
 
 app.get("/rooms", (req, res) => {
-    res.sendFile(__dirname + "/rooms/rooms.html");
+    res.sendFile(`${__dirname}/rooms/rooms.html`);
 });
 
 app.get("/standby", (req, res) => {
-    res.sendFile(__dirname + "/standby/standby.html");
+    res.sendFile(`${__dirname}/standby/standby.html`);
 });
 
 app.get("/battle", (req, res) => {
-    res.sendFile(__dirname + "/battle/battle.html");
+    res.sendFile(`${__dirname}/battle/battle.html`);
 });
 
 server.listen(process.env.PORT || 8000);
