@@ -11,19 +11,19 @@ const server = http.createServer(app);
 app.use(express.static("."));
 
 // ルーティング（HTMLページ）
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
     res.sendFile(`${__dirname}/top/top.html`);
 });
 
-app.get("/rooms", (req, res) => {
+app.get("/rooms", (_, res) => {
     res.sendFile(`${__dirname}/rooms/rooms.html`);
 });
 
-app.get("/standby", (req, res) => {
+app.get("/standby", (_, res) => {
     res.sendFile(`${__dirname}/standby/standby.html`);
 });
 
-app.get("/battle", (req, res) => {
+app.get("/battle", (_, res) => {
     res.sendFile(`${__dirname}/battle/battle.html`);
 });
 
