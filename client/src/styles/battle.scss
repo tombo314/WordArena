@@ -186,12 +186,55 @@
     gap: 6px;
 
     .command-item {
+      position: relative;
       background-color: #fff;
       border: 1px solid #aaa;
       border-radius: 4px;
       padding: 4px 6px;
       font-size: 13px;
       text-align: center;
+
+      &.grayed-out {
+        background-color: #bbb;
+        color: #888;
+      }
+
+      &.flame-active {
+        background-color: #ffaaaa;
+        color: #800000;
+
+        .orbit-dot { background-color: #8b0000; }
+      }
+
+      &.ocean-active {
+        background-color: #aaccff;
+        color: #003080;
+
+        .orbit-dot { background-color: #003080; }
+      }
+
+      &.earth-active {
+        background-color: #d4b84a;
+        color: #4a3000;
+
+        .orbit-dot { background-color: #6b4a00; }
+      }
+
+      .orbit-dot {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        offset-path: inset(0 round 4px);
+        offset-anchor: center;
+        animation: orbit-border 2s linear infinite reverse;
+        pointer-events: none;
+      }
     }
   }
+}
+
+@keyframes orbit-border {
+  from { offset-distance: 0%; }
+  to   { offset-distance: 100%; }
 }

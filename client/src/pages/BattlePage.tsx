@@ -22,6 +22,8 @@ export default function BattlePage({ socket }: BattlePageProps) {
   const [coolTimeFriendText, setCoolTimeFriendText] = useState("");
   const [coolTimeEnemyText, setCoolTimeEnemyText] = useState("");
   const [commandList, setCommandList] = useState<string[]>([]);
+  const [activeFriendField, setActiveFriendField] = useState<string | null>(null);
+  const [activeEnemyField, setActiveEnemyField] = useState<string | null>(null);
 
   const commandDataRef = useRef<CommandData>({});
   const inCoolTimeFriendRef = useRef(false);
@@ -31,6 +33,8 @@ export default function BattlePage({ socket }: BattlePageProps) {
   const hpEnemyRef = useRef(HP_MAX);
   const defenseFriendRef = useRef(0);
   const defenseEnemyRef = useRef(0);
+  const friendFieldIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const enemyFieldIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // commandDataを取得
   useEffect(() => {
@@ -118,12 +122,30 @@ export default function BattlePage({ socket }: BattlePageProps) {
     }
   };
 
-  const giveSlipDamage = (damage: number, side: FriendOrEnemy) => {
+  const giveSlipDamage = (damage: number, side: FriendOrEnemy): ReturnType<typeof setInterval> => {
     const refHp = side === "friend" ? hpFriendRef : hpEnemyRef;
     const interval = setInterval(() => {
       giveDamage(damage, side);
       if (refHp.current <= 0) clearInterval(interval);
     }, 1000);
+    return interval;
+  };
+
+  const cancelField = (fieldName: string, side: FriendOrEnemy) => {
+    const intervalRef = side === "friend" ? friendFieldIntervalRef : enemyFieldIntervalRef;
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    const fieldCmd = commandDataRef.current[fieldName];
+    if (fieldCmd) {
+      const defense = fieldCmd.defense as number;
+      if (defense > 0) {
+        const defenseTarget = getTarget(fieldName, side, "defense");
+        if (defenseTarget === "friend") defenseFriendRef.current -= defense;
+        else defenseEnemyRef.current -= defense;
+      }
+    }
   };
 
   const activateCommand = (command: string, side: FriendOrEnemy) => {
@@ -131,7 +153,9 @@ export default function BattlePage({ socket }: BattlePageProps) {
       ? inCoolTimeFriendRef.current
       : inCoolTimeEnemyRef.current;
 
-    if (!(command in commandDataRef.current) || inCoolTime) {
+    const activeField = side === "friend" ? activeFriendField : activeEnemyField;
+
+    if (!(command in commandDataRef.current) || inCoolTime || command === activeField) {
       const msg = !(command in commandDataRef.current)
         ? "無効なコマンドです"
         : "スキルのクールタイム中です";
@@ -151,13 +175,21 @@ export default function BattlePage({ socket }: BattlePageProps) {
 
     if (command === "attack" || command === "heal") {
       giveDamage(damage, damageTarget);
-    } else if (command === "flame field") {
-      giveSlipDamage(damage, damageTarget);
-    } else if (command === "ocean field" || command === "earth field") {
-      const defense = cmd.defense as number;
-      const defenseTarget = getTarget(command, side, "defense");
-      if (defenseTarget === "friend") defenseFriendRef.current += defense;
-      else defenseEnemyRef.current += defense;
+    } else if (command === "flame field" || command === "ocean field" || command === "earth field") {
+      if (activeField !== null) cancelField(activeField, side);
+
+      if (command === "flame field") {
+        const intervalRef = side === "friend" ? friendFieldIntervalRef : enemyFieldIntervalRef;
+        intervalRef.current = giveSlipDamage(damage, damageTarget);
+      } else {
+        const defense = cmd.defense as number;
+        const defenseTarget = getTarget(command, side, "defense");
+        if (defenseTarget === "friend") defenseFriendRef.current += defense;
+        else defenseEnemyRef.current += defense;
+      }
+
+      if (side === "friend") setActiveFriendField(command);
+      else setActiveEnemyField(command);
     }
   };
 
@@ -257,16 +289,32 @@ export default function BattlePage({ socket }: BattlePageProps) {
 
       {/* ステータス */}
       <div className="wrapper-status">
-        <div className="sub-wrapper-status">
-          {commandList.map((cmd) => (
-            <span key={cmd} className="command-item">{cmd}</span>
-          ))}
-        </div>
-        <div className="sub-wrapper-status">
-          {commandList.map((cmd) => (
-            <span key={cmd} className="command-item">{cmd}</span>
-          ))}
-        </div>
+        {(["friend", "enemy"] as FriendOrEnemy[]).map((side) => {
+          const activeField = side === "friend" ? activeFriendField : activeEnemyField;
+          const inCoolTime = side === "friend"
+            ? coolTimeFriendText !== ""
+            : coolTimeEnemyText !== "";
+          return (
+            <div key={side} className="sub-wrapper-status">
+              {commandList.map((cmd) => {
+                let itemClass = "";
+                if (cmd === activeField) {
+                  if (cmd === "flame field") itemClass = "flame-active";
+                  else if (cmd === "ocean field") itemClass = "ocean-active";
+                  else if (cmd === "earth field") itemClass = "earth-active";
+                } else if (inCoolTime) {
+                  itemClass = "grayed-out";
+                }
+                return (
+                  <span key={cmd} className={`command-item ${itemClass}`}>
+                    {cmd === activeField && <span className="orbit-dot" />}
+                    {cmd}
+                  </span>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
     </>
   );
