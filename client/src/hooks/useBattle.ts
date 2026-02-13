@@ -1,16 +1,12 @@
 import { useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
 import { IS_DEBUG } from "../const";
-import type { CommandEntry, FriendOrEnemy } from "../types";
+import type { FriendOrEnemy } from "../types";
 import { useCommandData } from "./useCommandData";
 import { useGameTimer } from "./useGameTimer";
 import { useCoolTime } from "./useCoolTime";
 import { useHP } from "./useHP";
-
-const FIELD_COMMANDS = ["flame field", "ocean field", "earth field", "holy field"];
-const SLIP_DAMAGE_FIELDS = ["flame field", "holy field"];
-const SHIELD_COMMANDS = ["flame shield", "splash shield", "protect"];
-const RESERVED_KEYS = new Set(["damage", "damageTarget", "defense", "defenseTarget", "coolTime"]);
+import { useActivateCommand } from "./useActivateCommand";
 
 export function useBattle(socket: Socket) {
   const [gameStarted, setGameStarted] = useState(IS_DEBUG);
@@ -56,13 +52,6 @@ export function useBattle(socket: Socket) {
     const setter = side === "friend" ? setMessageFriend : setMessageEnemy;
     setter("");
     setTimeout(() => setter(message), 100);
-  };
-
-  const getTargetFromData = (cmdData: CommandEntry, side: FriendOrEnemy, key: "damageTarget" | "defenseTarget"): FriendOrEnemy | null => {
-    const commandTarget = cmdData[key] as FriendOrEnemy | null;
-    if (!commandTarget) return null;
-    if (side === "friend") return commandTarget;
-    return commandTarget === "friend" ? "enemy" : "friend";
   };
 
   // cancelField 専用（トップレベルコマンドのdefenseTarget解決）
@@ -111,122 +100,33 @@ export function useBattle(socket: Socket) {
     }
   };
 
-  const activateCommand = (command: string, side: FriendOrEnemy) => {
-    const { refs } = coolTime;
-    const inCoolTime = side === "friend" ? refs.inCoolTimeFriendRef.current : refs.inCoolTimeEnemyRef.current;
-    const inRegenCoolTime = side === "friend" ? refs.inRegenCoolTimeFriendRef.current : refs.inRegenCoolTimeEnemyRef.current;
-    const inShieldCoolTime = side === "friend" ? refs.inShieldCoolTimeFriendRef.current : refs.inShieldCoolTimeEnemyRef.current;
-    const activeField = side === "friend" ? activeFriendFieldRef.current : activeEnemyFieldRef.current;
-    const disabledRef = side === "friend" ? disabledFriendFieldsRef : disabledEnemyFieldsRef;
-
-    const isTopLevel = command in commandDataRef.current;
-    const activeFieldData = activeField ? (commandDataRef.current[activeField] as Record<string, unknown>) : null;
-    const isSubCmd = !isTopLevel
-      && activeField !== null
-      && activeFieldData !== null
-      && !RESERVED_KEYS.has(command)
-      && command in activeFieldData;
-
-    const cmdData: CommandEntry | null = isTopLevel
-      ? commandDataRef.current[command]
-      : isSubCmd
-        ? (commandDataRef.current[activeField!] as Record<string, CommandEntry>)[command]
-        : null;
-
-    if (!cmdData) { showMessage("無効なコマンドです", side); return; }
-    if (disabledRef.current.has(command)) { showMessage("使用不可のフィールドです", side); return; }
-    if (command === "regenerate" && inRegenCoolTime) { showMessage("リジェネのクールタイム中です", side); return; }
-    if (SHIELD_COMMANDS.includes(command) && inShieldCoolTime) { showMessage("シールドのクールタイム中です", side); return; }
-    if (command !== "regenerate" && !SHIELD_COMMANDS.includes(command) && inCoolTime) { showMessage("スキルのクールタイム中です", side); return; }
-    if (command === activeField) { showMessage("スキルのクールタイム中です", side); return; }
-
-    const damage = cmdData.damage as number;
-    const coolTimeSec = cmdData.coolTime as number;
-    const damageTarget = getTargetFromData(cmdData, side, "damageTarget");
-
-    if (command === "regenerate") {
-      if (coolTimeSec >= 0) coolTime.generateRegenCoolTime(coolTimeSec, side);
-    } else if (SHIELD_COMMANDS.includes(command)) {
-      if (coolTimeSec >= 0) coolTime.generateShieldCoolTime(coolTimeSec, side);
-    } else {
-      if (coolTimeSec >= 0) coolTime.generateCoolTime(coolTimeSec, side);
-    }
-    if (side === "friend") setInputFriend("");
-
-    if (command === "attack" || command === "heal") {
-      giveDamage(damage, damageTarget!);
-
-    } else if (FIELD_COMMANDS.includes(command)) {
-      if (activeField !== null) cancelField(activeField, side);
-
-      if (SLIP_DAMAGE_FIELDS.includes(command)) {
-        const intervalRef = side === "friend" ? friendFieldIntervalRef : enemyFieldIntervalRef;
-        intervalRef.current = giveSlipDamage(damage, damageTarget!);
-      } else {
-        const defense = cmdData.defense as number;
-        const defenseTarget = getTargetFromData(cmdData, side, "defenseTarget");
-        if (defense > 0 && defenseTarget) {
-          if (defenseTarget === "friend") defenseFriendRef.current += defense;
-          else defenseEnemyRef.current += defense;
-        }
-      }
-
-      if (side === "friend") { setActiveFriendField(command); activeFriendFieldRef.current = command; }
-      else { setActiveEnemyField(command); activeEnemyFieldRef.current = command; }
-
-    } else if (isSubCmd) {
-      if (command === "burn out" || command === "earth quake") {
-        giveDamage(damage, damageTarget!);
-        cancelField(activeField!, side);
-        if (side === "friend") {
-          setActiveFriendField(null); activeFriendFieldRef.current = null;
-          disabledFriendFieldsRef.current.add(activeField!);
-          setDisabledFriendFields([...disabledFriendFieldsRef.current]);
-        } else {
-          setActiveEnemyField(null); activeEnemyFieldRef.current = null;
-          disabledEnemyFieldsRef.current.add(activeField!);
-          setDisabledEnemyFields([...disabledEnemyFieldsRef.current]);
-        }
-
-      } else if (command === "regenerate") {
-        const regenRef = side === "friend" ? friendRegenIntervalRef : enemyRegenIntervalRef;
-        const setActiveRegen = side === "friend" ? setActiveFriendRegen : setActiveEnemyRegen;
-        if (regenRef.current) clearInterval(regenRef.current);
-
-        setActiveRegen(true);
-        let remaining = 20;
-        const healTarget = damageTarget!;
-        const healAmount = damage;
-
-        regenRef.current = setInterval(() => {
-          giveDamage(healAmount, healTarget);
-          remaining--;
-          if (remaining <= 0) {
-            clearInterval(regenRef.current!);
-            regenRef.current = null;
-            setActiveRegen(false);
-          }
-        }, 1000);
-
-      } else if (SHIELD_COMMANDS.includes(command)) {
-        const defense = cmdData.defense as number;
-        if (defense > 0) {
-          if (side === "friend") { defenseFriendRef.current += defense; friendShieldDefenseRef.current += defense; }
-          else { defenseEnemyRef.current += defense; enemyShieldDefenseRef.current += defense; }
-        }
-      } else {
-        if (damage !== 0 && damageTarget) giveDamage(damage, damageTarget);
-        const defense = cmdData.defense as number;
-        const defenseTarget = getTargetFromData(cmdData, side, "defenseTarget");
-        if (defense > 0 && defenseTarget) {
-          if (defenseTarget === "friend") defenseFriendRef.current += defense;
-          else defenseEnemyRef.current += defense;
-        }
-      }
-    }
-
-    showMessage(command, side);
-  };
+  const { activateCommand } = useActivateCommand({
+    coolTime,
+    commandDataRef,
+    activeFriendFieldRef,
+    activeEnemyFieldRef,
+    disabledFriendFieldsRef,
+    disabledEnemyFieldsRef,
+    defenseFriendRef,
+    defenseEnemyRef,
+    friendFieldIntervalRef,
+    enemyFieldIntervalRef,
+    friendRegenIntervalRef,
+    enemyRegenIntervalRef,
+    friendShieldDefenseRef,
+    enemyShieldDefenseRef,
+    showMessage,
+    cancelField,
+    giveDamage,
+    giveSlipDamage,
+    setInputFriend,
+    setActiveFriendField,
+    setActiveEnemyField,
+    setActiveFriendRegen,
+    setActiveEnemyRegen,
+    setDisabledFriendFields,
+    setDisabledEnemyFields,
+  });
 
   const handleGameEnd = () => {
     if (gameEndedRef.current) return;
