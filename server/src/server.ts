@@ -24,7 +24,7 @@ server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-const dataPath = path.join(__dirname, "../data/data.json");
+const dataPath = path.join(__dirname, "../data/commandData.json");
 
 io.on("connection", (socket) => {
   // ログイン
