@@ -6,7 +6,8 @@
             "damageTarget": "enemy",
             "defense": 0,
             "defenseTarget": null,
-            "coolTime": 5
+            "coolTime": 5,
+            "attribute": "physical"
         },
 
         "heal": {
@@ -14,7 +15,8 @@
             "damageTarget": "friend",
             "defense": 0,
             "defenseTarget": null,
-            "coolTime": 5
+            "coolTime": 5,
+            "attribute": "magic"
         },
 
         "flame field": {
@@ -23,29 +25,33 @@
             "defense": 0,
             "defenseTarget": null,
             "coolTime": 0,
+            "attribute": "field",
 
             "fire": {
                 "damage": 10,
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
-                "coolTime": 5
+                "coolTime": 5,
+                "attribute": "breath"
             },
 
-            "flame shield": {
+            "blaze shield": {
                 "damage": 0,
                 "damageTarget": null,
                 "defense": 3,
                 "defenseTarget": "friend",
-                "coolTime": 20
+                "coolTime": 20,
+                "attribute": "magic"
             },
 
             "burn out": {
-                "damage": 60,
+                "damage": 70,
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
-                "coolTime": -1
+                "coolTime": -1,
+                "attribute": "breath"
             }
         },
 
@@ -55,29 +61,42 @@
             "defense": 2,
             "defenseTarget": "friend",
             "coolTime": 0,
+            "attribute": "field",
+
+            "swamp": {
+                "damage": 1,
+                "damageTarget": null,
+                "defense": 0,
+                "defenseTarget": null,
+                "coolTime": 0,
+                "attribute": "field"
+            },
 
             "splash shield": {
                 "damage": 0,
                 "damageTarget": null,
                 "defense": 5,
                 "defenseTarget": "friend",
-                "coolTime": 20
+                "coolTime": 20,
+                "attribute": "magic"
             }
         },
 
         "holy field": {
-            "damage": 3,
+            "damage": 2,
             "damageTarget": "enemy",
             "defense": 0,
             "defenseTarget": null,
             "coolTime": 0,
+            "attribute": "field",
 
             "holy arrow": {
                 "damage": 12,
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
-                "coolTime": 5
+                "coolTime": 5,
+                "attribute": "physical"
             },
 
             "regenerate": {
@@ -85,7 +104,17 @@
                 "damageTarget": "friend",
                 "defense": 0,
                 "defenseTarget": null,
-                "coolTime": 20
+                "coolTime": 20,
+                "attribute": "magic"
+            },
+
+            "shining": {
+                "damage": 0,
+                "damageTarget": null,
+                "defense": 0,
+                "defenseTarget": null,
+                "coolTime": 0,
+                "attribute": "magic"
             }
         },
         
@@ -95,29 +124,33 @@
             "defense": 3,
             "defenseTarget": "friend",
             "coolTime": 0,
+            "attribute": "field",
 
             "crack": {
                 "damage": 10,
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
-                "coolTime": 5
+                "coolTime": 5,
+                "attribute": "physical"
             },
 
-            "protect": {
+            "guardian": {
                 "damage": 0,
                 "damageTarget": null,
-                "defense": 5,
+                "defense": 0,
                 "defenseTarget": "friend",
-                "coolTime": 7
+                "coolTime": 0,
+                "attribute": "magic"
             },
 
-            "earth quake": {
+            "earthquake": {
                 "damage": 60,
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
-                "coolTime": -1
+                "coolTime": -1,
+                "attribute": "physical"
             }
         }
     }
