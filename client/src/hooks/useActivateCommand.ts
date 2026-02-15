@@ -1,14 +1,8 @@
 import type { MutableRefObject } from "react";
+import { ATTRIBUTE } from "../const";
 import type { CommandEntry, FriendOrEnemy } from "../types";
 import type { useCoolTime } from "./useCoolTime";
 
-const FIELD_COMMANDS = [
-	"flame field",
-	"ocean field",
-	"earth field",
-	"holy field",
-];
-const SLIP_DAMAGE_FIELDS = ["flame field", "holy field"];
 const SHIELD_COMMANDS = ["flame shield", "splash shield", "protect"];
 const RESERVED_KEYS = new Set([
 	"damage",
@@ -16,6 +10,7 @@ const RESERVED_KEYS = new Set([
 	"defense",
 	"defenseTarget",
 	"coolTime",
+	"attribute",
 ]);
 
 interface Params {
@@ -157,15 +152,15 @@ export function useActivateCommand(p: Params) {
 
 		if (command === "attack" || command === "heal") {
 			p.giveDamage(damage, damageTarget!);
-		} else if (FIELD_COMMANDS.includes(command)) {
+		} else if (cmdData.attribute === ATTRIBUTE.FIELD) {
 			if (activeField !== null) p.cancelField(activeField, side);
 
-			if (SLIP_DAMAGE_FIELDS.includes(command)) {
+			if (damage > 0 && damageTarget !== null) {
 				const intervalRef =
 					side === "friend"
 						? p.friendFieldIntervalRef
 						: p.enemyFieldIntervalRef;
-				intervalRef.current = p.giveSlipDamage(damage, damageTarget!);
+				intervalRef.current = p.giveSlipDamage(damage, damageTarget);
 			} else {
 				const defense = cmdData.defense as number;
 				const defenseTarget = getTargetFromData(cmdData, side, "defenseTarget");
