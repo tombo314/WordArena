@@ -90,13 +90,13 @@
             "coolTime": 0,
             "attribute": "field",
 
-            "holy arrow": {
+            "holy light": {
                 "damage": 12,
                 "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
                 "coolTime": 5,
-                "attribute": "physical"
+                "attribute": "breath"
             },
 
             "regenerate": {
