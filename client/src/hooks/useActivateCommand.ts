@@ -1,20 +1,10 @@
 import type { MutableRefObject } from "react";
-import { ATTRIBUTE } from "../const";
+import { ATTRIBUTE, RESERVED_KEYS } from "../const";
 import type { Attribute } from "../const";
 import type { CommandEntry, FriendOrEnemy } from "../types";
 import type { useCoolTime } from "./useCoolTime";
 
 const SHIELD_COMMANDS = ["flame shield", "splash shield", "protect"];
-const RESERVED_KEYS = new Set([
-	"damage",
-	"damageTarget",
-	"defense",
-	"defenseTarget",
-	"coolTime",
-	"attribute",
-	"parentCommand",
-	"originalParams",
-]);
 
 interface Params {
 	coolTime: ReturnType<typeof useCoolTime>;

@@ -1,3 +1,20 @@
+export const RESERVED_KEYS = new Set([
+	// CommandEntry
+	"damage",
+	"damageTarget",
+	"defense",
+	"defenseTarget",
+	"coolTime",
+	"attribute",
+	"parentCommand",
+	"originalParams",
+	// OriginalParams
+	"cancelField",
+	"parryCount",
+	"commandDelay",
+	"delayTarget",
+]);
+
 export const HP_MAX = 500;
 export const HP_INIT = 450;
 // export const GAME_DURATION = 180;

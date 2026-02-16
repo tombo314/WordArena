@@ -1,15 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
+import { RESERVED_KEYS } from "../const";
 import type { CommandData } from "../types";
-
-const RESERVED_KEYS = new Set([
-	"damage",
-	"damageTarget",
-	"defense",
-	"defenseTarget",
-	"coolTime",
-	"attribute",
-]);
 
 export function useCommandData(socket: Socket) {
 	const [commandList, setCommandList] = useState<string[]>([]);
