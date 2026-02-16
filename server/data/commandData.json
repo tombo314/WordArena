@@ -63,7 +63,7 @@
             "coolTime": 0,
             "attribute": "field",
 
-            "swamp": {
+            "swamp field": {
                 "damage": 1,
                 "damageTarget": "enemy",
                 "defense": 0,
