@@ -64,7 +64,7 @@ export function useCoolTime() {
 			const m = Math.floor(remaining / 60);
 			const s = remaining % 60;
 			setText(
-				`リジェネCT ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
+				`regenerate CT ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
 			);
 			if (remaining <= 0) {
 				clearInterval(interval);
@@ -100,7 +100,7 @@ export function useCoolTime() {
 			const m = Math.floor(remaining / 60);
 			const s = remaining % 60;
 			setText(
-				`シールドCT ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
+				`shield CT ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
 			);
 			if (remaining <= 0) {
 				clearInterval(intervalRef.current!);
