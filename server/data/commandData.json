@@ -65,7 +65,7 @@
 
             "swamp": {
                 "damage": 1,
-                "damageTarget": null,
+                "damageTarget": "enemy",
                 "defense": 0,
                 "defenseTarget": null,
                 "coolTime": 0,
