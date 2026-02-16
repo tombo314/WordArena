@@ -12,6 +12,8 @@ const RESERVED_KEYS = new Set([
 	"defenseTarget",
 	"coolTime",
 	"attribute",
+	"parentCommand",
+	"originalParams",
 ]);
 
 interface Params {
@@ -213,7 +215,8 @@ export function useActivateCommand(p: Params) {
 			}
 		} else if (isSubCmd) {
 			if (activeField === null) return false;
-			if (coolTimeSec === -1) {
+			const shouldCancelField = cmdData.originalParams?.cancelField === true;
+			if (shouldCancelField) {
 				if (damageTarget !== null) p.giveDamage(damage, damageTarget);
 				p.cancelField(activeField, side);
 				if (side === "friend") {

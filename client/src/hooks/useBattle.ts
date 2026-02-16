@@ -132,16 +132,15 @@ export function useBattle(socket: Socket) {
 			setDerivedField(null);
 		}
 
-		if (fieldName === "holy field") {
-			const regenRef =
-				side === "friend" ? friendRegenIntervalRef : enemyRegenIntervalRef;
-			if (regenRef.current !== null) {
-				clearInterval(regenRef.current);
-				regenRef.current = null;
-			}
-			if (side === "friend") setActiveFriendRegen(false);
-			else setActiveEnemyRegen(false);
+		// フィールド切り替え時はサブコマンドで発動中のエフェクト（regenなど）をすべて停止する
+		const regenRef =
+			side === "friend" ? friendRegenIntervalRef : enemyRegenIntervalRef;
+		if (regenRef.current !== null) {
+			clearInterval(regenRef.current);
+			regenRef.current = null;
 		}
+		if (side === "friend") setActiveFriendRegen(false);
+		else setActiveEnemyRegen(false);
 
 		coolTime.clearShieldCoolTime(side);
 

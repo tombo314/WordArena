@@ -1,5 +1,12 @@
 import type { Attribute } from "../const";
 
+export interface OriginalParams {
+	cancelField?: boolean;
+	parryCount?: number;
+	commandDelay?: number;
+	delayTarget?: string;
+}
+
 export interface CommandEntry {
 	damage: number;
 	damageTarget: "friend" | "enemy" | null;
@@ -7,7 +14,9 @@ export interface CommandEntry {
 	defenseTarget: "friend" | "enemy" | null;
 	coolTime: number;
 	attribute: Attribute;
-	[key: string]: CommandEntry | number | string | null;
+	parentCommand: string | null;
+	originalParams: OriginalParams | null;
+	[key: string]: CommandEntry | OriginalParams | number | string | null;
 }
 
 export interface CommandData {
