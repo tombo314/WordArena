@@ -1,6 +1,6 @@
 import type { MutableRefObject } from "react";
-import { ATTRIBUTE, RESERVED_KEYS } from "../const";
 import type { Attribute } from "../const";
+import { ATTRIBUTE, RESERVED_KEYS } from "../const";
 import type { CommandEntry, FriendOrEnemy } from "../types";
 import type { useCoolTime } from "./useCoolTime";
 
@@ -266,7 +266,7 @@ export function useActivateCommand(p: Params) {
 			}
 		}
 
-		p.showMessage(command, side, cmdData.attribute as Attribute);
+		p.showMessage(command, side, cmdData.attribute);
 		return true;
 	};
 
