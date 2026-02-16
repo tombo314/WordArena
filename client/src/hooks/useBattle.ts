@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
-import { IS_DEBUG } from "../const";
-import type { Attribute } from "../const";
+import { type Attribute, IS_DEBUG } from "../const";
 import type { FriendOrEnemy } from "../types";
 import { useActivateCommand } from "./useActivateCommand";
 import { useCommandData } from "./useCommandData";
@@ -73,12 +72,17 @@ export function useBattle(socket: Socket) {
 		handleGameEndRef.current(),
 	);
 
-	const showMessage = (message: string, side: FriendOrEnemy, attribute?: Attribute | null) => {
+	const showMessage = (
+		message: string,
+		side: FriendOrEnemy,
+		attribute?: Attribute | null,
+	) => {
 		const setter = side === "friend" ? setMessageFriend : setMessageEnemy;
 		setter("");
 		setTimeout(() => setter(message), 100);
 		if (attribute !== undefined) {
-			const attrSetter = side === "friend" ? setAttributeFriend : setAttributeEnemy;
+			const attrSetter =
+				side === "friend" ? setAttributeFriend : setAttributeEnemy;
 			attrSetter(attribute ?? null);
 			if (attribute) {
 				if (side === "friend") {
