@@ -8,6 +8,7 @@ const RESERVED_KEYS = new Set([
 	"defense",
 	"defenseTarget",
 	"coolTime",
+	"attribute",
 ]);
 
 export function useCommandData(socket: Socket) {
