@@ -98,8 +98,8 @@ export function useActivateCommand(p: Params) {
 		const activeFieldData = activeField
 			? (p.commandDataRef.current[activeField] as Record<string, unknown>)
 			: null;
-		const activeDerivedFieldData = activeDerivedField
-			? (p.commandDataRef.current[activeField!] as Record<string, unknown>)?.[activeDerivedField] as Record<string, unknown> | undefined
+		const activeDerivedFieldData = activeDerivedField && activeField
+			? (p.commandDataRef.current[activeField] as Record<string, unknown>)?.[activeDerivedField] as Record<string, unknown> | undefined
 			: null;
 		const isSubCmd =
 			!isTopLevel &&
@@ -113,7 +113,7 @@ export function useActivateCommand(p: Params) {
 			? p.commandDataRef.current[command]
 			: isSubCmd
 				? command in (activeFieldData ?? {})
-					? (p.commandDataRef.current[activeField!] as Record<string, CommandEntry>)[command]
+					? (p.commandDataRef.current[activeField ?? ""] as Record<string, CommandEntry>)[command]
 					: activeDerivedFieldData != null && command in activeDerivedFieldData
 						? (activeDerivedFieldData as Record<string, CommandEntry>)[command]
 						: null
@@ -166,8 +166,8 @@ export function useActivateCommand(p: Params) {
 		}
 		if (side === "friend") p.setInputFriend("");
 
-		if (command === "attack" || command === "heal") {
-			p.giveDamage(damage, damageTarget!);
+		if ((command === "attack" || command === "heal") && damageTarget !== null) {
+			p.giveDamage(damage, damageTarget);
 		} else if (isSubCmd && cmdData.attribute === ATTRIBUTE.FIELD) {
 			// 派生フィールド（例: swamp）- 親フィールドはキープしたまま派生フィールドとして起動
 			const derivedFieldRef =
@@ -212,18 +212,19 @@ export function useActivateCommand(p: Params) {
 				p.activeEnemyFieldRef.current = command;
 			}
 		} else if (isSubCmd) {
+			if (activeField === null) return false;
 			if (coolTimeSec === -1) {
-				p.giveDamage(damage, damageTarget!);
-				p.cancelField(activeField!, side);
+				if (damageTarget !== null) p.giveDamage(damage, damageTarget);
+				p.cancelField(activeField, side);
 				if (side === "friend") {
 					p.setActiveFriendField(null);
 					p.activeFriendFieldRef.current = null;
-					p.disabledFriendFieldsRef.current.add(activeField!);
+					p.disabledFriendFieldsRef.current.add(activeField);
 					p.setDisabledFriendFields([...p.disabledFriendFieldsRef.current]);
 				} else {
 					p.setActiveEnemyField(null);
 					p.activeEnemyFieldRef.current = null;
-					p.disabledEnemyFieldsRef.current.add(activeField!);
+					p.disabledEnemyFieldsRef.current.add(activeField);
 					p.setDisabledEnemyFields([...p.disabledEnemyFieldsRef.current]);
 				}
 			} else if (command === "regenerate") {
@@ -237,14 +238,15 @@ export function useActivateCommand(p: Params) {
 
 				setActiveRegen(true);
 				let remaining = 20;
-				const healTarget = damageTarget!;
+				if (damageTarget === null) return false;
+				const healTarget = damageTarget;
 				const healAmount = damage;
 
 				regenRef.current = setInterval(() => {
 					p.giveDamage(healAmount, healTarget);
 					remaining--;
 					if (remaining <= 0) {
-						clearInterval(regenRef.current!);
+						if (regenRef.current !== null) clearInterval(regenRef.current);
 						regenRef.current = null;
 						setActiveRegen(false);
 					}
