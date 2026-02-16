@@ -212,7 +212,7 @@ export function useActivateCommand(p: Params) {
 				p.activeEnemyFieldRef.current = command;
 			}
 		} else if (isSubCmd) {
-			if (command === "burn out" || command === "earth quake") {
+			if (coolTimeSec === -1) {
 				p.giveDamage(damage, damageTarget!);
 				p.cancelField(activeField!, side);
 				if (side === "friend") {
