@@ -133,6 +133,7 @@
   .sub-wrapper-message {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 44%;
     text-align: center;
     padding-left: 20px;
@@ -141,8 +142,15 @@
       margin-right: 10px;
     }
 
+    .output-icon {
+      width: 41px;
+      height: 41px;
+      margin-left: 6px;
+      animation: icon-appear 3s ease forwards;
+    }
+
     span:first-child {
-      margin-right: 6px;
+      margin-right: 14px;
     }
 
     .message-text {
@@ -311,4 +319,12 @@
 @keyframes regen-border-flash {
   0%, 100% { border-color: #00cc00; border-width: 2px; }
   50%       { border-color: transparent; border-width: 1px; }
+}
+
+// 0-0.7s: スライドイン+フェードイン、0.7s-2.7s: 静止、2.7s-3s: フェードアウト
+@keyframes icon-appear {
+  0%   { opacity: 0; transform: translateY(15px); }
+  23%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(0); }
 }

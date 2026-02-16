@@ -40,6 +40,10 @@ export default function BattlePage({ socket }: BattlePageProps) {
 			<MessageDisplay
 				messageFriend={state.messageFriend}
 				messageEnemy={state.messageEnemy}
+				attributeFriend={state.attributeFriend}
+				attributeEnemy={state.attributeEnemy}
+				attributeKeyFriend={state.attributeKeyFriend}
+				attributeKeyEnemy={state.attributeKeyEnemy}
 			/>
 
 			<CoolTimeDisplay

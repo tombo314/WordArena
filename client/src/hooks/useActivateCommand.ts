@@ -1,5 +1,6 @@
 import type { MutableRefObject } from "react";
 import { ATTRIBUTE } from "../const";
+import type { Attribute } from "../const";
 import type { CommandEntry, FriendOrEnemy } from "../types";
 import type { useCoolTime } from "./useCoolTime";
 
@@ -36,7 +37,7 @@ interface Params {
 	> | null>;
 	friendShieldDefenseRef: MutableRefObject<number>;
 	enemyShieldDefenseRef: MutableRefObject<number>;
-	showMessage: (message: string, side: FriendOrEnemy) => void;
+	showMessage: (message: string, side: FriendOrEnemy, attribute?: Attribute | null) => void;
 	cancelField: (fieldName: string, side: FriendOrEnemy) => void;
 	giveDamage: (damage: number, target: FriendOrEnemy) => void;
 	giveSlipDamage: (
@@ -237,7 +238,7 @@ export function useActivateCommand(p: Params) {
 			}
 		}
 
-		p.showMessage(command, side);
+		p.showMessage(command, side, cmdData.attribute as Attribute);
 		return true;
 	};
 

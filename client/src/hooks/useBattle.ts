@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
 import { IS_DEBUG } from "../const";
+import type { Attribute } from "../const";
 import type { FriendOrEnemy } from "../types";
 import { useActivateCommand } from "./useActivateCommand";
 import { useCommandData } from "./useCommandData";
@@ -24,6 +25,12 @@ export function useBattle(socket: Socket) {
 	const [disabledEnemyFields, setDisabledEnemyFields] = useState<string[]>([]);
 	const [activeFriendRegen, setActiveFriendRegen] = useState(false);
 	const [activeEnemyRegen, setActiveEnemyRegen] = useState(false);
+	const [attributeFriend, setAttributeFriend] = useState<Attribute | null>(null);
+	const [attributeEnemy, setAttributeEnemy] = useState<Attribute | null>(null);
+	const attributeKeyFriendRef = useRef(0);
+	const attributeKeyEnemyRef = useRef(0);
+	const [attributeKeyFriend, setAttributeKeyFriend] = useState(0);
+	const [attributeKeyEnemy, setAttributeKeyEnemy] = useState(0);
 
 	const gameEndedRef = useRef(false);
 	const defenseFriendRef = useRef(0);
@@ -66,10 +73,23 @@ export function useBattle(socket: Socket) {
 		handleGameEndRef.current(),
 	);
 
-	const showMessage = (message: string, side: FriendOrEnemy) => {
+	const showMessage = (message: string, side: FriendOrEnemy, attribute?: Attribute | null) => {
 		const setter = side === "friend" ? setMessageFriend : setMessageEnemy;
 		setter("");
 		setTimeout(() => setter(message), 100);
+		if (attribute !== undefined) {
+			const attrSetter = side === "friend" ? setAttributeFriend : setAttributeEnemy;
+			attrSetter(attribute ?? null);
+			if (attribute) {
+				if (side === "friend") {
+					attributeKeyFriendRef.current += 1;
+					setAttributeKeyFriend(attributeKeyFriendRef.current);
+				} else {
+					attributeKeyEnemyRef.current += 1;
+					setAttributeKeyEnemy(attributeKeyEnemyRef.current);
+				}
+			}
+		}
 	};
 
 	// cancelField 専用（トップレベルコマンドのdefenseTarget解決）
@@ -206,6 +226,10 @@ export function useBattle(socket: Socket) {
 			disabledEnemyFields,
 			activeFriendRegen,
 			activeEnemyRegen,
+			attributeFriend,
+			attributeEnemy,
+			attributeKeyFriend,
+			attributeKeyEnemy,
 		},
 		actions: {
 			handleGameStart: () => setGameStarted(true),
