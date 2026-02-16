@@ -113,7 +113,7 @@
                 "damageTarget": null,
                 "defense": 0,
                 "defenseTarget": null,
-                "coolTime": 0,
+                "coolTime": 10,
                 "attribute": "magic"
             }
         },
@@ -140,7 +140,7 @@
                 "damageTarget": null,
                 "defense": 0,
                 "defenseTarget": "friend",
-                "coolTime": 0,
+                "coolTime": 20,
                 "attribute": "magic"
             },
 

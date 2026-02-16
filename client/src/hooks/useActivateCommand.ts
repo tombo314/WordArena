@@ -19,6 +19,8 @@ interface Params {
 	commandDataRef: MutableRefObject<Record<string, CommandEntry>>;
 	activeFriendFieldRef: MutableRefObject<string | null>;
 	activeEnemyFieldRef: MutableRefObject<string | null>;
+	activeFriendDerivedFieldRef: MutableRefObject<string | null>;
+	activeEnemyDerivedFieldRef: MutableRefObject<string | null>;
 	disabledFriendFieldsRef: MutableRefObject<Set<string>>;
 	disabledEnemyFieldsRef: MutableRefObject<Set<string>>;
 	defenseFriendRef: MutableRefObject<number>;
@@ -47,6 +49,8 @@ interface Params {
 	setInputFriend: (value: string) => void;
 	setActiveFriendField: (field: string | null) => void;
 	setActiveEnemyField: (field: string | null) => void;
+	setActiveFriendDerivedField: (field: string | null) => void;
+	setActiveEnemyDerivedField: (field: string | null) => void;
 	setActiveFriendRegen: (value: boolean) => void;
 	setActiveEnemyRegen: (value: boolean) => void;
 	setDisabledFriendFields: (fields: string[]) => void;
@@ -83,6 +87,10 @@ export function useActivateCommand(p: Params) {
 			side === "friend"
 				? p.activeFriendFieldRef.current
 				: p.activeEnemyFieldRef.current;
+		const activeDerivedField =
+			side === "friend"
+				? p.activeFriendDerivedFieldRef.current
+				: p.activeEnemyDerivedFieldRef.current;
 		const disabledRef =
 			side === "friend" ? p.disabledFriendFieldsRef : p.disabledEnemyFieldsRef;
 
@@ -90,22 +98,25 @@ export function useActivateCommand(p: Params) {
 		const activeFieldData = activeField
 			? (p.commandDataRef.current[activeField] as Record<string, unknown>)
 			: null;
+		const activeDerivedFieldData = activeDerivedField
+			? (p.commandDataRef.current[activeField!] as Record<string, unknown>)?.[activeDerivedField] as Record<string, unknown> | undefined
+			: null;
 		const isSubCmd =
 			!isTopLevel &&
 			activeField !== null &&
 			activeFieldData !== null &&
 			!RESERVED_KEYS.has(command) &&
-			command in activeFieldData;
+			(command in activeFieldData ||
+				(activeDerivedFieldData != null && command in activeDerivedFieldData));
 
 		const cmdData: CommandEntry | null = isTopLevel
 			? p.commandDataRef.current[command]
 			: isSubCmd
-				? (
-						p.commandDataRef.current[activeField!] as Record<
-							string,
-							CommandEntry
-						>
-					)[command]
+				? command in (activeFieldData ?? {})
+					? (p.commandDataRef.current[activeField!] as Record<string, CommandEntry>)[command]
+					: activeDerivedFieldData != null && command in activeDerivedFieldData
+						? (activeDerivedFieldData as Record<string, CommandEntry>)[command]
+						: null
 				: null;
 
 		if (!cmdData) {
@@ -136,6 +147,10 @@ export function useActivateCommand(p: Params) {
 			p.showMessage("スキルのクールタイム中です", side);
 			return false;
 		}
+		if (command === activeDerivedField) {
+			p.showMessage("スキルのクールタイム中です", side);
+			return false;
+		}
 
 		const damage = cmdData.damage as number;
 		const coolTimeSec = cmdData.coolTime as number;
@@ -153,6 +168,24 @@ export function useActivateCommand(p: Params) {
 
 		if (command === "attack" || command === "heal") {
 			p.giveDamage(damage, damageTarget!);
+		} else if (isSubCmd && cmdData.attribute === ATTRIBUTE.FIELD) {
+			// 派生フィールド（例: swamp）- 親フィールドはキープしたまま派生フィールドとして起動
+			const derivedFieldRef =
+				side === "friend" ? p.activeFriendDerivedFieldRef : p.activeEnemyDerivedFieldRef;
+			const setDerivedField =
+				side === "friend" ? p.setActiveFriendDerivedField : p.setActiveEnemyDerivedField;
+			derivedFieldRef.current = command;
+			setDerivedField(command);
+
+			if (damage > 0 && damageTarget !== null) {
+				const intervalRef =
+					side === "friend"
+						? p.friendFieldIntervalRef
+						: p.enemyFieldIntervalRef;
+				// 既存のインターバルを止めてslipダメージに切り替え
+				if (intervalRef.current !== null) clearInterval(intervalRef.current);
+				intervalRef.current = p.giveSlipDamage(damage, damageTarget);
+			}
 		} else if (cmdData.attribute === ATTRIBUTE.FIELD) {
 			if (activeField !== null) p.cancelField(activeField, side);
 

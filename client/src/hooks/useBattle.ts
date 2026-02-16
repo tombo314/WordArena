@@ -22,6 +22,8 @@ export function useBattle(socket: Socket) {
 		[],
 	);
 	const [disabledEnemyFields, setDisabledEnemyFields] = useState<string[]>([]);
+	const [activeFriendDerivedField, setActiveFriendDerivedField] = useState<string | null>(null);
+	const [activeEnemyDerivedField, setActiveEnemyDerivedField] = useState<string | null>(null);
 	const [activeFriendRegen, setActiveFriendRegen] = useState(false);
 	const [activeEnemyRegen, setActiveEnemyRegen] = useState(false);
 	const [attributeFriend, setAttributeFriend] = useState<Attribute | null>(null);
@@ -52,6 +54,8 @@ export function useBattle(socket: Socket) {
 	const disabledEnemyFieldsRef = useRef(new Set<string>());
 	const activeFriendFieldRef = useRef<string | null>(null);
 	const activeEnemyFieldRef = useRef<string | null>(null);
+	const activeFriendDerivedFieldRef = useRef<string | null>(null);
+	const activeEnemyDerivedFieldRef = useRef<string | null>(null);
 
 	// handleGameEnd の前方参照用 ref（useHP / useGameTimer に渡すため）
 	const handleGameEndRef = useRef<() => void>(() => {});
@@ -118,6 +122,16 @@ export function useBattle(socket: Socket) {
 			intervalRef.current = null;
 		}
 
+		// 派生フィールドもクリア
+		const derivedFieldRef =
+			side === "friend" ? activeFriendDerivedFieldRef : activeEnemyDerivedFieldRef;
+		const setDerivedField =
+			side === "friend" ? setActiveFriendDerivedField : setActiveEnemyDerivedField;
+		if (derivedFieldRef.current !== null) {
+			derivedFieldRef.current = null;
+			setDerivedField(null);
+		}
+
 		if (fieldName === "holy field") {
 			const regenRef =
 				side === "friend" ? friendRegenIntervalRef : enemyRegenIntervalRef;
@@ -155,6 +169,8 @@ export function useBattle(socket: Socket) {
 		commandDataRef,
 		activeFriendFieldRef,
 		activeEnemyFieldRef,
+		activeFriendDerivedFieldRef,
+		activeEnemyDerivedFieldRef,
 		disabledFriendFieldsRef,
 		disabledEnemyFieldsRef,
 		defenseFriendRef,
@@ -172,6 +188,8 @@ export function useBattle(socket: Socket) {
 		setInputFriend,
 		setActiveFriendField,
 		setActiveEnemyField,
+		setActiveFriendDerivedField,
+		setActiveEnemyDerivedField,
 		setActiveFriendRegen,
 		setActiveEnemyRegen,
 		setDisabledFriendFields,
@@ -192,6 +210,14 @@ export function useBattle(socket: Socket) {
 			cancelField(activeEnemyFieldRef.current, "enemy");
 			setActiveEnemyField(null);
 			activeEnemyFieldRef.current = null;
+		}
+		if (activeFriendDerivedFieldRef.current) {
+			activeFriendDerivedFieldRef.current = null;
+			setActiveFriendDerivedField(null);
+		}
+		if (activeEnemyDerivedFieldRef.current) {
+			activeEnemyDerivedFieldRef.current = null;
+			setActiveEnemyDerivedField(null);
 		}
 
 		const hpF = hpFriendRef.current;
@@ -226,6 +252,8 @@ export function useBattle(socket: Socket) {
 			subCommandMap,
 			activeFriendField,
 			activeEnemyField,
+			activeFriendDerivedField,
+			activeEnemyDerivedField,
 			disabledFriendFields,
 			disabledEnemyFields,
 			activeFriendRegen,

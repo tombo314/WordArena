@@ -65,6 +65,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
 				gameEnded={state.gameEnded}
 				friend={{
 					activeField: state.activeFriendField,
+					activeDerivedField: state.activeFriendDerivedField,
 					coolTimeText: state.coolTimeFriendText,
 					regenCoolTimeText: state.regenCoolTimeFriendText,
 					shieldCoolTimeText: state.shieldCoolTimeFriendText,
@@ -73,6 +74,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
 				}}
 				enemy={{
 					activeField: state.activeEnemyField,
+					activeDerivedField: state.activeEnemyDerivedField,
 					coolTimeText: state.coolTimeEnemyText,
 					regenCoolTimeText: state.regenCoolTimeEnemyText,
 					shieldCoolTimeText: state.shieldCoolTimeEnemyText,

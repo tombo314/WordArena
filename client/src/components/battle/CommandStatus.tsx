@@ -4,6 +4,7 @@ const SHIELD_COMMANDS = ["flame shield", "splash shield", "protect"];
 
 interface SideStatus {
 	activeField: string | null;
+	activeDerivedField: string | null;
 	coolTimeText: string;
 	regenCoolTimeText: string;
 	shieldCoolTimeText: string;
@@ -32,6 +33,7 @@ export default function CommandStatus({
 				const status = side === "friend" ? friend : enemy;
 				const {
 					activeField,
+					activeDerivedField,
 					coolTimeText,
 					regenCoolTimeText,
 					shieldCoolTimeText,
@@ -70,6 +72,8 @@ export default function CommandStatus({
 								let subClass = "sub-command";
 								if (cmd !== activeField) {
 									subClass += gameEnded ? " grayed-out" : " field-inactive";
+								} else if (sub === activeDerivedField) {
+									subClass += " swamp-active";
 								} else if (sub === "regenerate") {
 									if (activeRegen) subClass += " regen-active";
 									else if (inRegenCoolTime) subClass += " grayed-out";
@@ -92,6 +96,7 @@ export default function CommandStatus({
 								}
 								return (
 									<span key={sub} className={`command-item ${subClass}`}>
+										{sub === activeDerivedField && <span className="orbit-dot" />}
 										{sub}
 									</span>
 								);

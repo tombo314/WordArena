@@ -257,6 +257,17 @@
         .orbit-dot { background-color: #003080; }
       }
 
+      &.swamp-active {
+        background-color: #62b486;
+        color: #003820;
+        border-color: #286850;
+
+        .orbit-dot {
+          background-color: #003820;
+          animation-duration: 1.6s;
+        }
+      }
+
       &.earth-active {
         background-color: #d4b84a;
         color: #4a3000;
@@ -279,6 +290,11 @@
       &.ocean-sub {
         background-color: #e8f2ff;
         color: #003080;
+      }
+
+      &.swamp-sub {
+        background-color: #9ad4b8;
+        color: #003820;
       }
 
       &.earth-sub {
