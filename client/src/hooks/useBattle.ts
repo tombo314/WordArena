@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
 import { type Attribute, IS_DEBUG } from "../const";
 import type { FriendOrEnemy } from "../types";
 import { useActivateCommand } from "./useActivateCommand";
 import { useCommandData } from "./useCommandData";
 import { useCoolTime } from "./useCoolTime";
+import { useEnemyAI } from "./useEnemyAI";
 import { useGameTimer } from "./useGameTimer";
 import { useHP } from "./useHP";
 
@@ -199,6 +200,7 @@ export function useBattle(socket: Socket) {
 		if (gameEndedRef.current) return;
 		gameEndedRef.current = true;
 		setGameEnded(true);
+		stopEnemyAI();
 
 		if (activeFriendFieldRef.current) {
 			cancelField(activeFriendFieldRef.current, "friend");
@@ -228,6 +230,21 @@ export function useBattle(socket: Socket) {
 
 	// 毎レンダーで最新の handleGameEnd を ref に保持
 	handleGameEndRef.current = handleGameEnd;
+
+	const { inputEnemy, startEnemyAI, stopEnemyAI } = useEnemyAI({
+		commandDataRef,
+		coolTimeRefs: coolTime.refs,
+		activeEnemyFieldRef,
+		activeEnemyDerivedFieldRef,
+		disabledEnemyFieldsRef,
+		activateEnemyCommand: (cmd: string) => activateCommand(cmd, "enemy"),
+	});
+
+	// IS_DEBUG=true のときは StartScreen をスキップするので、マウント時に即起動する
+	// biome-ignore lint/correctness/useExhaustiveDependencies: IS_DEBUG is a constant, intentionally run once on mount
+	useEffect(() => {
+		if (IS_DEBUG) startEnemyAI();
+	}, []);
 
 	const { state: ctState } = coolTime;
 
@@ -261,9 +278,13 @@ export function useBattle(socket: Socket) {
 			attributeEnemy,
 			attributeKeyFriend,
 			attributeKeyEnemy,
+			inputEnemy,
 		},
 		actions: {
-			handleGameStart: () => setGameStarted(true),
+			handleGameStart: () => {
+				setGameStarted(true);
+				startEnemyAI();
+			},
 			setInputFriend,
 			activateFriendCommand: (cmd: string) => activateCommand(cmd, "friend"),
 		},

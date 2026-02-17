@@ -4,6 +4,7 @@ const HISTORY_MAX = 5;
 
 interface BattleInputProps {
 	inputFriend: string;
+	inputEnemy: string;
 	setInputFriend: (v: string) => void;
 	gameStarted: boolean;
 	gameEnded: boolean;
@@ -19,6 +20,7 @@ function formatTime(sec: number) {
 
 export default function BattleInput({
 	inputFriend,
+	inputEnemy,
 	setInputFriend,
 	gameStarted,
 	gameEnded,
@@ -105,7 +107,12 @@ export default function BattleInput({
 				{gameEnded ? "残り時間 --:--" : formatTime(timeLeft)}
 			</div>
 			<div className="sub-wrapper-input">
-				<input className="input-enemy" type="text" disabled />
+				<input
+					className="input-enemy"
+					type="text"
+					value={inputEnemy}
+					readOnly
+				/>
 			</div>
 		</div>
 	);

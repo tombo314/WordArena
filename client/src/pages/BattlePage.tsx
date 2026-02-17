@@ -30,6 +30,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
 
 			<BattleInput
 				inputFriend={state.inputFriend}
+				inputEnemy={state.inputEnemy}
 				setInputFriend={actions.setInputFriend}
 				gameStarted={state.gameStarted}
 				gameEnded={state.gameEnded}
