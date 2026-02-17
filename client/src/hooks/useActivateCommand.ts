@@ -31,7 +31,11 @@ interface Params {
 	> | null>;
 	friendShieldDefenseRef: MutableRefObject<number>;
 	enemyShieldDefenseRef: MutableRefObject<number>;
-	showMessage: (message: string, side: FriendOrEnemy, attribute?: Attribute | null) => void;
+	showMessage: (
+		message: string,
+		side: FriendOrEnemy,
+		attribute?: Attribute | null,
+	) => void;
 	cancelField: (fieldName: string, side: FriendOrEnemy) => void;
 	giveDamage: (damage: number, target: FriendOrEnemy) => void;
 	giveSlipDamage: (
@@ -90,9 +94,12 @@ export function useActivateCommand(p: Params) {
 		const activeFieldData = activeField
 			? (p.commandDataRef.current[activeField] as Record<string, unknown>)
 			: null;
-		const activeDerivedFieldData = activeDerivedField && activeField
-			? (p.commandDataRef.current[activeField] as Record<string, unknown>)?.[activeDerivedField] as Record<string, unknown> | undefined
-			: null;
+		const activeDerivedFieldData =
+			activeDerivedField && activeField
+				? ((p.commandDataRef.current[activeField] as Record<string, unknown>)?.[
+						activeDerivedField
+					] as Record<string, unknown> | undefined)
+				: null;
 		const isSubCmd =
 			!isTopLevel &&
 			activeField !== null &&
@@ -105,7 +112,12 @@ export function useActivateCommand(p: Params) {
 			? p.commandDataRef.current[command]
 			: isSubCmd
 				? command in (activeFieldData ?? {})
-					? (p.commandDataRef.current[activeField ?? ""] as Record<string, CommandEntry>)[command]
+					? (
+							p.commandDataRef.current[activeField ?? ""] as Record<
+								string,
+								CommandEntry
+							>
+						)[command]
 					: activeDerivedFieldData != null && command in activeDerivedFieldData
 						? (activeDerivedFieldData as Record<string, CommandEntry>)[command]
 						: null
@@ -163,9 +175,13 @@ export function useActivateCommand(p: Params) {
 		} else if (isSubCmd && cmdData.attribute === ATTRIBUTE.FIELD) {
 			// 派生フィールド（例: swamp）- 親フィールドはキープしたまま派生フィールドとして起動
 			const derivedFieldRef =
-				side === "friend" ? p.activeFriendDerivedFieldRef : p.activeEnemyDerivedFieldRef;
+				side === "friend"
+					? p.activeFriendDerivedFieldRef
+					: p.activeEnemyDerivedFieldRef;
 			const setDerivedField =
-				side === "friend" ? p.setActiveFriendDerivedField : p.setActiveEnemyDerivedField;
+				side === "friend"
+					? p.setActiveFriendDerivedField
+					: p.setActiveEnemyDerivedField;
 			derivedFieldRef.current = command;
 			setDerivedField(command);
 

@@ -96,7 +96,9 @@ export default function CommandStatus({
 								}
 								return (
 									<span key={sub} className={`command-item ${subClass}`}>
-										{sub === activeDerivedField && <span className="orbit-dot" />}
+										{sub === activeDerivedField && (
+											<span className="orbit-dot" />
+										)}
 										{sub}
 									</span>
 								);

@@ -1,7 +1,7 @@
-import express from "express";
 import { readFileSync } from "node:fs";
 import { createServer } from "node:http";
 import path from "node:path";
+import express from "express";
 import { Server } from "socket.io";
 import * as db from "./db/sqlite";
 
@@ -17,31 +17,37 @@ app.use(express.static(clientDist));
 
 // SPA フォールバック
 app.get("*", (_, res) => {
-  res.sendFile(path.join(clientDist, "index.html"));
+	res.sendFile(path.join(clientDist, "index.html"));
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+	console.log(`Server running on http://localhost:${PORT}`);
 });
 
 const dataPath = path.join(__dirname, "../data/commandData.json");
 
 io.on("connection", (socket) => {
-  // ログイン
-  socket.on("login", (data: { value: { username: string; password: string } }) => {
-    const { username, password } = data.value;
-    db.login(username, password, socket);
-  });
+	// ログイン
+	socket.on(
+		"login",
+		(data: { value: { username: string; password: string } }) => {
+			const { username, password } = data.value;
+			db.login(username, password, socket);
+		},
+	);
 
-  // アカウント登録
-  socket.on("signup", (data: { value: { username: string; password: string } }) => {
-    const { username, password } = data.value;
-    db.signup(username, password, socket);
-  });
+	// アカウント登録
+	socket.on(
+		"signup",
+		(data: { value: { username: string; password: string } }) => {
+			const { username, password } = data.value;
+			db.signup(username, password, socket);
+		},
+	);
 
-  // コマンドデータ送信
-  socket.on("commandData", () => {
-    const commandData = JSON.parse(readFileSync(dataPath, "utf-8"));
-    socket.emit("commandData", commandData);
-  });
+	// コマンドデータ送信
+	socket.on("commandData", () => {
+		const commandData = JSON.parse(readFileSync(dataPath, "utf-8"));
+		socket.emit("commandData", commandData);
+	});
 });

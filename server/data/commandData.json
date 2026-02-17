@@ -1,201 +1,200 @@
 {
-    "commandData": {
+	"commandData": {
+		"attack": {
+			"damage": 5,
+			"damageTarget": "enemy",
+			"defense": 0,
+			"defenseTarget": null,
+			"coolTime": 5,
+			"attribute": "physical",
+			"parentCommand": null,
+			"originalParams": null
+		},
 
-        "attack": {
-            "damage": 5,
-            "damageTarget": "enemy",
-            "defense": 0,
-            "defenseTarget": null,
-            "coolTime": 5,
-            "attribute": "physical",
-            "parentCommand": null,
-            "originalParams": null
-        },
+		"heal": {
+			"damage": -10,
+			"damageTarget": "friend",
+			"defense": 0,
+			"defenseTarget": null,
+			"coolTime": 5,
+			"attribute": "magic",
+			"parentCommand": null,
+			"originalParams": null
+		},
 
-        "heal": {
-            "damage": -10,
-            "damageTarget": "friend",
-            "defense": 0,
-            "defenseTarget": null,
-            "coolTime": 5,
-            "attribute": "magic",
-            "parentCommand": null,
-            "originalParams": null
-        },
+		"flame field": {
+			"damage": 3,
+			"damageTarget": "enemy",
+			"defense": 0,
+			"defenseTarget": null,
+			"coolTime": 0,
+			"attribute": "field",
+			"parentCommand": null,
+			"originalParams": null,
 
-        "flame field": {
-            "damage": 3,
-            "damageTarget": "enemy",
-            "defense": 0,
-            "defenseTarget": null,
-            "coolTime": 0,
-            "attribute": "field",
-            "parentCommand": null,
-            "originalParams": null,
+			"fire": {
+				"damage": 10,
+				"damageTarget": "enemy",
+				"defense": 0,
+				"defenseTarget": null,
+				"coolTime": 5,
+				"attribute": "breath",
+				"parentCommand": "flame field",
+				"originalParams": null
+			},
 
-            "fire": {
-                "damage": 10,
-                "damageTarget": "enemy",
-                "defense": 0,
-                "defenseTarget": null,
-                "coolTime": 5,
-                "attribute": "breath",
-                "parentCommand": "flame field",
-                "originalParams": null
-            },
+			"blaze shield": {
+				"damage": 0,
+				"damageTarget": null,
+				"defense": 3,
+				"defenseTarget": "friend",
+				"coolTime": 20,
+				"attribute": "magic",
+				"parentCommand": "flame field",
+				"originalParams": null
+			},
 
-            "blaze shield": {
-                "damage": 0,
-                "damageTarget": null,
-                "defense": 3,
-                "defenseTarget": "friend",
-                "coolTime": 20,
-                "attribute": "magic",
-                "parentCommand": "flame field",
-                "originalParams": null
-            },
+			"burn out": {
+				"damage": 70,
+				"damageTarget": "enemy",
+				"defense": 0,
+				"defenseTarget": null,
+				"coolTime": -1,
+				"attribute": "breath",
+				"parentCommand": "flame field",
+				"originalParams": {
+					"cancelField": true
+				}
+			}
+		},
 
-            "burn out": {
-                "damage": 70,
-                "damageTarget": "enemy",
-                "defense": 0,
-                "defenseTarget": null,
-                "coolTime": -1,
-                "attribute": "breath",
-                "parentCommand": "flame field",
-                "originalParams": {
-                    "cancelField": true
-                }
-            }
-        },
+		"ocean field": {
+			"damage": 0,
+			"damageTarget": null,
+			"defense": 2,
+			"defenseTarget": "friend",
+			"coolTime": 0,
+			"attribute": "field",
+			"parentCommand": null,
+			"originalParams": null,
 
-        "ocean field": {
-            "damage": 0,
-            "damageTarget": null,
-            "defense": 2,
-            "defenseTarget": "friend",
-            "coolTime": 0,
-            "attribute": "field",
-            "parentCommand": null,
-            "originalParams": null,
+			"swamp field": {
+				"damage": 1,
+				"damageTarget": "enemy",
+				"defense": 0,
+				"defenseTarget": null,
+				"coolTime": 0,
+				"attribute": "field",
+				"parentCommand": "ocean field",
+				"originalParams": {
+					"commandDelay": 3,
+					"delayTarget": "enemy"
+				}
+			},
 
-            "swamp field": {
-                "damage": 1,
-                "damageTarget": "enemy",
-                "defense": 0,
-                "defenseTarget": null,
-                "coolTime": 0,
-                "attribute": "field",
-                "parentCommand": "ocean field",
-                "originalParams": {
-                    "commandDelay": 3,
-                    "delayTarget": "enemy"
-                }
-            },
+			"splash shield": {
+				"damage": 0,
+				"damageTarget": null,
+				"defense": 5,
+				"defenseTarget": "friend",
+				"coolTime": 20,
+				"attribute": "magic",
+				"parentCommand": "ocean field",
+				"originalParams": null
+			}
+		},
 
-            "splash shield": {
-                "damage": 0,
-                "damageTarget": null,
-                "defense": 5,
-                "defenseTarget": "friend",
-                "coolTime": 20,
-                "attribute": "magic",
-                "parentCommand": "ocean field",
-                "originalParams": null
-            }
-        },
+		"holy field": {
+			"damage": 2,
+			"damageTarget": "enemy",
+			"defense": 0,
+			"defenseTarget": null,
+			"coolTime": 0,
+			"attribute": "field",
+			"parentCommand": null,
+			"originalParams": null,
 
-        "holy field": {
-            "damage": 2,
-            "damageTarget": "enemy",
-            "defense": 0,
-            "defenseTarget": null,
-            "coolTime": 0,
-            "attribute": "field",
-            "parentCommand": null,
-            "originalParams": null,
+			"holy light": {
+				"damage": 12,
+				"damageTarget": "enemy",
+				"defense": 0,
+				"defenseTarget": null,
+				"coolTime": 5,
+				"attribute": "breath",
+				"parentCommand": "holy field",
+				"originalParams": null
+			},
 
-            "holy light": {
-                "damage": 12,
-                "damageTarget": "enemy",
-                "defense": 0,
-                "defenseTarget": null,
-                "coolTime": 5,
-                "attribute": "breath",
-                "parentCommand": "holy field",
-                "originalParams": null
-            },
+			"regenerate": {
+				"damage": -2,
+				"damageTarget": "friend",
+				"defense": 0,
+				"defenseTarget": null,
+				"coolTime": 20,
+				"attribute": "magic",
+				"parentCommand": "holy field",
+				"originalParams": null
+			},
 
-            "regenerate": {
-                "damage": -2,
-                "damageTarget": "friend",
-                "defense": 0,
-                "defenseTarget": null,
-                "coolTime": 20,
-                "attribute": "magic",
-                "parentCommand": "holy field",
-                "originalParams": null
-            },
+			"shining": {
+				"damage": 0,
+				"damageTarget": null,
+				"defense": 0,
+				"defenseTarget": null,
+				"coolTime": 10,
+				"attribute": "magic",
+				"parentCommand": "holy field",
+				"originalParams": null
+			}
+		},
 
-            "shining": {
-                "damage": 0,
-                "damageTarget": null,
-                "defense": 0,
-                "defenseTarget": null,
-                "coolTime": 10,
-                "attribute": "magic",
-                "parentCommand": "holy field",
-                "originalParams": null
-            }
-        },
-        
-        "earth field": {
-            "damage": 0,
-            "damageTarget": null,
-            "defense": 3,
-            "defenseTarget": "friend",
-            "coolTime": 0,
-            "attribute": "field",
-            "parentCommand": null,
-            "originalParams": null,
+		"earth field": {
+			"damage": 0,
+			"damageTarget": null,
+			"defense": 3,
+			"defenseTarget": "friend",
+			"coolTime": 0,
+			"attribute": "field",
+			"parentCommand": null,
+			"originalParams": null,
 
-            "crack": {
-                "damage": 10,
-                "damageTarget": "enemy",
-                "defense": 0,
-                "defenseTarget": null,
-                "coolTime": 5,
-                "attribute": "physical",
-                "parentCommand": "earth field",
-                "originalParams": null
-            },
+			"crack": {
+				"damage": 10,
+				"damageTarget": "enemy",
+				"defense": 0,
+				"defenseTarget": null,
+				"coolTime": 5,
+				"attribute": "physical",
+				"parentCommand": "earth field",
+				"originalParams": null
+			},
 
-            "guardian": {
-                "damage": 0,
-                "damageTarget": null,
-                "defense": 0,
-                "defenseTarget": "friend",
-                "coolTime": -1,
-                "attribute": "magic",
-                "parentCommand": "earth field",
-                "originalParams": {
-                    "parryCount": 3,
-                    "cancelField": true
-                }
-            },
+			"guardian": {
+				"damage": 0,
+				"damageTarget": null,
+				"defense": 0,
+				"defenseTarget": "friend",
+				"coolTime": -1,
+				"attribute": "magic",
+				"parentCommand": "earth field",
+				"originalParams": {
+					"parryCount": 3,
+					"cancelField": true
+				}
+			},
 
-            "earthquake": {
-                "damage": 60,
-                "damageTarget": "enemy",
-                "defense": 0,
-                "defenseTarget": null,
-                "coolTime": -1,
-                "attribute": "physical",
-                "parentCommand": "earth field",
-                "originalParams": {
-                    "cancelField": true
-                }
-            }
-        }
-    }
+			"earthquake": {
+				"damage": 60,
+				"damageTarget": "enemy",
+				"defense": 0,
+				"defenseTarget": null,
+				"coolTime": -1,
+				"attribute": "physical",
+				"parentCommand": "earth field",
+				"originalParams": {
+					"cancelField": true
+				}
+			}
+		}
+	}
 }

@@ -23,11 +23,17 @@ export function useBattle(socket: Socket) {
 		[],
 	);
 	const [disabledEnemyFields, setDisabledEnemyFields] = useState<string[]>([]);
-	const [activeFriendDerivedField, setActiveFriendDerivedField] = useState<string | null>(null);
-	const [activeEnemyDerivedField, setActiveEnemyDerivedField] = useState<string | null>(null);
+	const [activeFriendDerivedField, setActiveFriendDerivedField] = useState<
+		string | null
+	>(null);
+	const [activeEnemyDerivedField, setActiveEnemyDerivedField] = useState<
+		string | null
+	>(null);
 	const [activeFriendRegen, setActiveFriendRegen] = useState(false);
 	const [activeEnemyRegen, setActiveEnemyRegen] = useState(false);
-	const [attributeFriend, setAttributeFriend] = useState<Attribute | null>(null);
+	const [attributeFriend, setAttributeFriend] = useState<Attribute | null>(
+		null,
+	);
 	const [attributeEnemy, setAttributeEnemy] = useState<Attribute | null>(null);
 	const attributeKeyFriendRef = useRef(0);
 	const attributeKeyEnemyRef = useRef(0);
@@ -125,9 +131,13 @@ export function useBattle(socket: Socket) {
 
 		// 派生フィールドもクリア
 		const derivedFieldRef =
-			side === "friend" ? activeFriendDerivedFieldRef : activeEnemyDerivedFieldRef;
+			side === "friend"
+				? activeFriendDerivedFieldRef
+				: activeEnemyDerivedFieldRef;
 		const setDerivedField =
-			side === "friend" ? setActiveFriendDerivedField : setActiveEnemyDerivedField;
+			side === "friend"
+				? setActiveFriendDerivedField
+				: setActiveEnemyDerivedField;
 		if (derivedFieldRef.current !== null) {
 			derivedFieldRef.current = null;
 			setDerivedField(null);
