@@ -17,7 +17,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
 	const { state, actions } = useBattle(socket);
 
 	return (
-		<>
+		<div className="battle-layout">
 			<h1>Word Arena</h1>
 
 			{!state.gameStarted && <StartScreen onStart={actions.handleGameStart} />}
@@ -83,6 +83,6 @@ export default function BattlePage({ socket }: BattlePageProps) {
 					activeRegen: state.activeEnemyRegen,
 				}}
 			/>
-		</>
+		</div>
 	);
 }

@@ -1,3 +1,15 @@
+.battle-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0 0 24px;
+  gap: 20px;
+
+  h1 {
+    margin-top: 12px;
+  }
+}
+
 .black-sheet {
   position: absolute;
   top: 0;
@@ -60,27 +72,26 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 80px;
-  margin-top: 30px;
-  background-color: #f5d4d4;
 
   .status-bar {
-    position: relative;
     width: 50%;
-    height: 60%;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #cce8cc;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
 
-    label {
-      position: relative;
-      top: 20%;
+    .status-name {
+      background-color: #cce8cc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0;
     }
 
-    progress {
-      position: relative;
-      top: 20%;
+    .status-hp {
+      background-color: #c8e8f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0;
     }
   }
 }
@@ -88,7 +99,6 @@
 .wrapper-input {
   display: flex;
   width: 100%;
-  margin-top: 24px;
   justify-content: center;
 
   .time {
@@ -128,13 +138,13 @@
 .wrapper-message {
   width: 100%;
   display: flex;
-  margin-top: 0;
 
   .sub-wrapper-message {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 44%;
+    height: 50px;
     text-align: center;
     padding-left: 20px;
 
@@ -171,7 +181,6 @@
 .wrapper-cool-time {
   width: 100%;
   display: flex;
-  margin-top: 10px;
 
   .sub-wrapper-cool-time {
     width: 50%;
@@ -180,6 +189,8 @@
     .cool-time {
       width: 100%;
       font-size: 18px;
+      height: 24px;
+      line-height: 24px;
     }
   }
 }
@@ -187,8 +198,6 @@
 .wrapper-status {
   width: 100%;
   display: flex;
-  margin-top: 10px;
-  margin-bottom: 20px;
 
   .sub-wrapper-status {
     width: 68%;
@@ -202,7 +211,7 @@
       margin-left: 4%;
       margin-right: 5%;
     }
-    background-color: #eee;
+    background-color: #fdfbe8;
     border: 5px solid #444;
     border-radius: 10%;
     display: grid;
