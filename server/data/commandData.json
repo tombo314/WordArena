@@ -51,7 +51,9 @@
 				"coolTime": 20,
 				"attribute": "magic",
 				"parentCommand": "flame field",
-				"originalParams": null
+				"originalParams": {
+					"hasIndependentCT": true
+				}
 			},
 
 			"burn out": {
@@ -100,7 +102,9 @@
 				"coolTime": 20,
 				"attribute": "magic",
 				"parentCommand": "ocean field",
-				"originalParams": null
+				"originalParams": {
+					"hasIndependentCT": true
+				}
 			}
 		},
 
@@ -133,7 +137,9 @@
 				"coolTime": 20,
 				"attribute": "magic",
 				"parentCommand": "holy field",
-				"originalParams": null
+				"originalParams": {
+					"hasIndependentCT": true
+				}
 			},
 
 			"shining": {
@@ -144,7 +150,9 @@
 				"coolTime": 10,
 				"attribute": "magic",
 				"parentCommand": "holy field",
-				"originalParams": null
+				"originalParams": {
+					"hasIndependentCT": true
+				}
 			}
 		},
 
@@ -179,7 +187,8 @@
 				"parentCommand": "earth field",
 				"originalParams": {
 					"parryCount": 3,
-					"cancelField": true
+					"cancelField": true,
+					"hasIndependentCT": true
 				}
 			},
 
