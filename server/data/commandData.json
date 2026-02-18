@@ -52,7 +52,8 @@
 				"attribute": "magic",
 				"parentCommand": "flame field",
 				"originalParams": {
-					"hasIndependentCT": true
+					"hasIndependentCT": true,
+					"isShield": true
 				}
 			},
 
@@ -103,7 +104,8 @@
 				"attribute": "magic",
 				"parentCommand": "ocean field",
 				"originalParams": {
-					"hasIndependentCT": true
+					"hasIndependentCT": true,
+					"isShield": true
 				}
 			}
 		},
@@ -187,8 +189,7 @@
 				"parentCommand": "earth field",
 				"originalParams": {
 					"parryCount": 3,
-					"cancelField": true,
-					"hasIndependentCT": true
+					"cancelField": true
 				}
 			},
 
