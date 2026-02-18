@@ -27,7 +27,7 @@ export default function MessageDisplay({
 	return (
 		<div className="wrapper-message">
 			<div className="sub-wrapper-message">
-				<span>output</span>
+				<span className="command-label">output</span>
 				<span className="message-text">{messageFriend}</span>
 				{attributeFriend && (
 					<img

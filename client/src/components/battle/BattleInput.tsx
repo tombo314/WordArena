@@ -86,7 +86,8 @@ export default function BattleInput({
 
 	return (
 		<div className="wrapper-input">
-			<div className="sub-wrapper-input">
+			<div className="sub-wrapper-input friend-side">
+				<span className="command-label">input</span>
 				<input
 					type="text"
 					value={inputFriend}
