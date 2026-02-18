@@ -70,7 +70,7 @@ export function useBattle(socket: Socket) {
 	// handleGameEnd の前方参照用 ref（useHP / useGameTimer に渡すため）
 	const handleGameEndRef = useRef<() => void>(() => {});
 
-	const { commandList, subCommandMap, commandDataRef } = useCommandData(socket);
+	const { commandList, subCommandMap, commandDataRef, shieldCommandSet } = useCommandData(socket);
 	const { timeLeft } = useGameTimer(gameStarted, gameEnded, () =>
 		handleGameEndRef.current(),
 	);
@@ -187,6 +187,7 @@ export function useBattle(socket: Socket) {
 	const { activateCommand } = useActivateCommand({
 		coolTime,
 		commandDataRef,
+		shieldCommandSet,
 		activeFriendFieldRef,
 		activeEnemyFieldRef,
 		activeFriendDerivedFieldRef,
@@ -290,6 +291,7 @@ export function useBattle(socket: Socket) {
 			shieldCoolTimeEnemyText: ctState.shieldCoolTimeEnemyText,
 			commandList,
 			subCommandMap,
+			shieldCommandSet,
 			activeFriendField,
 			activeEnemyField,
 			activeFriendDerivedField,

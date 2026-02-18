@@ -50,7 +50,7 @@ export function useCoolTime() {
 		}, 1000);
 	};
 
-	const generateRegenCoolTime = (coolTimeSec: number, side: FriendOrEnemy) => {
+	const generateRegenCoolTime = (coolTimeSec: number, side: FriendOrEnemy, skillName: string) => {
 		if (side === "friend") inRegenCoolTimeFriendRef.current = true;
 		else inRegenCoolTimeEnemyRef.current = true;
 
@@ -64,7 +64,7 @@ export function useCoolTime() {
 			const m = Math.floor(remaining / 60);
 			const s = remaining % 60;
 			setText(
-				`regenerate CT ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
+				`${skillName} ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
 			);
 			if (remaining <= 0) {
 				clearInterval(interval);
@@ -80,7 +80,7 @@ export function useCoolTime() {
 		}, 1000);
 	};
 
-	const generateShieldCoolTime = (coolTimeSec: number, side: FriendOrEnemy) => {
+	const generateShieldCoolTime = (coolTimeSec: number, side: FriendOrEnemy, skillName: string) => {
 		if (side === "friend") inShieldCoolTimeFriendRef.current = true;
 		else inShieldCoolTimeEnemyRef.current = true;
 
@@ -100,7 +100,7 @@ export function useCoolTime() {
 			const m = Math.floor(remaining / 60);
 			const s = remaining % 60;
 			setText(
-				`shield CT ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
+				`${skillName} ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
 			);
 			if (remaining <= 0) {
 				clearInterval(intervalRef.current!);

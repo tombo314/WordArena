@@ -79,6 +79,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
 			<CommandStatus
 				commandList={state.commandList}
 				subCommandMap={state.subCommandMap}
+				shieldCommandSet={state.shieldCommandSet}
 				gameEnded={state.gameEnded}
 				friend={{
 					activeField: state.activeFriendField,

@@ -1,7 +1,5 @@
 import type { FriendOrEnemy } from "../../types";
 
-const SHIELD_COMMANDS = ["flame shield", "splash shield", "protect"];
-
 interface SideStatus {
 	activeField: string | null;
 	activeDerivedField: string | null;
@@ -15,6 +13,7 @@ interface SideStatus {
 interface CommandStatusProps {
 	commandList: string[];
 	subCommandMap: Record<string, string[]>;
+	shieldCommandSet: Set<string>;
 	gameEnded: boolean;
 	friend: SideStatus;
 	enemy: SideStatus;
@@ -23,6 +22,7 @@ interface CommandStatusProps {
 export default function CommandStatus({
 	commandList,
 	subCommandMap,
+	shieldCommandSet,
 	gameEnded,
 	friend,
 	enemy,
@@ -78,7 +78,7 @@ export default function CommandStatus({
 									if (activeRegen) subClass += " regen-active";
 									else if (inRegenCoolTime) subClass += " grayed-out";
 									else subClass += " holy-sub";
-								} else if (SHIELD_COMMANDS.includes(sub)) {
+								} else if (shieldCommandSet.has(sub)) {
 									if (inShieldCoolTime) subClass += " grayed-out";
 									else {
 										if (cmd === "flame field") subClass += " flame-sub";

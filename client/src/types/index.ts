@@ -5,6 +5,8 @@ export interface OriginalParams {
 	parryCount?: number;
 	commandDelay?: number;
 	delayTarget?: string;
+	hasIndependentCT?: boolean;
+	isShield?: boolean;
 }
 
 export interface CommandEntry {

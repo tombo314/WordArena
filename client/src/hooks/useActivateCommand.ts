@@ -4,11 +4,10 @@ import { ATTRIBUTE, RESERVED_KEYS } from "../const";
 import type { CommandEntry, FriendOrEnemy } from "../types";
 import type { useCoolTime } from "./useCoolTime";
 
-const SHIELD_COMMANDS = ["flame shield", "splash shield", "protect"];
-
 interface Params {
 	coolTime: ReturnType<typeof useCoolTime>;
 	commandDataRef: MutableRefObject<Record<string, CommandEntry>>;
+	shieldCommandSet: Set<string>;
 	activeFriendFieldRef: MutableRefObject<string | null>;
 	activeEnemyFieldRef: MutableRefObject<string | null>;
 	activeFriendDerivedFieldRef: MutableRefObject<string | null>;
@@ -137,13 +136,13 @@ export function useActivateCommand(p: Params) {
 			p.showMessage("リジェネのクールタイム中です", side);
 			return false;
 		}
-		if (SHIELD_COMMANDS.includes(command) && inShieldCoolTime) {
+		if (cmdData.originalParams?.isShield && inShieldCoolTime) {
 			p.showMessage("シールドのクールタイム中です", side);
 			return false;
 		}
 		if (
 			command !== "regenerate" &&
-			!SHIELD_COMMANDS.includes(command) &&
+			!cmdData.originalParams?.isShield &&
 			inCoolTime
 		) {
 			p.showMessage("スキルのクールタイム中です", side);
@@ -163,10 +162,10 @@ export function useActivateCommand(p: Params) {
 		const damageTarget = getTargetFromData(cmdData, side, "damageTarget");
 
 		if (command === "regenerate") {
-			if (coolTimeSec >= 0) p.coolTime.generateRegenCoolTime(coolTimeSec, side);
-		} else if (SHIELD_COMMANDS.includes(command)) {
+			if (coolTimeSec >= 0) p.coolTime.generateRegenCoolTime(coolTimeSec, side, command);
+		} else if (cmdData.originalParams?.isShield) {
 			if (coolTimeSec >= 0)
-				p.coolTime.generateShieldCoolTime(coolTimeSec, side);
+				p.coolTime.generateShieldCoolTime(coolTimeSec, side, command);
 		} else {
 			if (coolTimeSec >= 0) p.coolTime.generateCoolTime(coolTimeSec, side);
 		}
@@ -267,7 +266,7 @@ export function useActivateCommand(p: Params) {
 						setActiveRegen(false);
 					}
 				}, 1000);
-			} else if (SHIELD_COMMANDS.includes(command)) {
+			} else if (cmdData.originalParams?.isShield) {
 				const defense = cmdData.defense as number;
 				if (defense > 0) {
 					if (side === "friend") {
