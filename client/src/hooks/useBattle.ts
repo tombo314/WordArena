@@ -40,6 +40,9 @@ export function useBattle(socket: Socket) {
 	const [attributeKeyFriend, setAttributeKeyFriend] = useState(0);
 	const [attributeKeyEnemy, setAttributeKeyEnemy] = useState(0);
 
+	const [defenseFriend, setDefenseFriend] = useState(0);
+	const [defenseEnemy, setDefenseEnemy] = useState(0);
+
 	const gameEndedRef = useRef(false);
 	const defenseFriendRef = useRef(0);
 	const defenseEnemyRef = useRef(0);
@@ -158,9 +161,11 @@ export function useBattle(socket: Socket) {
 		if (side === "friend") {
 			defenseFriendRef.current -= friendShieldDefenseRef.current;
 			friendShieldDefenseRef.current = 0;
+			setDefenseFriend(defenseFriendRef.current);
 		} else {
 			defenseEnemyRef.current -= enemyShieldDefenseRef.current;
 			enemyShieldDefenseRef.current = 0;
+			setDefenseEnemy(defenseEnemyRef.current);
 		}
 
 		const fieldCmd = commandDataRef.current[fieldName];
@@ -168,8 +173,13 @@ export function useBattle(socket: Socket) {
 			const defense = fieldCmd.defense as number;
 			if (defense > 0) {
 				const defenseTarget = getTarget(fieldName, side, "defense");
-				if (defenseTarget === "friend") defenseFriendRef.current -= defense;
-				else defenseEnemyRef.current -= defense;
+				if (defenseTarget === "friend") {
+					defenseFriendRef.current -= defense;
+					setDefenseFriend(defenseFriendRef.current);
+				} else {
+					defenseEnemyRef.current -= defense;
+					setDefenseEnemy(defenseEnemyRef.current);
+				}
 			}
 		}
 	};
@@ -204,6 +214,8 @@ export function useBattle(socket: Socket) {
 		setActiveEnemyRegen,
 		setDisabledFriendFields,
 		setDisabledEnemyFields,
+		setDefenseFriend,
+		setDefenseEnemy,
 	});
 
 	const handleGameEnd = () => {
@@ -264,6 +276,8 @@ export function useBattle(socket: Socket) {
 			gameEnded,
 			hpFriend,
 			hpEnemy,
+			defenseFriend,
+			defenseEnemy,
 			timeLeft,
 			inputFriend,
 			messageFriend,

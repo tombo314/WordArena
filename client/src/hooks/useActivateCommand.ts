@@ -51,6 +51,8 @@ interface Params {
 	setActiveEnemyRegen: (value: boolean) => void;
 	setDisabledFriendFields: (fields: string[]) => void;
 	setDisabledEnemyFields: (fields: string[]) => void;
+	setDefenseFriend: (value: number) => void;
+	setDefenseEnemy: (value: number) => void;
 }
 
 const getTargetFromData = (
@@ -207,8 +209,13 @@ export function useActivateCommand(p: Params) {
 				const defense = cmdData.defense as number;
 				const defenseTarget = getTargetFromData(cmdData, side, "defenseTarget");
 				if (defense > 0 && defenseTarget) {
-					if (defenseTarget === "friend") p.defenseFriendRef.current += defense;
-					else p.defenseEnemyRef.current += defense;
+					if (defenseTarget === "friend") {
+						p.defenseFriendRef.current += defense;
+						p.setDefenseFriend(p.defenseFriendRef.current);
+					} else {
+						p.defenseEnemyRef.current += defense;
+						p.setDefenseEnemy(p.defenseEnemyRef.current);
+					}
 				}
 			}
 
@@ -266,9 +273,11 @@ export function useActivateCommand(p: Params) {
 					if (side === "friend") {
 						p.defenseFriendRef.current += defense;
 						p.friendShieldDefenseRef.current += defense;
+						p.setDefenseFriend(p.defenseFriendRef.current);
 					} else {
 						p.defenseEnemyRef.current += defense;
 						p.enemyShieldDefenseRef.current += defense;
+						p.setDefenseEnemy(p.defenseEnemyRef.current);
 					}
 				}
 			} else {
@@ -276,8 +285,13 @@ export function useActivateCommand(p: Params) {
 				const defense = cmdData.defense as number;
 				const defenseTarget = getTargetFromData(cmdData, side, "defenseTarget");
 				if (defense > 0 && defenseTarget) {
-					if (defenseTarget === "friend") p.defenseFriendRef.current += defense;
-					else p.defenseEnemyRef.current += defense;
+					if (defenseTarget === "friend") {
+						p.defenseFriendRef.current += defense;
+						p.setDefenseFriend(p.defenseFriendRef.current);
+					} else {
+						p.defenseEnemyRef.current += defense;
+						p.setDefenseEnemy(p.defenseEnemyRef.current);
+					}
 				}
 			}
 		}

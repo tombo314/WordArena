@@ -25,3 +25,14 @@ export interface CommandData {
 
 export type FriendOrEnemy = "friend" | "enemy";
 export type DamageOrDefense = "damage" | "defense";
+
+export interface StatusEffect {
+	/** ユニークな識別子（Reactのkeyにも使用） */
+	type: string;
+	/** アイコン画像のパス */
+	icon: string;
+	/** 表示する数値（正なら+X、負なら-X） */
+	value: number;
+	/** 数値のテキスト色 */
+	color: string;
+}

@@ -86,7 +86,7 @@ export default function BattleInput({
 
 	return (
 		<div className="wrapper-input">
-			<div className="sub-wrapper-input friend-side">
+			<div className="sub-wrapper-input">
 				<span className="command-label">input</span>
 				<input
 					type="text"
@@ -108,6 +108,7 @@ export default function BattleInput({
 				{gameEnded ? "残り時間 --:--" : formatTime(timeLeft)}
 			</div>
 			<div className="sub-wrapper-input">
+				<span className="command-label">input</span>
 				<input
 					className="input-enemy"
 					type="text"

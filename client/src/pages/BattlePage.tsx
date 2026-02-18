@@ -7,6 +7,7 @@ import HpBars from "../components/battle/HpBars";
 import MessageDisplay from "../components/battle/MessageDisplay";
 import StartScreen from "../components/battle/StartScreen";
 import { useBattle } from "../hooks/useBattle";
+import type { StatusEffect } from "../types";
 
 interface BattlePageProps {
 	socket: Socket;
@@ -15,6 +16,19 @@ interface BattlePageProps {
 export default function BattlePage({ socket }: BattlePageProps) {
 	const username = sessionStorage.getItem("username") ?? "";
 	const { state, actions } = useBattle(socket);
+
+	const buildStatusEffects = (defense: number): StatusEffect[] => {
+		const effects: StatusEffect[] = [];
+		if (defense !== 0) {
+			effects.push({
+				type: "defense",
+				icon: "/images/shield.png",
+				value: defense,
+				color: defense > 0 ? "#22a010" : "#cc2200",
+			});
+		}
+		return effects;
+	};
 
 	return (
 		<div className="battle-layout">
@@ -45,6 +59,8 @@ export default function BattlePage({ socket }: BattlePageProps) {
 				attributeEnemy={state.attributeEnemy}
 				attributeKeyFriend={state.attributeKeyFriend}
 				attributeKeyEnemy={state.attributeKeyEnemy}
+				statusEffectsFriend={buildStatusEffects(state.defenseFriend)}
+				statusEffectsEnemy={buildStatusEffects(state.defenseEnemy)}
 			/>
 
 			<CoolTimeDisplay

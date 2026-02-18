@@ -111,20 +111,13 @@
 
   .sub-wrapper-input {
     width: 30%;
-    text-align: center;
-
-    &.friend-side {
-      display: flex;
-      align-items: center;
-      text-align: left;
-
-      input {
-        flex: 1;
-      }
-    }
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
 
     input {
-      width: 60%;
+      flex: 1;
       height: 36px;
       outline: none;
       font-size: 22px;
@@ -159,11 +152,18 @@
   display: flex;
   justify-content: center;
 
+  .sub-wrapper-message-col {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+  }
+
   .sub-wrapper-message {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    width: 30%;
+    gap: 8px;
+    width: 100%;
     height: 42px;
 
     .output-icon {
@@ -183,9 +183,34 @@
     }
   }
 
+  .status-effect-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    min-height: 26px;
+    padding-left: 4px;
+  }
+
   .margin {
     width: 20%;
   }
+}
+
+.status-effect-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.status-effect-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.status-effect-value {
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .wrapper-cool-time {
