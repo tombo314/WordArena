@@ -270,12 +270,14 @@ export function useActivateCommand(p: Params) {
 				const defense = cmdData.defense as number;
 				if (defense > 0) {
 					if (side === "friend") {
+						p.defenseFriendRef.current -= p.friendShieldDefenseRef.current;
+						p.friendShieldDefenseRef.current = defense;
 						p.defenseFriendRef.current += defense;
-						p.friendShieldDefenseRef.current += defense;
 						p.setDefenseFriend(p.defenseFriendRef.current);
 					} else {
+						p.defenseEnemyRef.current -= p.enemyShieldDefenseRef.current;
+						p.enemyShieldDefenseRef.current = defense;
 						p.defenseEnemyRef.current += defense;
-						p.enemyShieldDefenseRef.current += defense;
 						p.setDefenseEnemy(p.defenseEnemyRef.current);
 					}
 				}
