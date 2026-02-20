@@ -58,10 +58,12 @@ export default function CommandStatus({
 							if (disabledFields.includes(cmd)) {
 								itemClass = "permanently-disabled";
 							} else if (cmd === activeField) {
-								if (cmd === "flame field") itemClass = "flame-active";
-								else if (cmd === "ocean field") itemClass = "ocean-active";
-								else if (cmd === "earth field") itemClass = "earth-active";
-								else if (cmd === "holy field") itemClass = "holy-active";
+								switch (cmd) {
+									case "flame field": itemClass = "flame-active"; break;
+									case "ocean field": itemClass = "ocean-active"; break;
+									case "earth field": itemClass = "earth-active"; break;
+									case "holy field":  itemClass = "holy-active";  break;
+								}
 							} else if (gameEnded || inCoolTime) {
 								itemClass = "grayed-out";
 							}
@@ -89,10 +91,12 @@ export default function CommandStatus({
 								} else if (shieldCommandSet.has(sub)) {
 									if (inShieldCoolTime) subClass += " grayed-out";
 									else {
-										if (cmd === "flame field") subClass += " flame-sub";
-										else if (cmd === "ocean field") subClass += " ocean-sub";
-										else if (cmd === "earth field") subClass += " earth-sub";
-										else if (cmd === "holy field") subClass += " holy-sub";
+										switch (cmd) {
+											case "flame field": subClass += " flame-sub"; break;
+											case "ocean field": subClass += " ocean-sub"; break;
+											case "earth field": subClass += " earth-sub"; break;
+											case "holy field":  subClass += " holy-sub";  break;
+										}
 									}
 								} else if (sub === "guardian") {
 									// CT 中はアクティブ色（parry count が表示される）
@@ -100,10 +104,12 @@ export default function CommandStatus({
 								} else if (inCoolTime) {
 									subClass += " grayed-out";
 								} else {
-									if (cmd === "flame field") subClass += " flame-sub";
-									else if (cmd === "ocean field") subClass += " ocean-sub";
-									else if (cmd === "earth field") subClass += " earth-sub";
-									else if (cmd === "holy field") subClass += " holy-sub";
+									switch (cmd) {
+										case "flame field": subClass += " flame-sub"; break;
+										case "ocean field": subClass += " ocean-sub"; break;
+										case "earth field": subClass += " earth-sub"; break;
+										case "holy field":  subClass += " holy-sub";  break;
+									}
 								}
 								return (
 									<span key={sub} className={`command-item ${subClass}`}>
