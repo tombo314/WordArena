@@ -204,7 +204,7 @@
 				"attribute": "magic",
 				"parentCommand": "earth field",
 				"originalParams": {
-					"parryCount": 3,
+					"parryCount": 5,
 					"cancelField": true,
 					"hasIndependentCT": true,
 					"ignoreFieldCancel": true
