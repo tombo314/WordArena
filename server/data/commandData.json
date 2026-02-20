@@ -99,7 +99,7 @@
 				"parentCommand": "ocean field",
 				"originalParams": {
 					"commandDelay": 3,
-					"delayTarget": "enemy"
+					"effectTarget": "enemy"
 				}
 			},
 
@@ -166,7 +166,9 @@
 				"attribute": "magic",
 				"parentCommand": "holy field",
 				"originalParams": {
-					"hasIndependentCT": true
+					"hasIndependentCT": true,
+					"isBlinding": true,
+					"effectTarget": "enemy"
 				}
 			}
 		},
