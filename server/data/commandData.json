@@ -6,6 +6,7 @@
 			"defense": 0,
 			"defenseTarget": null,
 			"coolTime": 5,
+			"duration": 0,
 			"attribute": "physical",
 			"parentCommand": null,
 			"originalParams": null
@@ -17,6 +18,7 @@
 			"defense": 0,
 			"defenseTarget": null,
 			"coolTime": 5,
+			"duration": 0,
 			"attribute": "magic",
 			"parentCommand": null,
 			"originalParams": null
@@ -27,7 +29,8 @@
 			"damageTarget": "enemy",
 			"defense": 0,
 			"defenseTarget": null,
-			"coolTime": 0,
+			"coolTime": -1,
+			"duration": -1,
 			"attribute": "field",
 			"parentCommand": null,
 			"originalParams": null,
@@ -38,6 +41,7 @@
 				"defense": 0,
 				"defenseTarget": null,
 				"coolTime": 5,
+				"duration": 0,
 				"attribute": "breath",
 				"parentCommand": "flame field",
 				"originalParams": null
@@ -49,6 +53,7 @@
 				"defense": 3,
 				"defenseTarget": "friend",
 				"coolTime": 20,
+				"duration": 20,
 				"attribute": "magic",
 				"parentCommand": "flame field",
 				"originalParams": {
@@ -63,6 +68,7 @@
 				"defense": 0,
 				"defenseTarget": null,
 				"coolTime": -1,
+				"duration": -1,
 				"attribute": "breath",
 				"parentCommand": "flame field",
 				"originalParams": {
@@ -76,7 +82,8 @@
 			"damageTarget": null,
 			"defense": 2,
 			"defenseTarget": "friend",
-			"coolTime": 0,
+			"coolTime": -1,
+			"duration": -1,
 			"attribute": "field",
 			"parentCommand": null,
 			"originalParams": null,
@@ -86,7 +93,8 @@
 				"damageTarget": "enemy",
 				"defense": 0,
 				"defenseTarget": null,
-				"coolTime": 0,
+				"coolTime": -1,
+				"duration": -1,
 				"attribute": "field",
 				"parentCommand": "ocean field",
 				"originalParams": {
@@ -101,6 +109,7 @@
 				"defense": 5,
 				"defenseTarget": "friend",
 				"coolTime": 20,
+				"duration": 20,
 				"attribute": "magic",
 				"parentCommand": "ocean field",
 				"originalParams": {
@@ -115,7 +124,8 @@
 			"damageTarget": "enemy",
 			"defense": 0,
 			"defenseTarget": null,
-			"coolTime": 0,
+			"coolTime": -1,
+			"duration": -1,
 			"attribute": "field",
 			"parentCommand": null,
 			"originalParams": null,
@@ -126,6 +136,7 @@
 				"defense": 0,
 				"defenseTarget": null,
 				"coolTime": 5,
+				"duration": 0,
 				"attribute": "breath",
 				"parentCommand": "holy field",
 				"originalParams": null
@@ -137,6 +148,7 @@
 				"defense": 0,
 				"defenseTarget": null,
 				"coolTime": 20,
+				"duration": 20,
 				"attribute": "magic",
 				"parentCommand": "holy field",
 				"originalParams": {
@@ -150,6 +162,7 @@
 				"defense": 0,
 				"defenseTarget": null,
 				"coolTime": 10,
+				"duration": 10,
 				"attribute": "magic",
 				"parentCommand": "holy field",
 				"originalParams": {
@@ -163,7 +176,8 @@
 			"damageTarget": null,
 			"defense": 3,
 			"defenseTarget": "friend",
-			"coolTime": 0,
+			"coolTime": -1,
+			"duration": -1,
 			"attribute": "field",
 			"parentCommand": null,
 			"originalParams": null,
@@ -174,6 +188,7 @@
 				"defense": 0,
 				"defenseTarget": null,
 				"coolTime": 5,
+				"duration": 0,
 				"attribute": "physical",
 				"parentCommand": "earth field",
 				"originalParams": null
@@ -184,12 +199,15 @@
 				"damageTarget": null,
 				"defense": 0,
 				"defenseTarget": "friend",
-				"coolTime": -1,
+				"coolTime": 30,
+				"duration": 30,
 				"attribute": "magic",
 				"parentCommand": "earth field",
 				"originalParams": {
 					"parryCount": 3,
-					"cancelField": true
+					"cancelField": true,
+					"hasIndependentCT": true,
+					"ignoreFieldCancel": true
 				}
 			},
 
@@ -199,6 +217,7 @@
 				"defense": 0,
 				"defenseTarget": null,
 				"coolTime": -1,
+				"duration": 0,
 				"attribute": "physical",
 				"parentCommand": "earth field",
 				"originalParams": {
