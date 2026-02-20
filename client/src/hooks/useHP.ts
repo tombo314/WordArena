@@ -1,5 +1,5 @@
 import { type MutableRefObject, useRef, useState } from "react";
-import { ATTRIBUTE, type Attribute, HP_INIT } from "../const";
+import { ATTRIBUTE, type Attribute, HP_INIT, HP_MAX } from "../const";
 import type { FriendOrEnemy } from "../types";
 
 export function useHP(
@@ -53,13 +53,13 @@ export function useHP(
 			side === "friend" ? defenseFriendRef.current : defenseEnemyRef.current;
 		const actualDamage = damage > 0 ? Math.max(0, damage - defense) : damage;
 		if (side === "friend") {
-			const next = hpFriendRef.current - actualDamage;
+			const next = Math.min(HP_MAX, hpFriendRef.current - actualDamage);
 			hpFriendRef.current = next;
 			setHpFriend(next);
 			console.log(`[HP] 自分: ${next} / 相手: ${hpEnemyRef.current}`);
 			if (next <= 0) onDeathRef.current();
 		} else {
-			const next = hpEnemyRef.current - actualDamage;
+			const next = Math.min(HP_MAX, hpEnemyRef.current - actualDamage);
 			hpEnemyRef.current = next;
 			setHpEnemy(next);
 			console.log(`[HP] 自分: ${hpFriendRef.current} / 相手: ${next}`);
