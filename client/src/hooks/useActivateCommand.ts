@@ -284,12 +284,11 @@ export function useActivateCommand(p: Params) {
 				if (side === "friend") {
 					p.setActiveFriendField(null);
 					p.activeFriendFieldRef.current = null;
-					if (!isGuardian) {
-						// guardian以外はフィールドを永続無効化
-						p.disabledFriendFieldsRef.current.add(activeField);
-						p.setDisabledFriendFields([...p.disabledFriendFieldsRef.current]);
-					} else {
-						// guardianはパリィカウントをセット
+					// cancelFieldは常にフィールドを永続無効化
+					p.disabledFriendFieldsRef.current.add(activeField);
+					p.setDisabledFriendFields([...p.disabledFriendFieldsRef.current]);
+					if (isGuardian) {
+						// guardianはさらにパリィカウントをセット
 						const parryCount = cmdData.originalParams!.parryCount!;
 						p.friendGuardianParryRef.current = parryCount;
 						p.setGuardianParryFriend(parryCount);
@@ -297,10 +296,10 @@ export function useActivateCommand(p: Params) {
 				} else {
 					p.setActiveEnemyField(null);
 					p.activeEnemyFieldRef.current = null;
-					if (!isGuardian) {
-						p.disabledEnemyFieldsRef.current.add(activeField);
-						p.setDisabledEnemyFields([...p.disabledEnemyFieldsRef.current]);
-					} else {
+					// cancelFieldは常にフィールドを永続無効化
+					p.disabledEnemyFieldsRef.current.add(activeField);
+					p.setDisabledEnemyFields([...p.disabledEnemyFieldsRef.current]);
+					if (isGuardian) {
 						const parryCount = cmdData.originalParams!.parryCount!;
 						p.enemyGuardianParryRef.current = parryCount;
 						p.setGuardianParryEnemy(parryCount);
