@@ -8,6 +8,7 @@ export interface OriginalParams {
 	hasIndependentCT?: boolean;
 	isShield?: boolean;
 	ignoreFieldCancel?: boolean;
+	isBlind?: boolean;
 }
 
 export interface CommandEntry {

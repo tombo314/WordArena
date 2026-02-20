@@ -18,6 +18,8 @@ export function useHP(
 	defenseEnemyRef: MutableRefObject<number>,
 	friendGuardianParryRef: MutableRefObject<number>,
 	enemyGuardianParryRef: MutableRefObject<number>,
+	friendBlindedRef: MutableRefObject<boolean>,
+	enemyBlindedRef: MutableRefObject<boolean>,
 	onParryUsed: (side: FriendOrEnemy, remaining: number) => void,
 	onDeath: () => void,
 ) {
@@ -60,6 +62,15 @@ export function useHP(
 				parryRef.current--;
 				onParryUsedRef.current(side, parryRef.current);
 				return; // パリィ成功：ダメージをキャンセル
+			}
+		}
+
+		// shining による命中判定：攻撃者が盲目の場合、physical攻撃は50%でミス
+		if (damage > 0 && attribute === ATTRIBUTE.PHYSICAL) {
+			const attackerBlinded =
+				side === "friend" ? enemyBlindedRef.current : friendBlindedRef.current;
+			if (attackerBlinded && Math.random() < 0.5) {
+				return; // ミス
 			}
 		}
 

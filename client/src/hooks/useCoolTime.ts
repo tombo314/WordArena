@@ -46,7 +46,7 @@ export function useCoolTime() {
 		typeof setInterval
 	> | null>(null);
 
-	const generateCoolTime = (coolTimeSec: number, side: FriendOrEnemy) => {
+	const generateCoolTime = (coolTimeSec: number, side: FriendOrEnemy, onExpire?: () => void) => {
 		if (side === "friend") inCoolTimeFriendRef.current = true;
 		else inCoolTimeEnemyRef.current = true;
 
@@ -73,6 +73,7 @@ export function useCoolTime() {
 					inCoolTimeEnemyRef.current = false;
 					setCoolTimeEnemyText("");
 				}
+				onExpire?.();
 			}
 			remaining--;
 		}, 1000);
