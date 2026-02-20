@@ -7,6 +7,7 @@ export interface OriginalParams {
 	delayTarget?: string;
 	hasIndependentCT?: boolean;
 	isShield?: boolean;
+	ignoreFieldCancel?: boolean;
 }
 
 export interface CommandEntry {
@@ -15,6 +16,7 @@ export interface CommandEntry {
 	defense: number;
 	defenseTarget: "friend" | "enemy" | null;
 	coolTime: number;
+	duration: number;
 	attribute: Attribute;
 	parentCommand: string | null;
 	originalParams: OriginalParams | null;

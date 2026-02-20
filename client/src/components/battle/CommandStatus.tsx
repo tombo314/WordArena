@@ -6,6 +6,8 @@ interface SideStatus {
 	coolTimeText: string;
 	regenCoolTimeText: string;
 	shieldCoolTimeText: string;
+	guardianCoolTimeText: string;
+	guardianParry: number;
 	disabledFields: string[];
 	activeRegen: boolean;
 }
@@ -37,12 +39,15 @@ export default function CommandStatus({
 					coolTimeText,
 					regenCoolTimeText,
 					shieldCoolTimeText,
+					guardianCoolTimeText,
+					guardianParry,
 					disabledFields,
 					activeRegen,
 				} = status;
 				const inCoolTime = coolTimeText !== "";
 				const inRegenCoolTime = regenCoolTimeText !== "";
 				const inShieldCoolTime = shieldCoolTimeText !== "";
+				const inGuardianCoolTime = guardianCoolTimeText !== "";
 
 				return (
 					<div key={side} className="sub-wrapper-status">
@@ -70,7 +75,9 @@ export default function CommandStatus({
 
 							const subItems = subs.map((sub) => {
 								let subClass = "sub-command";
-								if (cmd !== activeField) {
+								// guardian CT 中は guardian コマンドのみフィールド非アクティブ免除
+								const isGuardianRunning = sub === "guardian" && inGuardianCoolTime;
+								if (cmd !== activeField && !isGuardianRunning) {
 									subClass += gameEnded ? " grayed-out" : " field-inactive";
 								} else if (sub === activeDerivedField) {
 									subClass += " swamp-active";
@@ -86,6 +93,9 @@ export default function CommandStatus({
 										else if (cmd === "earth field") subClass += " earth-sub";
 										else if (cmd === "holy field") subClass += " holy-sub";
 									}
+								} else if (sub === "guardian") {
+									// CT 中はアクティブ色（parry count が表示される）
+									subClass += " earth-sub";
 								} else if (inCoolTime) {
 									subClass += " grayed-out";
 								} else {
@@ -100,6 +110,9 @@ export default function CommandStatus({
 											<span className="orbit-dot" />
 										)}
 										{sub}
+										{sub === "guardian" && guardianParry > 0 && (
+											<span className="parry-count"> ({guardianParry})</span>
+										)}
 									</span>
 								);
 							});

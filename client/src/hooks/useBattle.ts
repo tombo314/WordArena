@@ -42,10 +42,14 @@ export function useBattle(socket: Socket) {
 
 	const [defenseFriend, setDefenseFriend] = useState(0);
 	const [defenseEnemy, setDefenseEnemy] = useState(0);
+	const [guardianParryFriend, setGuardianParryFriend] = useState(0);
+	const [guardianParryEnemy, setGuardianParryEnemy] = useState(0);
 
 	const gameEndedRef = useRef(false);
 	const defenseFriendRef = useRef(0);
 	const defenseEnemyRef = useRef(0);
+	const friendGuardianParryRef = useRef(0);
+	const enemyGuardianParryRef = useRef(0);
 	const friendFieldIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
 		null,
 	);
@@ -75,6 +79,16 @@ export function useBattle(socket: Socket) {
 		handleGameEndRef.current(),
 	);
 	const coolTime = useCoolTime();
+
+	// パリィ消耗時：残カウントを state に反映し、0になったら guardian CT を強制終了
+	const onParryUsed = (side: FriendOrEnemy, remaining: number) => {
+		if (side === "friend") setGuardianParryFriend(remaining);
+		else setGuardianParryEnemy(remaining);
+		if (remaining === 0) {
+			coolTime.clearGuardianCoolTime(side);
+		}
+	};
+
 	const {
 		hpFriend,
 		hpEnemy,
@@ -82,8 +96,14 @@ export function useBattle(socket: Socket) {
 		hpEnemyRef,
 		giveDamage,
 		giveSlipDamage,
-	} = useHP(gameEndedRef, defenseFriendRef, defenseEnemyRef, () =>
-		handleGameEndRef.current(),
+	} = useHP(
+		gameEndedRef,
+		defenseFriendRef,
+		defenseEnemyRef,
+		friendGuardianParryRef,
+		enemyGuardianParryRef,
+		onParryUsed,
+		() => handleGameEndRef.current(),
 	);
 
 	const showMessage = (
@@ -217,6 +237,10 @@ export function useBattle(socket: Socket) {
 		setDisabledEnemyFields,
 		setDefenseFriend,
 		setDefenseEnemy,
+		friendGuardianParryRef,
+		enemyGuardianParryRef,
+		setGuardianParryFriend,
+		setGuardianParryEnemy,
 	});
 
 	const handleGameEnd = () => {
@@ -243,6 +267,12 @@ export function useBattle(socket: Socket) {
 			activeEnemyDerivedFieldRef.current = null;
 			setActiveEnemyDerivedField(null);
 		}
+
+		// guardian は ignoreFieldCancel のため cancelField でクリアされない → 個別にクリア
+		coolTime.clearGuardianCoolTime("friend");
+		coolTime.clearGuardianCoolTime("enemy");
+		friendGuardianParryRef.current = 0;
+		enemyGuardianParryRef.current = 0;
 
 		const hpF = hpFriendRef.current;
 		const hpE = hpEnemyRef.current;
@@ -289,6 +319,10 @@ export function useBattle(socket: Socket) {
 			regenCoolTimeEnemyText: ctState.regenCoolTimeEnemyText,
 			shieldCoolTimeFriendText: ctState.shieldCoolTimeFriendText,
 			shieldCoolTimeEnemyText: ctState.shieldCoolTimeEnemyText,
+			guardianCoolTimeFriendText: ctState.guardianCoolTimeFriendText,
+			guardianCoolTimeEnemyText: ctState.guardianCoolTimeEnemyText,
+			guardianParryFriend,
+			guardianParryEnemy,
 			commandList,
 			subCommandMap,
 			shieldCommandSet,
