@@ -56,11 +56,13 @@ export function useHP(
 			const next = hpFriendRef.current - actualDamage;
 			hpFriendRef.current = next;
 			setHpFriend(next);
+			console.log(`[HP] 自分: ${next} / 相手: ${hpEnemyRef.current}`);
 			if (next <= 0) onDeathRef.current();
 		} else {
 			const next = hpEnemyRef.current - actualDamage;
 			hpEnemyRef.current = next;
 			setHpEnemy(next);
+			console.log(`[HP] 自分: ${hpFriendRef.current} / 相手: ${next}`);
 			if (next <= 0) onDeathRef.current();
 		}
 	};

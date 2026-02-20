@@ -5,6 +5,7 @@ export const RESERVED_KEYS = new Set([
 	"defense",
 	"defenseTarget",
 	"coolTime",
+	"duration",
 	"attribute",
 	"parentCommand",
 	"originalParams",
@@ -15,8 +16,8 @@ export const RESERVED_KEYS = new Set([
 	"delayTarget",
 ]);
 
-export const HP_MAX = 500;
-export const HP_INIT = 450;
+export const HP_MAX = 300;
+export const HP_INIT = 300;
 // export const GAME_DURATION = 180;
 export const GAME_DURATION = 5999; // デバッグ用
 // export const IS_DEBUG = false;
