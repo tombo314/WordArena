@@ -93,6 +93,7 @@
       align-items: center;
       justify-content: center;
       padding: 6px 0;
+      gap: 6px;
     }
   }
 }
@@ -368,6 +369,36 @@
         pointer-events: none;
       }
     }
+  }
+}
+
+// HP増減インジケーター
+// 0.7秒表示 → 0.8秒かけてフェードアウト (合計1.5秒)
+@keyframes hp-delta-fade {
+  0%      { opacity: 1; }
+  46.67%  { opacity: 1; }
+  100%    { opacity: 0; }
+}
+
+.hp-delta-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 50px;
+  min-width: 50px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.hp-delta-value {
+  animation: hp-delta-fade 1.5s linear forwards;
+
+  &--increase {
+    color: #228b22;
+  }
+
+  &--decrease {
+    color: #cc2200;
   }
 }
 

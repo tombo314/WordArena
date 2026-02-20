@@ -95,6 +95,8 @@ export function useBattle(socket: Socket) {
 		hpEnemy,
 		hpFriendRef,
 		hpEnemyRef,
+		hpDeltasFriend,
+		hpDeltasEnemy,
 		giveDamage,
 		giveSlipDamage,
 	} = useHP(
@@ -329,6 +331,8 @@ export function useBattle(socket: Socket) {
 			gameEnded,
 			hpFriend,
 			hpEnemy,
+			hpDeltasFriend,
+			hpDeltasEnemy,
 			defenseFriend,
 			defenseEnemy,
 			timeLeft,

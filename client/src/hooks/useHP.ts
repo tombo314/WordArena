@@ -2,6 +2,16 @@ import { type MutableRefObject, useRef, useState } from "react";
 import { ATTRIBUTE, type Attribute, HP_INIT, HP_MAX } from "../const";
 import type { FriendOrEnemy } from "../types";
 
+export interface HpDelta {
+	key: number;
+	amount: number; // 絶対値
+}
+
+export interface HpDeltas {
+	increase: HpDelta | null; // 回復分（緑+）
+	decrease: HpDelta | null; // ダメージ分（赤-）
+}
+
 export function useHP(
 	gameEndedRef: MutableRefObject<boolean>,
 	defenseFriendRef: MutableRefObject<number>,
@@ -15,6 +25,10 @@ export function useHP(
 	const [hpEnemy, setHpEnemy] = useState(HP_INIT);
 	const hpFriendRef = useRef(HP_INIT);
 	const hpEnemyRef = useRef(HP_INIT);
+
+	const [hpDeltasFriend, setHpDeltasFriend] = useState<HpDeltas>({ increase: null, decrease: null });
+	const [hpDeltasEnemy, setHpDeltasEnemy] = useState<HpDeltas>({ increase: null, decrease: null });
+	const keyRefs = useRef({ friendInc: 0, friendDec: 0, enemyInc: 0, enemyDec: 0 });
 
 	const onDeathRef = useRef(onDeath);
 	onDeathRef.current = onDeath;
@@ -53,15 +67,45 @@ export function useHP(
 			side === "friend" ? defenseFriendRef.current : defenseEnemyRef.current;
 		const actualDamage = damage > 0 ? Math.max(0, damage - defense) : damage;
 		if (side === "friend") {
-			const next = Math.min(HP_MAX, hpFriendRef.current - actualDamage);
+			const current = hpFriendRef.current;
+			const next = Math.min(HP_MAX, current - actualDamage);
+			const delta = next - current;
 			hpFriendRef.current = next;
 			setHpFriend(next);
+			if (delta < 0) {
+				keyRefs.current.friendDec += 1;
+				setHpDeltasFriend((prev) => ({
+					...prev,
+					decrease: { amount: Math.abs(delta), key: keyRefs.current.friendDec },
+				}));
+			} else if (delta > 0) {
+				keyRefs.current.friendInc += 1;
+				setHpDeltasFriend((prev) => ({
+					...prev,
+					increase: { amount: delta, key: keyRefs.current.friendInc },
+				}));
+			}
 			console.log(`[HP] 自分: ${next} / 相手: ${hpEnemyRef.current}`);
 			if (next <= 0) onDeathRef.current();
 		} else {
-			const next = Math.min(HP_MAX, hpEnemyRef.current - actualDamage);
+			const current = hpEnemyRef.current;
+			const next = Math.min(HP_MAX, current - actualDamage);
+			const delta = next - current;
 			hpEnemyRef.current = next;
 			setHpEnemy(next);
+			if (delta < 0) {
+				keyRefs.current.enemyDec += 1;
+				setHpDeltasEnemy((prev) => ({
+					...prev,
+					decrease: { amount: Math.abs(delta), key: keyRefs.current.enemyDec },
+				}));
+			} else if (delta > 0) {
+				keyRefs.current.enemyInc += 1;
+				setHpDeltasEnemy((prev) => ({
+					...prev,
+					increase: { amount: delta, key: keyRefs.current.enemyInc },
+				}));
+			}
 			console.log(`[HP] 自分: ${hpFriendRef.current} / 相手: ${next}`);
 			if (next <= 0) onDeathRef.current();
 		}
@@ -84,6 +128,8 @@ export function useHP(
 		hpEnemy,
 		hpFriendRef,
 		hpEnemyRef,
+		hpDeltasFriend,
+		hpDeltasEnemy,
 		giveDamage,
 		giveSlipDamage,
 	};

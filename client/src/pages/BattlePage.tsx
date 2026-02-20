@@ -40,6 +40,8 @@ export default function BattlePage({ socket }: BattlePageProps) {
 				username={username}
 				hpFriend={state.hpFriend}
 				hpEnemy={state.hpEnemy}
+				hpDeltasFriend={state.hpDeltasFriend}
+				hpDeltasEnemy={state.hpDeltasEnemy}
 			/>
 
 			<BattleInput
