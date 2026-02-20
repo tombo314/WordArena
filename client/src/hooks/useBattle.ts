@@ -206,6 +206,7 @@ export function useBattle(socket: Socket) {
 	};
 
 	const { activateCommand } = useActivateCommand({
+		gameEndedRef,
 		coolTime,
 		commandDataRef,
 		shieldCommandSet,
@@ -244,12 +245,8 @@ export function useBattle(socket: Socket) {
 		setGuardianParryEnemy,
 	});
 
-	const handleGameEnd = () => {
-		if (gameEndedRef.current) return;
-		gameEndedRef.current = true;
-		setGameEnded(true);
-		stopEnemyAI();
-
+	const clearBattleState = () => {
+		// アクティブフィールド・派生フィールド
 		if (activeFriendFieldRef.current) {
 			cancelField(activeFriendFieldRef.current, "friend");
 			setActiveFriendField(null);
@@ -269,11 +266,35 @@ export function useBattle(socket: Socket) {
 			setActiveEnemyDerivedField(null);
 		}
 
-		// guardian は ignoreFieldCancel のため cancelField でクリアされない → 個別にクリア
+		// guardian CT・パリィ（ignoreFieldCancel のため cancelField でクリアされない）
 		coolTime.clearGuardianCoolTime("friend");
 		coolTime.clearGuardianCoolTime("enemy");
 		friendGuardianParryRef.current = 0;
 		enemyGuardianParryRef.current = 0;
+		setGuardianParryFriend(0);
+		setGuardianParryEnemy(0);
+
+		// 通常CT・リジェネCT
+		coolTime.clearCoolTime("friend");
+		coolTime.clearCoolTime("enemy");
+		coolTime.clearRegenCoolTime("friend");
+		coolTime.clearRegenCoolTime("enemy");
+
+		// 防御バフ
+		defenseFriendRef.current = 0;
+		defenseEnemyRef.current = 0;
+		friendShieldDefenseRef.current = 0;
+		enemyShieldDefenseRef.current = 0;
+		setDefenseFriend(0);
+		setDefenseEnemy(0);
+	};
+
+	const handleGameEnd = () => {
+		if (gameEndedRef.current) return;
+		gameEndedRef.current = true;
+		setGameEnded(true);
+		stopEnemyAI();
+		clearBattleState();
 
 		const hpF = hpFriendRef.current;
 		const hpE = hpEnemyRef.current;

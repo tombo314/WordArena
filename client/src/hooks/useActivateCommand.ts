@@ -5,6 +5,7 @@ import type { CommandEntry, FriendOrEnemy } from "../types";
 import type { useCoolTime } from "./useCoolTime";
 
 interface Params {
+	gameEndedRef: MutableRefObject<boolean>;
 	coolTime: ReturnType<typeof useCoolTime>;
 	commandDataRef: MutableRefObject<Record<string, CommandEntry>>;
 	shieldCommandSet: Set<string>;
@@ -75,6 +76,7 @@ const getTargetFromData = (
 
 export function useActivateCommand(p: Params) {
 	const activateCommand = (command: string, side: FriendOrEnemy): boolean => {
+		if (p.gameEndedRef.current) return false;
 		const { refs } = p.coolTime;
 		const inCoolTime =
 			side === "friend"

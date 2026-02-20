@@ -21,6 +21,18 @@ export function useCoolTime() {
 	const inShieldCoolTimeEnemyRef = useRef(false);
 	const inGuardianCoolTimeFriendRef = useRef(false);
 	const inGuardianCoolTimeEnemyRef = useRef(false);
+	const friendCoolTimeIntervalRef = useRef<ReturnType<
+		typeof setInterval
+	> | null>(null);
+	const enemyCoolTimeIntervalRef = useRef<ReturnType<
+		typeof setInterval
+	> | null>(null);
+	const friendRegenCoolTimeIntervalRef = useRef<ReturnType<
+		typeof setInterval
+	> | null>(null);
+	const enemyRegenCoolTimeIntervalRef = useRef<ReturnType<
+		typeof setInterval
+	> | null>(null);
 	const friendShieldCoolTimeIntervalRef = useRef<ReturnType<
 		typeof setInterval
 	> | null>(null);
@@ -40,16 +52,20 @@ export function useCoolTime() {
 
 		const setText =
 			side === "friend" ? setCoolTimeFriendText : setCoolTimeEnemyText;
+		const intervalRef =
+			side === "friend" ? friendCoolTimeIntervalRef : enemyCoolTimeIntervalRef;
+		if (intervalRef.current) clearInterval(intervalRef.current);
 		let remaining = coolTimeSec;
 
-		const interval = setInterval(() => {
+		intervalRef.current = setInterval(() => {
 			const m = Math.floor(remaining / 60);
 			const s = remaining % 60;
 			setText(
 				`クールタイム ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
 			);
 			if (remaining <= 0) {
-				clearInterval(interval);
+				clearInterval(intervalRef.current!);
+				intervalRef.current = null;
 				if (side === "friend") {
 					inCoolTimeFriendRef.current = false;
 					setCoolTimeFriendText("");
@@ -74,16 +90,22 @@ export function useCoolTime() {
 			side === "friend"
 				? setRegenCoolTimeFriendText
 				: setRegenCoolTimeEnemyText;
+		const intervalRef =
+			side === "friend"
+				? friendRegenCoolTimeIntervalRef
+				: enemyRegenCoolTimeIntervalRef;
+		if (intervalRef.current) clearInterval(intervalRef.current);
 		let remaining = coolTimeSec;
 
-		const interval = setInterval(() => {
+		intervalRef.current = setInterval(() => {
 			const m = Math.floor(remaining / 60);
 			const s = remaining % 60;
 			setText(
 				`${skillName} ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
 			);
 			if (remaining <= 0) {
-				clearInterval(interval);
+				clearInterval(intervalRef.current!);
+				intervalRef.current = null;
 				if (side === "friend") {
 					inRegenCoolTimeFriendRef.current = false;
 					setRegenCoolTimeFriendText("");
@@ -182,6 +204,40 @@ export function useCoolTime() {
 		}, 1000);
 	};
 
+	// ゲーム終了時に呼ばれる通常CTの強制クリア
+	const clearCoolTime = (side: FriendOrEnemy) => {
+		const intervalRef =
+			side === "friend" ? friendCoolTimeIntervalRef : enemyCoolTimeIntervalRef;
+		if (intervalRef.current === null) return;
+		clearInterval(intervalRef.current);
+		intervalRef.current = null;
+		if (side === "friend") {
+			inCoolTimeFriendRef.current = false;
+			setCoolTimeFriendText("");
+		} else {
+			inCoolTimeEnemyRef.current = false;
+			setCoolTimeEnemyText("");
+		}
+	};
+
+	// ゲーム終了時に呼ばれるリジェネCTの強制クリア
+	const clearRegenCoolTime = (side: FriendOrEnemy) => {
+		const intervalRef =
+			side === "friend"
+				? friendRegenCoolTimeIntervalRef
+				: enemyRegenCoolTimeIntervalRef;
+		if (intervalRef.current === null) return;
+		clearInterval(intervalRef.current);
+		intervalRef.current = null;
+		if (side === "friend") {
+			inRegenCoolTimeFriendRef.current = false;
+			setRegenCoolTimeFriendText("");
+		} else {
+			inRegenCoolTimeEnemyRef.current = false;
+			setRegenCoolTimeEnemyText("");
+		}
+	};
+
 	// cancelField から呼ばれるシールドCTの強制クリア
 	const clearShieldCoolTime = (side: FriendOrEnemy) => {
 		const intervalRef =
@@ -243,6 +299,8 @@ export function useCoolTime() {
 		generateRegenCoolTime,
 		generateShieldCoolTime,
 		generateGuardianCoolTime,
+		clearCoolTime,
+		clearRegenCoolTime,
 		clearShieldCoolTime,
 		clearGuardianCoolTime,
 	};
