@@ -1,5 +1,5 @@
 *.db
-node_modules
+**/node_modules
 dist
 .claude/settings.local.json
 .DS_Store
