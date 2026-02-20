@@ -74,7 +74,8 @@ export function useBattle(socket: Socket) {
 	// handleGameEnd の前方参照用 ref（useHP / useGameTimer に渡すため）
 	const handleGameEndRef = useRef<() => void>(() => {});
 
-	const { commandList, subCommandMap, commandDataRef, shieldCommandSet } = useCommandData(socket);
+	const { commandList, subCommandMap, commandDataRef, shieldCommandSet } =
+		useCommandData(socket);
 	const { timeLeft } = useGameTimer(gameStarted, gameEnded, () =>
 		handleGameEndRef.current(),
 	);

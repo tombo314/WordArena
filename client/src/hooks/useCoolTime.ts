@@ -62,7 +62,11 @@ export function useCoolTime() {
 		}, 1000);
 	};
 
-	const generateRegenCoolTime = (coolTimeSec: number, side: FriendOrEnemy, skillName: string) => {
+	const generateRegenCoolTime = (
+		coolTimeSec: number,
+		side: FriendOrEnemy,
+		skillName: string,
+	) => {
 		if (side === "friend") inRegenCoolTimeFriendRef.current = true;
 		else inRegenCoolTimeEnemyRef.current = true;
 

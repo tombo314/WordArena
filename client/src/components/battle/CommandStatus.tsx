@@ -76,7 +76,8 @@ export default function CommandStatus({
 							const subItems = subs.map((sub) => {
 								let subClass = "sub-command";
 								// guardian CT 中は guardian コマンドのみフィールド非アクティブ免除
-								const isGuardianRunning = sub === "guardian" && inGuardianCoolTime;
+								const isGuardianRunning =
+									sub === "guardian" && inGuardianCoolTime;
 								if (cmd !== activeField && !isGuardianRunning) {
 									subClass += gameEnded ? " grayed-out" : " field-inactive";
 								} else if (sub === activeDerivedField) {

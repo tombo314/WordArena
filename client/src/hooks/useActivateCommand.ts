@@ -38,7 +38,11 @@ interface Params {
 		attribute?: Attribute | null,
 	) => void;
 	cancelField: (fieldName: string, side: FriendOrEnemy) => void;
-	giveDamage: (damage: number, target: FriendOrEnemy, attribute: Attribute | null) => void;
+	giveDamage: (
+		damage: number,
+		target: FriendOrEnemy,
+		attribute: Attribute | null,
+	) => void;
 	giveSlipDamage: (
 		damage: number,
 		target: FriendOrEnemy,
@@ -175,7 +179,8 @@ export function useActivateCommand(p: Params) {
 		const damageTarget = getTargetFromData(cmdData, side, "damageTarget");
 
 		if (command === "regenerate") {
-			if (coolTimeSec >= 0) p.coolTime.generateRegenCoolTime(coolTimeSec, side, command);
+			if (coolTimeSec >= 0)
+				p.coolTime.generateRegenCoolTime(coolTimeSec, side, command);
 		} else if (cmdData.originalParams?.isShield) {
 			// シールドCT終了時に守備バフを解除する
 			const shieldRef =
@@ -196,9 +201,7 @@ export function useActivateCommand(p: Params) {
 			const parryRef =
 				side === "friend" ? p.friendGuardianParryRef : p.enemyGuardianParryRef;
 			const setParry =
-				side === "friend"
-					? p.setGuardianParryFriend
-					: p.setGuardianParryEnemy;
+				side === "friend" ? p.setGuardianParryFriend : p.setGuardianParryEnemy;
 			const onExpire = () => {
 				parryRef.current = 0;
 				setParry(0);
@@ -273,7 +276,8 @@ export function useActivateCommand(p: Params) {
 			if (activeField === null) return false;
 			const shouldCancelField = cmdData.originalParams?.cancelField === true;
 			if (shouldCancelField) {
-				if (damageTarget !== null) p.giveDamage(damage, damageTarget, cmdData.attribute);
+				if (damageTarget !== null)
+					p.giveDamage(damage, damageTarget, cmdData.attribute);
 				p.cancelField(activeField, side);
 
 				const isGuardian = (cmdData.originalParams?.parryCount ?? 0) > 0;
@@ -342,7 +346,8 @@ export function useActivateCommand(p: Params) {
 					}
 				}
 			} else {
-				if (damage !== 0 && damageTarget) p.giveDamage(damage, damageTarget, cmdData.attribute);
+				if (damage !== 0 && damageTarget)
+					p.giveDamage(damage, damageTarget, cmdData.attribute);
 				const defense = cmdData.defense as number;
 				const defenseTarget = getTargetFromData(cmdData, side, "defenseTarget");
 				if (defense > 0 && defenseTarget) {
