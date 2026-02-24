@@ -25,9 +25,15 @@ function DecreaseChip({ delta }: { delta: HpDelta | null }) {
 	return (
 		<span className="hp-delta-slot hp-delta-slot--decrease">
 			{delta && (
-				<span key={delta.key} className="hp-delta-value hp-delta-value--decrease">
-					-{delta.amount}
-				</span>
+				delta.isMiss ? (
+					<span key={delta.key} className="hp-delta-value hp-delta-value--miss">
+						ミス！
+					</span>
+				) : (
+					<span key={delta.key} className="hp-delta-value hp-delta-value--decrease">
+						-{delta.amount}
+					</span>
+				)
 			)}
 		</span>
 	);

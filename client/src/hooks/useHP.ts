@@ -5,6 +5,7 @@ import type { FriendOrEnemy } from "../types";
 export interface HpDelta {
 	key: number;
 	amount: number; // 絶対値
+	isMiss?: boolean;
 }
 
 export interface HpDeltas {
@@ -70,7 +71,16 @@ export function useHP(
 			const attackerBlinded =
 				side === "friend" ? enemyBlindedRef.current : friendBlindedRef.current;
 			if (attackerBlinded && Math.random() < 0.5) {
-				return; // ミス
+				// ミス：ターゲット側のデクリーズスロットにミス表示
+				const setDeltas =
+					side === "friend" ? setHpDeltasFriend : setHpDeltasEnemy;
+				const decKey = side === "friend" ? "friendDec" : "enemyDec";
+				keyRefs.current[decKey] += 1;
+				setDeltas((prev) => ({
+					...prev,
+					decrease: { amount: 0, isMiss: true, key: keyRefs.current[decKey] },
+				}));
+				return;
 			}
 		}
 

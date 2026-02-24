@@ -400,6 +400,11 @@
   &--decrease {
     color: #cc2200;
   }
+
+  &--miss {
+    color: #888888;
+    font-size: 14px;
+  }
 }
 
 @keyframes orbit-border {
