@@ -13,7 +13,10 @@ function IncreaseChip({ delta }: { delta: HpDelta | null }) {
 	return (
 		<span className="hp-delta-slot hp-delta-slot--increase">
 			{delta && (
-				<span key={delta.key} className="hp-delta-value hp-delta-value--increase">
+				<span
+					key={delta.key}
+					className="hp-delta-value hp-delta-value--increase"
+				>
 					+{delta.amount}
 				</span>
 			)}
@@ -24,17 +27,19 @@ function IncreaseChip({ delta }: { delta: HpDelta | null }) {
 function DecreaseChip({ delta }: { delta: HpDelta | null }) {
 	return (
 		<span className="hp-delta-slot hp-delta-slot--decrease">
-			{delta && (
-				delta.isMiss ? (
+			{delta &&
+				(delta.isMiss ? (
 					<span key={delta.key} className="hp-delta-value hp-delta-value--miss">
 						ミス！
 					</span>
 				) : (
-					<span key={delta.key} className="hp-delta-value hp-delta-value--decrease">
+					<span
+						key={delta.key}
+						className="hp-delta-value hp-delta-value--decrease"
+					>
 						-{delta.amount}
 					</span>
-				)
-			)}
+				))}
 		</span>
 	);
 }

@@ -17,7 +17,10 @@ export default function BattlePage({ socket }: BattlePageProps) {
 	const username = sessionStorage.getItem("username") ?? "";
 	const { state, actions } = useBattle(socket);
 
-	const buildStatusEffects = (defense: number, blinded: boolean): StatusEffect[] => {
+	const buildStatusEffects = (
+		defense: number,
+		blinded: boolean,
+	): StatusEffect[] => {
 		const effects: StatusEffect[] = [];
 		if (defense !== 0) {
 			effects.push({
@@ -67,8 +70,14 @@ export default function BattlePage({ socket }: BattlePageProps) {
 				attributeEnemy={state.attributeEnemy}
 				attributeKeyFriend={state.attributeKeyFriend}
 				attributeKeyEnemy={state.attributeKeyEnemy}
-				statusEffectsFriend={buildStatusEffects(state.defenseFriend, state.friendBlinded)}
-				statusEffectsEnemy={buildStatusEffects(state.defenseEnemy, state.enemyBlinded)}
+				statusEffectsFriend={buildStatusEffects(
+					state.defenseFriend,
+					state.friendBlinded,
+				)}
+				statusEffectsEnemy={buildStatusEffects(
+					state.defenseEnemy,
+					state.enemyBlinded,
+				)}
 			/>
 
 			<CoolTimeDisplay

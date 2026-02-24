@@ -59,10 +59,18 @@ export default function CommandStatus({
 								itemClass = "permanently-disabled";
 							} else if (cmd === activeField) {
 								switch (cmd) {
-									case "flame field": itemClass = "flame-active"; break;
-									case "ocean field": itemClass = "ocean-active"; break;
-									case "earth field": itemClass = "earth-active"; break;
-									case "holy field":  itemClass = "holy-active";  break;
+									case "flame field":
+										itemClass = "flame-active";
+										break;
+									case "ocean field":
+										itemClass = "ocean-active";
+										break;
+									case "earth field":
+										itemClass = "earth-active";
+										break;
+									case "holy field":
+										itemClass = "holy-active";
+										break;
 								}
 							} else if (gameEnded || inCoolTime) {
 								itemClass = "grayed-out";
@@ -92,10 +100,18 @@ export default function CommandStatus({
 									if (inShieldCoolTime) subClass += " grayed-out";
 									else {
 										switch (cmd) {
-											case "flame field": subClass += " flame-sub"; break;
-											case "ocean field": subClass += " ocean-sub"; break;
-											case "earth field": subClass += " earth-sub"; break;
-											case "holy field":  subClass += " holy-sub";  break;
+											case "flame field":
+												subClass += " flame-sub";
+												break;
+											case "ocean field":
+												subClass += " ocean-sub";
+												break;
+											case "earth field":
+												subClass += " earth-sub";
+												break;
+											case "holy field":
+												subClass += " holy-sub";
+												break;
 										}
 									}
 								} else if (sub === "guardian") {
@@ -105,10 +121,18 @@ export default function CommandStatus({
 									subClass += " grayed-out";
 								} else {
 									switch (cmd) {
-										case "flame field": subClass += " flame-sub"; break;
-										case "ocean field": subClass += " ocean-sub"; break;
-										case "earth field": subClass += " earth-sub"; break;
-										case "holy field":  subClass += " holy-sub";  break;
+										case "flame field":
+											subClass += " flame-sub";
+											break;
+										case "ocean field":
+											subClass += " ocean-sub";
+											break;
+										case "earth field":
+											subClass += " earth-sub";
+											break;
+										case "holy field":
+											subClass += " holy-sub";
+											break;
 									}
 								}
 								return (

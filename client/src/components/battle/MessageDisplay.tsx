@@ -30,7 +30,10 @@ function StatusEffectBar({ effects }: { effects: StatusEffect[] }) {
 						className="status-effect-icon"
 					/>
 					{effect.value !== undefined && (
-						<span className="status-effect-value" style={{ color: effect.color }}>
+						<span
+							className="status-effect-value"
+							style={{ color: effect.color }}
+						>
 							{effect.value > 0 ? "+" : ""}
 							{effect.value}
 						</span>

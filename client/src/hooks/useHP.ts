@@ -29,9 +29,20 @@ export function useHP(
 	const hpFriendRef = useRef(HP_INIT);
 	const hpEnemyRef = useRef(HP_INIT);
 
-	const [hpDeltasFriend, setHpDeltasFriend] = useState<HpDeltas>({ increase: null, decrease: null });
-	const [hpDeltasEnemy, setHpDeltasEnemy] = useState<HpDeltas>({ increase: null, decrease: null });
-	const keyRefs = useRef({ friendInc: 0, friendDec: 0, enemyInc: 0, enemyDec: 0 });
+	const [hpDeltasFriend, setHpDeltasFriend] = useState<HpDeltas>({
+		increase: null,
+		decrease: null,
+	});
+	const [hpDeltasEnemy, setHpDeltasEnemy] = useState<HpDeltas>({
+		increase: null,
+		decrease: null,
+	});
+	const keyRefs = useRef({
+		friendInc: 0,
+		friendDec: 0,
+		enemyInc: 0,
+		enemyDec: 0,
+	});
 
 	const onDeathRef = useRef(onDeath);
 	onDeathRef.current = onDeath;
