@@ -44,6 +44,8 @@ export function useBattle(socket: Socket) {
 	const [defenseEnemy, setDefenseEnemy] = useState(0);
 	const [guardianParryFriend, setGuardianParryFriend] = useState(0);
 	const [guardianParryEnemy, setGuardianParryEnemy] = useState(0);
+	const [friendBlinded, setFriendBlinded] = useState(false);
+	const [enemyBlinded, setEnemyBlinded] = useState(false);
 
 	const gameEndedRef = useRef(false);
 	const defenseFriendRef = useRef(0);
@@ -197,8 +199,13 @@ export function useBattle(socket: Socket) {
 
 		// holy field キャンセル時は shining によるブラインドを解除
 		if (fieldName === "holy field") {
-			if (side === "friend") enemyBlindedRef.current = false;
-			else friendBlindedRef.current = false;
+			if (side === "friend") {
+				enemyBlindedRef.current = false;
+				setEnemyBlinded(false);
+			} else {
+				friendBlindedRef.current = false;
+				setFriendBlinded(false);
+			}
 		}
 
 		const fieldCmd = commandDataRef.current[fieldName];
@@ -257,6 +264,8 @@ export function useBattle(socket: Socket) {
 		enemyGuardianParryRef,
 		setGuardianParryFriend,
 		setGuardianParryEnemy,
+		setFriendBlinded,
+		setEnemyBlinded,
 	});
 
 	const clearBattleState = () => {
@@ -305,6 +314,8 @@ export function useBattle(socket: Socket) {
 		// shining ブラインド
 		friendBlindedRef.current = false;
 		enemyBlindedRef.current = false;
+		setFriendBlinded(false);
+		setEnemyBlinded(false);
 	};
 
 	const handleGameEnd = () => {
@@ -351,6 +362,8 @@ export function useBattle(socket: Socket) {
 			hpDeltasEnemy,
 			defenseFriend,
 			defenseEnemy,
+			friendBlinded,
+			enemyBlinded,
 			timeLeft,
 			inputFriend,
 			messageFriend,

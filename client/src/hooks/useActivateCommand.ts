@@ -35,6 +35,8 @@ interface Params {
 	enemyBlindedRef: MutableRefObject<boolean>;
 	friendGuardianParryRef: MutableRefObject<number>;
 	enemyGuardianParryRef: MutableRefObject<number>;
+	setFriendBlinded: (value: boolean) => void;
+	setEnemyBlinded: (value: boolean) => void;
 	showMessage: (
 		message: string,
 		side: FriendOrEnemy,
@@ -218,12 +220,15 @@ export function useActivateCommand(p: Params) {
 					onExpire,
 				);
 		} else {
-			if (cmdData.originalParams?.isBlind) {
+			if (cmdData.originalParams?.isBlinding) {
 				const opponentSide = side === "friend" ? "enemy" : "friend";
 				const blindedRef =
 					opponentSide === "friend" ? p.friendBlindedRef : p.enemyBlindedRef;
+				const setBlinded =
+					opponentSide === "friend" ? p.setFriendBlinded : p.setEnemyBlinded;
 				const onExpire = () => {
 					blindedRef.current = false;
+					setBlinded(false);
 				};
 				if (coolTimeSec >= 0)
 					p.coolTime.generateCoolTime(coolTimeSec, side, onExpire);
@@ -360,12 +365,15 @@ export function useActivateCommand(p: Params) {
 					}
 				}
 			} else {
-				if (cmdData.originalParams?.isBlind) {
+				if (cmdData.originalParams?.isBlinding) {
 					// 相手の physical 攻撃命中率を 50% にするブラインドを付与
 					const opponentSide = side === "friend" ? "enemy" : "friend";
 					const blindedRef =
 						opponentSide === "friend" ? p.friendBlindedRef : p.enemyBlindedRef;
+					const setBlinded =
+						opponentSide === "friend" ? p.setFriendBlinded : p.setEnemyBlinded;
 					blindedRef.current = true;
+					setBlinded(true);
 				}
 				if (damage !== 0 && damageTarget)
 					p.giveDamage(damage, damageTarget, cmdData.attribute);

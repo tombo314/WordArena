@@ -8,7 +8,7 @@ export interface OriginalParams {
 	hasIndependentCT?: boolean;
 	isShield?: boolean;
 	ignoreFieldCancel?: boolean;
-	isBlind?: boolean;
+	isBlinding?: boolean;
 }
 
 export interface CommandEntry {
@@ -36,8 +36,8 @@ export interface StatusEffect {
 	type: string;
 	/** アイコン画像のパス */
 	icon: string;
-	/** 表示する数値（正なら+X、負なら-X） */
-	value: number;
+	/** 表示する数値（正なら+X、負なら-X）。未指定ならアイコンのみ表示 */
+	value?: number;
 	/** 数値のテキスト色 */
-	color: string;
+	color?: string;
 }
