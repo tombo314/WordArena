@@ -86,12 +86,14 @@ export default function BattlePage({ socket }: BattlePageProps) {
 					regenCoolTime: state.regenCoolTimeFriendText,
 					shieldCoolTime: state.shieldCoolTimeFriendText,
 					guardianCoolTime: state.guardianCoolTimeFriendText,
+					shiningCoolTime: state.shiningCoolTimeFriendText,
 				}}
 				enemy={{
 					coolTime: state.coolTimeEnemyText,
 					regenCoolTime: state.regenCoolTimeEnemyText,
 					shieldCoolTime: state.shieldCoolTimeEnemyText,
 					guardianCoolTime: state.guardianCoolTimeEnemyText,
+					shiningCoolTime: state.shiningCoolTimeEnemyText,
 				}}
 			/>
 
@@ -107,6 +109,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
 					regenCoolTimeText: state.regenCoolTimeFriendText,
 					shieldCoolTimeText: state.shieldCoolTimeFriendText,
 					guardianCoolTimeText: state.guardianCoolTimeFriendText,
+					shiningCoolTimeText: state.shiningCoolTimeFriendText,
 					guardianParry: state.guardianParryFriend,
 					disabledFields: state.disabledFriendFields,
 					activeRegen: state.activeFriendRegen,
@@ -118,6 +121,7 @@ export default function BattlePage({ socket }: BattlePageProps) {
 					regenCoolTimeText: state.regenCoolTimeEnemyText,
 					shieldCoolTimeText: state.shieldCoolTimeEnemyText,
 					guardianCoolTimeText: state.guardianCoolTimeEnemyText,
+					shiningCoolTimeText: state.shiningCoolTimeEnemyText,
 					guardianParry: state.guardianParryEnemy,
 					disabledFields: state.disabledEnemyFields,
 					activeRegen: state.activeEnemyRegen,

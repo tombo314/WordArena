@@ -42,6 +42,8 @@ export function useEnemyAI({
 			const inCoolTime = coolTimeRefs.inCoolTimeEnemyRef.current;
 			const inRegenCoolTime = coolTimeRefs.inRegenCoolTimeEnemyRef.current;
 			const inShieldCoolTime = coolTimeRefs.inShieldCoolTimeEnemyRef.current;
+			const inShiningCoolTime =
+				coolTimeRefs.inShiningCoolTimeEnemyRef.current;
 			const activeField = activeEnemyFieldRef.current;
 			const activeDerivedField = activeEnemyDerivedFieldRef.current;
 			const disabledFields = disabledEnemyFieldsRef.current;
@@ -71,9 +73,11 @@ export function useEnemyAI({
 						if (cmd === activeDerivedField) continue;
 						if (cmd === "regenerate" && inRegenCoolTime) continue;
 						if (SHIELD_COMMANDS.includes(cmd) && inShieldCoolTime) continue;
+						if (cmd === "shining" && inShiningCoolTime) continue;
 						if (
 							!SHIELD_COMMANDS.includes(cmd) &&
 							cmd !== "regenerate" &&
+							cmd !== "shining" &&
 							inCoolTime
 						)
 							continue;

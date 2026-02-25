@@ -98,6 +98,10 @@ export function useActivateCommand(p: Params) {
 			side === "friend"
 				? refs.inGuardianCoolTimeFriendRef.current
 				: refs.inGuardianCoolTimeEnemyRef.current;
+		const inShiningCoolTime =
+			side === "friend"
+				? refs.inShiningCoolTimeFriendRef.current
+				: refs.inShiningCoolTimeEnemyRef.current;
 		const activeField =
 			side === "friend"
 				? p.activeFriendFieldRef.current
@@ -163,9 +167,18 @@ export function useActivateCommand(p: Params) {
 			return false;
 		}
 		if (
+			cmdData.originalParams?.hasIndependentCT &&
+			cmdData.originalParams?.isBlinding &&
+			inShiningCoolTime
+		) {
+			p.showMessage("シャイニングのクールタイム中です", side);
+			return false;
+		}
+		if (
 			command !== "regenerate" &&
 			!cmdData.originalParams?.isShield &&
 			(cmdData.originalParams?.parryCount ?? 0) === 0 &&
+			!(cmdData.originalParams?.hasIndependentCT && cmdData.originalParams?.isBlinding) &&
 			inCoolTime
 		) {
 			p.showMessage("スキルのクールタイム中です", side);
@@ -220,7 +233,27 @@ export function useActivateCommand(p: Params) {
 					onExpire,
 				);
 		} else {
-			if (cmdData.originalParams?.isBlinding) {
+			if (
+				cmdData.originalParams?.hasIndependentCT &&
+				cmdData.originalParams?.isBlinding
+			) {
+				const opponentSide = side === "friend" ? "enemy" : "friend";
+				const blindedRef =
+					opponentSide === "friend" ? p.friendBlindedRef : p.enemyBlindedRef;
+				const setBlinded =
+					opponentSide === "friend" ? p.setFriendBlinded : p.setEnemyBlinded;
+				const onExpire = () => {
+					blindedRef.current = false;
+					setBlinded(false);
+				};
+				if (coolTimeSec >= 0)
+					p.coolTime.generateShiningCoolTime(
+						coolTimeSec,
+						side,
+						command,
+						onExpire,
+					);
+			} else if (cmdData.originalParams?.isBlinding) {
 				const opponentSide = side === "friend" ? "enemy" : "friend";
 				const blindedRef =
 					opponentSide === "friend" ? p.friendBlindedRef : p.enemyBlindedRef;

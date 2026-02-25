@@ -297,11 +297,13 @@ export function useBattle(socket: Socket) {
 		setGuardianParryFriend(0);
 		setGuardianParryEnemy(0);
 
-		// 通常CT・リジェネCT
+		// 通常CT・リジェネCT・shining CT
 		coolTime.clearCoolTime("friend");
 		coolTime.clearCoolTime("enemy");
 		coolTime.clearRegenCoolTime("friend");
 		coolTime.clearRegenCoolTime("enemy");
+		coolTime.clearShiningCoolTime("friend");
+		coolTime.clearShiningCoolTime("enemy");
 
 		// 防御バフ
 		defenseFriendRef.current = 0;
@@ -376,6 +378,8 @@ export function useBattle(socket: Socket) {
 			shieldCoolTimeEnemyText: ctState.shieldCoolTimeEnemyText,
 			guardianCoolTimeFriendText: ctState.guardianCoolTimeFriendText,
 			guardianCoolTimeEnemyText: ctState.guardianCoolTimeEnemyText,
+			shiningCoolTimeFriendText: ctState.shiningCoolTimeFriendText,
+			shiningCoolTimeEnemyText: ctState.shiningCoolTimeEnemyText,
 			guardianParryFriend,
 			guardianParryEnemy,
 			commandList,

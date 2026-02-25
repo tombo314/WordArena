@@ -1,6 +1,80 @@
 import { useRef, useState } from "react";
 import type { FriendOrEnemy } from "../types";
 
+type CoolTimeConfig = {
+	setTextFriend: React.Dispatch<React.SetStateAction<string>>;
+	setTextEnemy: React.Dispatch<React.SetStateAction<string>>;
+	inCoolTimeFriendRef: React.MutableRefObject<boolean>;
+	inCoolTimeEnemyRef: React.MutableRefObject<boolean>;
+	intervalFriendRef: React.MutableRefObject<ReturnType<
+		typeof setInterval
+	> | null>;
+	intervalEnemyRef: React.MutableRefObject<ReturnType<
+		typeof setInterval
+	> | null>;
+};
+
+function createCoolTimeGenerator(config: CoolTimeConfig) {
+	return (
+		coolTimeSec: number,
+		side: FriendOrEnemy,
+		displayPrefix: string,
+		onExpire?: () => void,
+	) => {
+		if (side === "friend") config.inCoolTimeFriendRef.current = true;
+		else config.inCoolTimeEnemyRef.current = true;
+
+		const setText =
+			side === "friend" ? config.setTextFriend : config.setTextEnemy;
+		const intervalRef =
+			side === "friend"
+				? config.intervalFriendRef
+				: config.intervalEnemyRef;
+		if (intervalRef.current) clearInterval(intervalRef.current);
+		let remaining = coolTimeSec;
+
+		intervalRef.current = setInterval(() => {
+			const m = Math.floor(remaining / 60);
+			const s = remaining % 60;
+			setText(
+				`${displayPrefix} ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
+			);
+			if (remaining <= 0) {
+				clearInterval(intervalRef.current!);
+				intervalRef.current = null;
+				if (side === "friend") {
+					config.inCoolTimeFriendRef.current = false;
+					config.setTextFriend("");
+				} else {
+					config.inCoolTimeEnemyRef.current = false;
+					config.setTextEnemy("");
+				}
+				onExpire?.();
+			}
+			remaining--;
+		}, 1000);
+	};
+}
+
+function createCoolTimeClear(config: CoolTimeConfig) {
+	return (side: FriendOrEnemy) => {
+		const intervalRef =
+			side === "friend"
+				? config.intervalFriendRef
+				: config.intervalEnemyRef;
+		if (intervalRef.current === null) return;
+		clearInterval(intervalRef.current);
+		intervalRef.current = null;
+		if (side === "friend") {
+			config.inCoolTimeFriendRef.current = false;
+			config.setTextFriend("");
+		} else {
+			config.inCoolTimeEnemyRef.current = false;
+			config.setTextEnemy("");
+		}
+	};
+}
+
 export function useCoolTime() {
 	const [coolTimeFriendText, setCoolTimeFriendText] = useState("");
 	const [coolTimeEnemyText, setCoolTimeEnemyText] = useState("");
@@ -12,6 +86,10 @@ export function useCoolTime() {
 		useState("");
 	const [guardianCoolTimeEnemyText, setGuardianCoolTimeEnemyText] =
 		useState("");
+	const [shiningCoolTimeFriendText, setShiningCoolTimeFriendText] =
+		useState("");
+	const [shiningCoolTimeEnemyText, setShiningCoolTimeEnemyText] =
+		useState("");
 
 	const inCoolTimeFriendRef = useRef(false);
 	const inCoolTimeEnemyRef = useRef(false);
@@ -21,6 +99,8 @@ export function useCoolTime() {
 	const inShieldCoolTimeEnemyRef = useRef(false);
 	const inGuardianCoolTimeFriendRef = useRef(false);
 	const inGuardianCoolTimeEnemyRef = useRef(false);
+	const inShiningCoolTimeFriendRef = useRef(false);
+	const inShiningCoolTimeEnemyRef = useRef(false);
 	const friendCoolTimeIntervalRef = useRef<ReturnType<
 		typeof setInterval
 	> | null>(null);
@@ -45,239 +125,107 @@ export function useCoolTime() {
 	const enemyGuardianCoolTimeIntervalRef = useRef<ReturnType<
 		typeof setInterval
 	> | null>(null);
+	const friendShiningCoolTimeIntervalRef = useRef<ReturnType<
+		typeof setInterval
+	> | null>(null);
+	const enemyShiningCoolTimeIntervalRef = useRef<ReturnType<
+		typeof setInterval
+	> | null>(null);
+
+	const coolTimeConfig: CoolTimeConfig = {
+		setTextFriend: setCoolTimeFriendText,
+		setTextEnemy: setCoolTimeEnemyText,
+		inCoolTimeFriendRef,
+		inCoolTimeEnemyRef,
+		intervalFriendRef: friendCoolTimeIntervalRef,
+		intervalEnemyRef: enemyCoolTimeIntervalRef,
+	};
+	const regenConfig: CoolTimeConfig = {
+		setTextFriend: setRegenCoolTimeFriendText,
+		setTextEnemy: setRegenCoolTimeEnemyText,
+		inCoolTimeFriendRef: inRegenCoolTimeFriendRef,
+		inCoolTimeEnemyRef: inRegenCoolTimeEnemyRef,
+		intervalFriendRef: friendRegenCoolTimeIntervalRef,
+		intervalEnemyRef: enemyRegenCoolTimeIntervalRef,
+	};
+	const shieldConfig: CoolTimeConfig = {
+		setTextFriend: setShieldCoolTimeFriendText,
+		setTextEnemy: setShieldCoolTimeEnemyText,
+		inCoolTimeFriendRef: inShieldCoolTimeFriendRef,
+		inCoolTimeEnemyRef: inShieldCoolTimeEnemyRef,
+		intervalFriendRef: friendShieldCoolTimeIntervalRef,
+		intervalEnemyRef: enemyShieldCoolTimeIntervalRef,
+	};
+	const guardianConfig: CoolTimeConfig = {
+		setTextFriend: setGuardianCoolTimeFriendText,
+		setTextEnemy: setGuardianCoolTimeEnemyText,
+		inCoolTimeFriendRef: inGuardianCoolTimeFriendRef,
+		inCoolTimeEnemyRef: inGuardianCoolTimeEnemyRef,
+		intervalFriendRef: friendGuardianCoolTimeIntervalRef,
+		intervalEnemyRef: enemyGuardianCoolTimeIntervalRef,
+	};
+	const shiningConfig: CoolTimeConfig = {
+		setTextFriend: setShiningCoolTimeFriendText,
+		setTextEnemy: setShiningCoolTimeEnemyText,
+		inCoolTimeFriendRef: inShiningCoolTimeFriendRef,
+		inCoolTimeEnemyRef: inShiningCoolTimeEnemyRef,
+		intervalFriendRef: friendShiningCoolTimeIntervalRef,
+		intervalEnemyRef: enemyShiningCoolTimeIntervalRef,
+	};
+
+	const generateCoolTimeBase = createCoolTimeGenerator(coolTimeConfig);
+	const generateRegenCoolTimeBase = createCoolTimeGenerator(regenConfig);
+	const generateShieldCoolTimeBase = createCoolTimeGenerator(shieldConfig);
+	const generateGuardianCoolTimeBase = createCoolTimeGenerator(guardianConfig);
+	const generateShiningCoolTimeBase = createCoolTimeGenerator(shiningConfig);
 
 	const generateCoolTime = (
 		coolTimeSec: number,
 		side: FriendOrEnemy,
 		onExpire?: () => void,
-	) => {
-		if (side === "friend") inCoolTimeFriendRef.current = true;
-		else inCoolTimeEnemyRef.current = true;
-
-		const setText =
-			side === "friend" ? setCoolTimeFriendText : setCoolTimeEnemyText;
-		const intervalRef =
-			side === "friend" ? friendCoolTimeIntervalRef : enemyCoolTimeIntervalRef;
-		if (intervalRef.current) clearInterval(intervalRef.current);
-		let remaining = coolTimeSec;
-
-		intervalRef.current = setInterval(() => {
-			const m = Math.floor(remaining / 60);
-			const s = remaining % 60;
-			setText(
-				`クールタイム ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
-			);
-			if (remaining <= 0) {
-				clearInterval(intervalRef.current!);
-				intervalRef.current = null;
-				if (side === "friend") {
-					inCoolTimeFriendRef.current = false;
-					setCoolTimeFriendText("");
-				} else {
-					inCoolTimeEnemyRef.current = false;
-					setCoolTimeEnemyText("");
-				}
-				onExpire?.();
-			}
-			remaining--;
-		}, 1000);
-	};
+	) => generateCoolTimeBase(coolTimeSec, side, "クールタイム", onExpire);
 
 	const generateRegenCoolTime = (
 		coolTimeSec: number,
 		side: FriendOrEnemy,
 		skillName: string,
-	) => {
-		if (side === "friend") inRegenCoolTimeFriendRef.current = true;
-		else inRegenCoolTimeEnemyRef.current = true;
-
-		const setText =
-			side === "friend"
-				? setRegenCoolTimeFriendText
-				: setRegenCoolTimeEnemyText;
-		const intervalRef =
-			side === "friend"
-				? friendRegenCoolTimeIntervalRef
-				: enemyRegenCoolTimeIntervalRef;
-		if (intervalRef.current) clearInterval(intervalRef.current);
-		let remaining = coolTimeSec;
-
-		intervalRef.current = setInterval(() => {
-			const m = Math.floor(remaining / 60);
-			const s = remaining % 60;
-			setText(
-				`${skillName} ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
-			);
-			if (remaining <= 0) {
-				clearInterval(intervalRef.current!);
-				intervalRef.current = null;
-				if (side === "friend") {
-					inRegenCoolTimeFriendRef.current = false;
-					setRegenCoolTimeFriendText("");
-				} else {
-					inRegenCoolTimeEnemyRef.current = false;
-					setRegenCoolTimeEnemyText("");
-				}
-			}
-			remaining--;
-		}, 1000);
-	};
+	) => generateRegenCoolTimeBase(coolTimeSec, side, skillName);
 
 	const generateShieldCoolTime = (
 		coolTimeSec: number,
 		side: FriendOrEnemy,
 		skillName: string,
 		onExpire?: () => void,
-	) => {
-		if (side === "friend") inShieldCoolTimeFriendRef.current = true;
-		else inShieldCoolTimeEnemyRef.current = true;
-
-		const setText =
-			side === "friend"
-				? setShieldCoolTimeFriendText
-				: setShieldCoolTimeEnemyText;
-		const intervalRef =
-			side === "friend"
-				? friendShieldCoolTimeIntervalRef
-				: enemyShieldCoolTimeIntervalRef;
-
-		if (intervalRef.current) clearInterval(intervalRef.current);
-		let remaining = coolTimeSec;
-
-		intervalRef.current = setInterval(() => {
-			const m = Math.floor(remaining / 60);
-			const s = remaining % 60;
-			setText(
-				`${skillName} ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
-			);
-			if (remaining <= 0) {
-				clearInterval(intervalRef.current!);
-				intervalRef.current = null;
-				if (side === "friend") {
-					inShieldCoolTimeFriendRef.current = false;
-					setShieldCoolTimeFriendText("");
-				} else {
-					inShieldCoolTimeEnemyRef.current = false;
-					setShieldCoolTimeEnemyText("");
-				}
-				onExpire?.();
-			}
-			remaining--;
-		}, 1000);
-	};
+	) => generateShieldCoolTimeBase(coolTimeSec, side, skillName, onExpire);
 
 	const generateGuardianCoolTime = (
 		coolTimeSec: number,
 		side: FriendOrEnemy,
 		skillName: string,
 		onExpire?: () => void,
-	) => {
-		if (side === "friend") inGuardianCoolTimeFriendRef.current = true;
-		else inGuardianCoolTimeEnemyRef.current = true;
+	) => generateGuardianCoolTimeBase(coolTimeSec, side, skillName, onExpire);
 
-		const setText =
-			side === "friend"
-				? setGuardianCoolTimeFriendText
-				: setGuardianCoolTimeEnemyText;
-		const intervalRef =
-			side === "friend"
-				? friendGuardianCoolTimeIntervalRef
-				: enemyGuardianCoolTimeIntervalRef;
-
-		if (intervalRef.current) clearInterval(intervalRef.current);
-		let remaining = coolTimeSec;
-
-		intervalRef.current = setInterval(() => {
-			const m = Math.floor(remaining / 60);
-			const s = remaining % 60;
-			setText(
-				`${skillName} ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
-			);
-			if (remaining <= 0) {
-				clearInterval(intervalRef.current!);
-				intervalRef.current = null;
-				if (side === "friend") {
-					inGuardianCoolTimeFriendRef.current = false;
-					setGuardianCoolTimeFriendText("");
-				} else {
-					inGuardianCoolTimeEnemyRef.current = false;
-					setGuardianCoolTimeEnemyText("");
-				}
-				onExpire?.();
-			}
-			remaining--;
-		}, 1000);
-	};
+	const generateShiningCoolTime = (
+		coolTimeSec: number,
+		side: FriendOrEnemy,
+		skillName: string,
+		onExpire?: () => void,
+	) => generateShiningCoolTimeBase(coolTimeSec, side, skillName, onExpire);
 
 	// ゲーム終了時に呼ばれる通常CTの強制クリア
-	const clearCoolTime = (side: FriendOrEnemy) => {
-		const intervalRef =
-			side === "friend" ? friendCoolTimeIntervalRef : enemyCoolTimeIntervalRef;
-		if (intervalRef.current === null) return;
-		clearInterval(intervalRef.current);
-		intervalRef.current = null;
-		if (side === "friend") {
-			inCoolTimeFriendRef.current = false;
-			setCoolTimeFriendText("");
-		} else {
-			inCoolTimeEnemyRef.current = false;
-			setCoolTimeEnemyText("");
-		}
-	};
+	const clearCoolTime = createCoolTimeClear(coolTimeConfig);
 
 	// ゲーム終了時に呼ばれるリジェネCTの強制クリア
-	const clearRegenCoolTime = (side: FriendOrEnemy) => {
-		const intervalRef =
-			side === "friend"
-				? friendRegenCoolTimeIntervalRef
-				: enemyRegenCoolTimeIntervalRef;
-		if (intervalRef.current === null) return;
-		clearInterval(intervalRef.current);
-		intervalRef.current = null;
-		if (side === "friend") {
-			inRegenCoolTimeFriendRef.current = false;
-			setRegenCoolTimeFriendText("");
-		} else {
-			inRegenCoolTimeEnemyRef.current = false;
-			setRegenCoolTimeEnemyText("");
-		}
-	};
+	const clearRegenCoolTime = createCoolTimeClear(regenConfig);
 
 	// cancelField から呼ばれるシールドCTの強制クリア
-	const clearShieldCoolTime = (side: FriendOrEnemy) => {
-		const intervalRef =
-			side === "friend"
-				? friendShieldCoolTimeIntervalRef
-				: enemyShieldCoolTimeIntervalRef;
-		if (intervalRef.current === null) return;
-		clearInterval(intervalRef.current);
-		intervalRef.current = null;
-		if (side === "friend") {
-			inShieldCoolTimeFriendRef.current = false;
-			setShieldCoolTimeFriendText("");
-		} else {
-			inShieldCoolTimeEnemyRef.current = false;
-			setShieldCoolTimeEnemyText("");
-		}
-	};
+	const clearShieldCoolTime = createCoolTimeClear(shieldConfig);
 
 	// ゲーム終了・パリィ消耗時に呼ばれるguardian CTの強制クリア
-	const clearGuardianCoolTime = (side: FriendOrEnemy) => {
-		const intervalRef =
-			side === "friend"
-				? friendGuardianCoolTimeIntervalRef
-				: enemyGuardianCoolTimeIntervalRef;
-		if (intervalRef.current === null) return;
-		clearInterval(intervalRef.current);
-		intervalRef.current = null;
-		if (side === "friend") {
-			inGuardianCoolTimeFriendRef.current = false;
-			setGuardianCoolTimeFriendText("");
-		} else {
-			inGuardianCoolTimeEnemyRef.current = false;
-			setGuardianCoolTimeEnemyText("");
-		}
-	};
+	const clearGuardianCoolTime = createCoolTimeClear(guardianConfig);
+
+	// ゲーム終了時に呼ばれる shining CT の強制クリア
+	const clearShiningCoolTime = createCoolTimeClear(shiningConfig);
 
 	return {
 		state: {
@@ -289,6 +237,8 @@ export function useCoolTime() {
 			shieldCoolTimeEnemyText,
 			guardianCoolTimeFriendText,
 			guardianCoolTimeEnemyText,
+			shiningCoolTimeFriendText,
+			shiningCoolTimeEnemyText,
 		},
 		refs: {
 			inCoolTimeFriendRef,
@@ -299,14 +249,18 @@ export function useCoolTime() {
 			inShieldCoolTimeEnemyRef,
 			inGuardianCoolTimeFriendRef,
 			inGuardianCoolTimeEnemyRef,
+			inShiningCoolTimeFriendRef,
+			inShiningCoolTimeEnemyRef,
 		},
 		generateCoolTime,
 		generateRegenCoolTime,
 		generateShieldCoolTime,
 		generateGuardianCoolTime,
+		generateShiningCoolTime,
 		clearCoolTime,
 		clearRegenCoolTime,
 		clearShieldCoolTime,
 		clearGuardianCoolTime,
+		clearShiningCoolTime,
 	};
 }

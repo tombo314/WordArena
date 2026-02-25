@@ -7,6 +7,7 @@ interface SideStatus {
 	regenCoolTimeText: string;
 	shieldCoolTimeText: string;
 	guardianCoolTimeText: string;
+	shiningCoolTimeText: string;
 	guardianParry: number;
 	disabledFields: string[];
 	activeRegen: boolean;
@@ -40,6 +41,7 @@ export default function CommandStatus({
 					regenCoolTimeText,
 					shieldCoolTimeText,
 					guardianCoolTimeText,
+					shiningCoolTimeText,
 					guardianParry,
 					disabledFields,
 					activeRegen,
@@ -48,6 +50,7 @@ export default function CommandStatus({
 				const inRegenCoolTime = regenCoolTimeText !== "";
 				const inShieldCoolTime = shieldCoolTimeText !== "";
 				const inGuardianCoolTime = guardianCoolTimeText !== "";
+				const inShiningCoolTime = shiningCoolTimeText !== "";
 
 				return (
 					<div key={side} className="sub-wrapper-status">
@@ -117,6 +120,9 @@ export default function CommandStatus({
 								} else if (sub === "guardian") {
 									// CT 中はアクティブ色（parry count が表示される）
 									subClass += " earth-sub";
+								} else if (sub === "shining") {
+									if (inShiningCoolTime) subClass += " grayed-out";
+									else subClass += " holy-sub";
 								} else if (inCoolTime) {
 									subClass += " grayed-out";
 								} else {
